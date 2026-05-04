@@ -82,59 +82,75 @@ gsap.fromTo('#photoOuter',
   }
 );
 
-// ── ABOUT PHOTO GLASS SHARDS ─────────────────────────────────────────────────
+// ── ABOUT PHOTO GLASS SHARDS – SCROLL SCRUB ──────────────────────────────────
 (function () {
   const photoFrame = document.querySelector('.photo-frame');
   const origImg    = photoFrame?.querySelector('.about-photo');
   if (!photoFrame || !origImg) return;
 
-  const COLS = 3, ROWS = 5;
-  const shards = [];
+  const COLS = 4, ROWS = 6; // 24 fragments
+  const shards = [], fromData = [];
 
   photoFrame.style.position = 'relative';
 
   const layer = document.createElement('div');
-  layer.style.cssText = 'position:absolute;inset:0;z-index:1;pointer-events:none;';
+  layer.style.cssText = 'position:absolute;inset:0;z-index:2;pointer-events:none;overflow:hidden;border-radius:15px;';
   photoFrame.appendChild(layer);
 
   for (let r = 0; r < ROWS; r++) {
     for (let c = 0; c < COLS; c++) {
-      const s   = document.createElement('div');
-      const bx  = COLS < 2 ? 0 : (c / (COLS - 1)) * 100;
-      const by  = ROWS < 2 ? 0 : (r / (ROWS - 1)) * 100;
+      const s  = document.createElement('div');
+      const bx = (c / Math.max(COLS - 1, 1)) * 100;
+      const by = (r / Math.max(ROWS - 1, 1)) * 100;
       s.style.cssText = [
-        `position:absolute`,
+        'position:absolute',
         `left:${(c / COLS) * 100}%`, `top:${(r / ROWS) * 100}%`,
-        `width:${(1 / COLS) * 100}%`, `height:${(1 / ROWS) * 100}%`,
+        `width:${100 / COLS + 0.5}%`, `height:${100 / ROWS + 0.5}%`,
         `background-image:url(${origImg.src})`,
         `background-size:${COLS * 100}% ${ROWS * 100}%`,
         `background-position:${bx}% ${by}%`,
+        'will-change:transform,opacity',
       ].join(';');
-      gsap.set(s, {
-        x: (Math.random() - 0.5) * 180,
-        y: (Math.random() - 0.5) * 180,
-        rotation: (Math.random() - 0.5) * 80,
-        scale: 0.5 + Math.random() * 0.5,
-        opacity: 0,
-      });
       layer.appendChild(s);
       shards.push(s);
+
+      // Store deterministic FROM values so scrub reversal is identical
+      fromData.push({
+        x:        (Math.random() - 0.5) * 140,
+        y:        (Math.random() - 0.5) * 140,
+        rotateX:  (Math.random() - 0.5) * 150,
+        rotateY:  (Math.random() - 0.5) * 150,
+        rotateZ:  (Math.random() - 0.5) * 70,
+        scale:    0.1 + Math.random() * 0.3,
+        opacity:  0,
+        transformPerspective: 500,
+      });
     }
   }
 
   origImg.style.opacity = '0';
 
-  ScrollTrigger.create({
-    trigger: '#about', start: 'top 75%', once: true,
-    onEnter() {
-      gsap.to(shards, {
-        x: 0, y: 0, rotation: 0, scale: 1, opacity: 1,
-        duration: 0.65,
-        stagger: { amount: 0.5, from: 'random' },
-        ease: 'back.out(1.4)',
-        onComplete() { origImg.style.opacity = '1'; layer.style.display = 'none'; },
-      });
+  // Apply scattered state to each shard
+  shards.forEach((s, i) => gsap.set(s, fromData[i]));
+
+  // Build scroll-scrubbed timeline — forward = assemble, backward = shatter
+  const tl = gsap.timeline({
+    scrollTrigger: {
+      trigger: '#about',
+      start: 'top 70%',
+      end:   'center 38%',
+      scrub: 1.2,
     },
+  });
+
+  tl.to(shards, {
+    x: 0, y: 0,
+    rotateX: 0, rotateY: 0, rotateZ: 0,
+    scale: 1, opacity: 1,
+    transformPerspective: 500,
+    duration: 1,
+    stagger: { amount: 0.55, from: 'random', ease: 'none' },
+    ease: 'none',
   });
 }());
 
