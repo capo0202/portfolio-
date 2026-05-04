@@ -74,100 +74,161 @@ if (isDesktop) {
   });
 }
 
-// ── PHOTO 3D SCROLL REVEAL ────────────────────────────────────────────────────
-gsap.fromTo('#photoOuter',
-  { rotateX: 45, opacity: 0, y: 60, transformPerspective: 900, transformOrigin: 'center bottom' },
-  { rotateX: 0, opacity: 1, y: 0, duration: 1.5, ease: 'power4.out',
-    scrollTrigger: { trigger: '#about', start: 'top 75%', once: true }
-  }
-);
-
 // ── ABOUT PHOTO GLASS SHARDS – SCROLL SCRUB ──────────────────────────────────
 (function () {
-  const photoFrame = document.querySelector('.photo-frame');
-  const origImg    = photoFrame?.querySelector('.about-photo');
-  if (!photoFrame || !origImg) return;
+  const section  = document.getElementById('about');
+  const photoEl  = document.getElementById('photoOuter'); // full element incl. border ring
+  const origImg  = document.querySelector('.about-photo');
+  if (!section || !photoEl || !origImg) return;
 
-  const COLS = 4, ROWS = 6; // 24 fragments
-  const shards = [], fromData = [];
+  function setup() {
+    const secR   = section.getBoundingClientRect();
+    const photoR = photoEl.getBoundingClientRect();
+    const fw = photoR.width;
+    const fh = photoR.height;
+    if (fw < 10 || fh < 10) return; // hidden on mobile
 
-  photoFrame.style.position = 'relative';
+    const fx = photoR.left - secR.left;
+    const fy = photoR.top  - secR.top;
+    const sW = secR.width;
+    const sH = secR.height;
 
-  const layer = document.createElement('div');
-  layer.style.cssText = 'position:absolute;inset:0;z-index:2;pointer-events:none;overflow:hidden;border-radius:15px;';
-  photoFrame.appendChild(layer);
+    // Replicate object-fit:cover for the inner photo-frame area (inset 3px border)
+    const border  = 3;
+    const frameW  = fw - border * 2;
+    const frameH  = fh - border * 2;
+    const imgW    = origImg.naturalWidth  || frameW;
+    const imgH    = origImg.naturalHeight || frameH;
+    const cvScale = Math.max(frameW / imgW, frameH / imgH);
+    const bgW     = Math.round(imgW * cvScale);
+    const bgH     = Math.round(imgH * cvScale);
+    // Center offset within frame (negative = image overflows the frame edge)
+    const offX    = Math.round((frameW - bgW) / 2);
+    const offY    = Math.round((frameH - bgH) / 2);
 
-  for (let r = 0; r < ROWS; r++) {
-    for (let c = 0; c < COLS; c++) {
-      const s  = document.createElement('div');
-      const bx = (c / Math.max(COLS - 1, 1)) * 100;
-      const by = (r / Math.max(ROWS - 1, 1)) * 100;
-      s.style.cssText = [
-        'position:absolute',
-        `left:${(c / COLS) * 100}%`, `top:${(r / ROWS) * 100}%`,
-        `width:${100 / COLS + 0.5}%`, `height:${100 / ROWS + 0.5}%`,
-        `background-image:url(${origImg.src})`,
-        `background-size:${COLS * 100}% ${ROWS * 100}%`,
-        `background-position:${bx}% ${by}%`,
-        'will-change:transform,opacity',
-      ].join(';');
-      layer.appendChild(s);
-      shards.push(s);
+    const COLS = 24, ROWS = 32;  // 768 micro-shards
+    const sw   = fw / COLS;
+    const sh   = fh / ROWS;
 
-      // Store deterministic FROM values so scrub reversal is identical
-      fromData.push({
-        x:        (Math.random() - 0.5) * 140,
-        y:        (Math.random() - 0.5) * 140,
-        rotateX:  (Math.random() - 0.5) * 150,
-        rotateY:  (Math.random() - 0.5) * 150,
-        rotateZ:  (Math.random() - 0.5) * 70,
-        scale:    0.1 + Math.random() * 0.3,
-        opacity:  0,
-        transformPerspective: 500,
+    const shards    = [];
+    const shatterTo = [];
+
+    const layer = document.createElement('div');
+    layer.style.cssText = 'position:absolute;inset:0;z-index:5;pointer-events:none;';
+    section.appendChild(layer);
+
+    for (let r = 0; r < ROWS; r++) {
+      for (let c = 0; c < COLS; c++) {
+        const el = document.createElement('div');
+        const sl = fx + c * sw;
+        const st = fy + r * sh;
+
+        // Fragment's top-left in photo-frame coords (inner image area)
+        // = position in photo-outer minus the border inset
+        // Background position = where the image starts relative to THIS fragment
+        const bgX = offX - (c * sw - border);
+        const bgY = offY - (r * sh - border);
+
+        el.style.cssText = [
+          'position:absolute',
+          `left:${sl}px`,
+          `top:${st}px`,
+          `width:${sw + 0.8}px`,
+          `height:${sh + 0.8}px`,
+          `background-image:url(${origImg.src})`,
+          `background-size:${bgW}px ${bgH}px`,
+          `background-position:${bgX}px ${bgY}px`,
+          'will-change:transform,opacity',
+        ].join(';');
+
+        layer.appendChild(el);
+        shards.push(el);
+
+        // Radial shatter from photo center
+        const angle  = Math.atan2(
+          st + sh * 0.5 - (fy + fh * 0.5),
+          sl + sw * 0.5 - (fx + fw * 0.5)
+        );
+        const thrust = 220 + Math.random() * 360;
+        shatterTo.push({
+          x:       Math.cos(angle) * thrust * (0.65 + Math.random() * 0.7),
+          y:       Math.sin(angle) * thrust * (0.65 + Math.random() * 0.7),
+          rotateX: (Math.random() - 0.5) * 300,
+          rotateY: (Math.random() - 0.5) * 300,
+          rotateZ: (Math.random() - 0.5) * 140,
+          scale:   0.07 + Math.random() * 0.15,
+        });
+      }
+    }
+
+    // Deterministic scatter so pattern is identical on every page load
+    const rng = (() => {
+      let s = 0xdeadbeef;
+      return () => { s ^= s << 13; s ^= s >> 17; s ^= s << 5; return (s >>> 0) / 0xffffffff; };
+    })();
+
+    shards.forEach(el => {
+      gsap.set(el, {
+        x:          (rng() - 0.5) * sW * 0.82,
+        y:          (rng() - 0.5) * sH * 0.58,
+        rotateX:    (rng() - 0.5) * 200,
+        rotateY:    (rng() - 0.5) * 200,
+        rotateZ:    (rng() - 0.5) * 90,
+        scale:      0.06 + rng() * 0.18,
+        opacity:    0,
+        transformPerspective: 700,
       });
+    });
+
+    origImg.style.opacity = '0';
+
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: section,
+        start:   'top 55%',
+        end:     'bottom 25%',
+        scrub:   1.4,
+      },
+    });
+
+    // Phase 1 (60 % of scroll range): scattered → assembled
+    tl.to(shards, {
+      x: 0, y: 0,
+      rotateX: 0, rotateY: 0, rotateZ: 0,
+      scale: 1, opacity: 1,
+      transformPerspective: 700,
+      duration: 0.6,
+      stagger: { amount: 0.45, from: 'random', ease: 'none' },
+      ease: 'none',
+    });
+
+    // Phase 2 (35 % after 5 % hold): assembled → shatter outward
+    tl.to(shards, {
+      x:       i => shatterTo[i].x,
+      y:       i => shatterTo[i].y,
+      rotateX: i => shatterTo[i].rotateX,
+      rotateY: i => shatterTo[i].rotateY,
+      rotateZ: i => shatterTo[i].rotateZ,
+      scale:   i => shatterTo[i].scale,
+      opacity: 0,
+      transformPerspective: 700,
+      duration: 0.35,
+      stagger: { amount: 0.22, from: 'center', ease: 'none' },
+      ease: 'none',
+    }, '>0.05');
+  }
+
+  // Wait for image natural dimensions, then settle layout one frame
+  function init() {
+    if (origImg.naturalWidth > 0) {
+      requestAnimationFrame(setup);
+    } else {
+      origImg.addEventListener('load', () => requestAnimationFrame(setup), { once: true });
     }
   }
 
-  origImg.style.opacity = '0';
-
-  // Apply scattered state to each shard
-  shards.forEach((s, i) => gsap.set(s, fromData[i]));
-
-  // Build scroll-scrubbed timeline — forward = assemble, backward = shatter
-  const tl = gsap.timeline({
-    scrollTrigger: {
-      trigger: '#about',
-      start: 'top 70%',
-      end:   'center 38%',
-      scrub: 1.2,
-    },
-  });
-
-  tl.to(shards, {
-    x: 0, y: 0,
-    rotateX: 0, rotateY: 0, rotateZ: 0,
-    scale: 1, opacity: 1,
-    transformPerspective: 500,
-    duration: 1,
-    stagger: { amount: 0.55, from: 'random', ease: 'none' },
-    ease: 'none',
-  });
+  requestAnimationFrame(init);
 }());
-
-// ── PHOTO 3D TILT ─────────────────────────────────────────────────────────────
-const photoOuter = document.getElementById('photoOuter');
-if (photoOuter && isDesktop) {
-  photoOuter.addEventListener('mousemove', e => {
-    const r = photoOuter.getBoundingClientRect();
-    const x = (e.clientX - r.left) / r.width  - 0.5;
-    const y = (e.clientY - r.top)  / r.height - 0.5;
-    gsap.to(photoOuter, { rotateX: -y * 18, rotateY: x * 18,
-      transformPerspective: 900, duration: 0.35, ease: 'power2.out' });
-  });
-  photoOuter.addEventListener('mouseleave', () => {
-    gsap.to(photoOuter, { rotateX: 0, rotateY: 0, duration: 0.9, ease: 'elastic.out(1,0.4)' });
-  });
-}
 
 // ── HERO TITLE HOVER JUMP ─────────────────────────────────────────────────────
 if (isDesktop) {
