@@ -82,6 +82,62 @@ gsap.fromTo('#photoOuter',
   }
 );
 
+// ── ABOUT PHOTO GLASS SHARDS ─────────────────────────────────────────────────
+(function () {
+  const photoFrame = document.querySelector('.photo-frame');
+  const origImg    = photoFrame?.querySelector('.about-photo');
+  if (!photoFrame || !origImg) return;
+
+  const COLS = 3, ROWS = 5;
+  const shards = [];
+
+  photoFrame.style.position = 'relative';
+
+  const layer = document.createElement('div');
+  layer.style.cssText = 'position:absolute;inset:0;z-index:1;pointer-events:none;';
+  photoFrame.appendChild(layer);
+
+  for (let r = 0; r < ROWS; r++) {
+    for (let c = 0; c < COLS; c++) {
+      const s   = document.createElement('div');
+      const bx  = COLS < 2 ? 0 : (c / (COLS - 1)) * 100;
+      const by  = ROWS < 2 ? 0 : (r / (ROWS - 1)) * 100;
+      s.style.cssText = [
+        `position:absolute`,
+        `left:${(c / COLS) * 100}%`, `top:${(r / ROWS) * 100}%`,
+        `width:${(1 / COLS) * 100}%`, `height:${(1 / ROWS) * 100}%`,
+        `background-image:url(${origImg.src})`,
+        `background-size:${COLS * 100}% ${ROWS * 100}%`,
+        `background-position:${bx}% ${by}%`,
+      ].join(';');
+      gsap.set(s, {
+        x: (Math.random() - 0.5) * 180,
+        y: (Math.random() - 0.5) * 180,
+        rotation: (Math.random() - 0.5) * 80,
+        scale: 0.5 + Math.random() * 0.5,
+        opacity: 0,
+      });
+      layer.appendChild(s);
+      shards.push(s);
+    }
+  }
+
+  origImg.style.opacity = '0';
+
+  ScrollTrigger.create({
+    trigger: '#about', start: 'top 75%', once: true,
+    onEnter() {
+      gsap.to(shards, {
+        x: 0, y: 0, rotation: 0, scale: 1, opacity: 1,
+        duration: 0.65,
+        stagger: { amount: 0.5, from: 'random' },
+        ease: 'back.out(1.4)',
+        onComplete() { origImg.style.opacity = '1'; layer.style.display = 'none'; },
+      });
+    },
+  });
+}());
+
 // ── PHOTO 3D TILT ─────────────────────────────────────────────────────────────
 const photoOuter = document.getElementById('photoOuter');
 if (photoOuter && isDesktop) {
