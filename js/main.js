@@ -74,44 +74,44 @@ if (isDesktop) {
   });
 }
 
-// ── ABOUT PHOTO GLASS SHARDS – SCROLL SCRUB ──────────────────────────────────
+// ── ABOUT PHOTO GLASS SHARDS ─────────────────────────────────────────────────
 (function () {
-  const section  = document.getElementById('about');
-  const photoEl  = document.getElementById('photoOuter'); // full element incl. border ring
-  const origImg  = document.querySelector('.about-photo');
+  const section = document.getElementById('about');
+  const photoEl = document.getElementById('photoOuter');
+  const origImg = document.querySelector('.about-photo');
   if (!section || !photoEl || !origImg) return;
 
   function setup() {
     const secR   = section.getBoundingClientRect();
-    const photoR = photoEl.getBoundingClientRect();
-    const fw = photoR.width;
-    const fh = photoR.height;
-    if (fw < 10 || fh < 10) return; // hidden on mobile
+    const frameEl = photoEl.querySelector('.photo-frame') || photoEl;
+    const frameR  = frameEl.getBoundingClientRect();
+    const fw = frameR.width;
+    const fh = frameR.height;
+    if (fw < 10 || fh < 10) return;
 
-    const fx = photoR.left - secR.left;
-    const fy = photoR.top  - secR.top;
+    const fx = frameR.left - secR.left;
+    const fy = frameR.top  - secR.top;
     const sW = secR.width;
     const sH = secR.height;
 
-    // Replicate object-fit:cover for the inner photo-frame area (inset 3px border)
-    const border  = 3;
-    const frameW  = fw - border * 2;
-    const frameH  = fh - border * 2;
-    const imgW    = origImg.naturalWidth  || frameW;
-    const imgH    = origImg.naturalHeight || frameH;
-    const cvScale = Math.max(frameW / imgW, frameH / imgH);
+    // Bild ist 800×449 Landscape – cover in Portrait-Frame
+    // bgH passt auf Frame-Höhe, bgW überragt seitlich (horizontaler Crop)
+    const imgW    = origImg.naturalWidth  || fw;
+    const imgH    = origImg.naturalHeight || fh;
+    const cvScale = Math.max(fw / imgW, fh / imgH);
     const bgW     = Math.round(imgW * cvScale);
     const bgH     = Math.round(imgH * cvScale);
-    // Center offset within frame (negative = image overflows the frame edge)
-    const offX    = Math.round((frameW - bgW) / 2);
-    const offY    = Math.round((frameH - bgH) / 2);
+    const offX    = Math.round((fw - bgW) / 2);
+    const offY    = 0;
 
-    const COLS = 24, ROWS = 32;  // 768 micro-shards
-    const sw   = fw / COLS;
-    const sh   = fh / ROWS;
+    const COLS = 22, ROWS = 30;
+    const sw = fw / COLS;
+    const sh = fh / ROWS;
 
     const shards    = [];
     const shatterTo = [];
+
+    section.style.overflow = 'hidden';
 
     const layer = document.createElement('div');
     layer.style.cssText = 'position:absolute;inset:0;z-index:5;pointer-events:none;';
@@ -119,22 +119,18 @@ if (isDesktop) {
 
     for (let r = 0; r < ROWS; r++) {
       for (let c = 0; c < COLS; c++) {
-        const el = document.createElement('div');
-        const sl = fx + c * sw;
-        const st = fy + r * sh;
-
-        // Fragment's top-left in photo-frame coords (inner image area)
-        // = position in photo-outer minus the border inset
-        // Background position = where the image starts relative to THIS fragment
-        const bgX = offX - (c * sw - border);
-        const bgY = offY - (r * sh - border);
+        const el  = document.createElement('div');
+        const sl  = Math.round(fx + c * sw);
+        const st  = Math.round(fy + r * sh);
+        const sr  = Math.round(fx + (c + 1) * sw);
+        const sb  = Math.round(fy + (r + 1) * sh);
+        const bgX = offX - (sl - Math.round(fx));
+        const bgY = offY - (st - Math.round(fy));
 
         el.style.cssText = [
           'position:absolute',
-          `left:${sl}px`,
-          `top:${st}px`,
-          `width:${sw + 0.8}px`,
-          `height:${sh + 0.8}px`,
+          `left:${sl}px`, `top:${st}px`,
+          `width:${sr - sl + 1}px`, `height:${sb - st + 1}px`,
           `background-image:url(${origImg.src})`,
           `background-size:${bgW}px ${bgH}px`,
           `background-position:${bgX}px ${bgY}px`,
@@ -144,24 +140,20 @@ if (isDesktop) {
         layer.appendChild(el);
         shards.push(el);
 
-        // Radial shatter from photo center
-        const angle  = Math.atan2(
-          st + sh * 0.5 - (fy + fh * 0.5),
-          sl + sw * 0.5 - (fx + fw * 0.5)
+        const angle = Math.atan2(
+          st + sh * .5 - (fy + fh * .5),
+          sl + sw * .5 - (fx + fw * .5)
         );
-        const thrust = 220 + Math.random() * 360;
+        const thrust = 600 + Math.random() * 700;
         shatterTo.push({
-          x:       Math.cos(angle) * thrust * (0.65 + Math.random() * 0.7),
-          y:       Math.sin(angle) * thrust * (0.65 + Math.random() * 0.7),
-          rotateX: (Math.random() - 0.5) * 300,
-          rotateY: (Math.random() - 0.5) * 300,
-          rotateZ: (Math.random() - 0.5) * 140,
-          scale:   0.07 + Math.random() * 0.15,
+          x:       Math.cos(angle) * thrust * (.6 + Math.random() * .8),
+          y:       Math.sin(angle) * thrust * (.6 + Math.random() * .8),
+          rotateZ: (Math.random() - .5) * 480,
+          scale:   0,
         });
       }
     }
 
-    // Deterministic scatter so pattern is identical on every page load
     const rng = (() => {
       let s = 0xdeadbeef;
       return () => { s ^= s << 13; s ^= s >> 17; s ^= s << 5; return (s >>> 0) / 0xffffffff; };
@@ -169,56 +161,77 @@ if (isDesktop) {
 
     shards.forEach(el => {
       gsap.set(el, {
-        x:          (rng() - 0.5) * sW * 0.82,
-        y:          (rng() - 0.5) * sH * 0.58,
-        rotateX:    (rng() - 0.5) * 200,
-        rotateY:    (rng() - 0.5) * 200,
-        rotateZ:    (rng() - 0.5) * 90,
-        scale:      0.06 + rng() * 0.18,
-        opacity:    0,
-        transformPerspective: 700,
+        x: (rng() - .5) * sW * .85, y: (rng() - .5) * sH * .6,
+        rotateX: (rng() - .5) * 180, rotateY: (rng() - .5) * 180,
+        rotateZ: (rng() - .5) * 90,
+        scale: .05 + rng() * .15,
+        opacity: 0, transformPerspective: 700,
       });
     });
 
-    origImg.style.opacity = '0';
+    // Rahmen + Foto zunächst komplett unsichtbar
+    gsap.set(photoEl, { opacity: 0 });
+    gsap.set(origImg, { opacity: 0 });
+
+    // ── Vollständige bidirektionale Scrub-Timeline ────────────────────────
+    // t=0.00–1.05  Assembly: Partikel fliegen zusammen
+    // t=1.05–1.35  Handoff rein: shards+foto gleichzeitig cross-fade (nahtlos)
+    // t=1.36       layer hidden – foto sauber
+    // t=1.36–2.70  Foto hält
+    // t=2.70       layer visible
+    // t=2.70–2.76  Handoff raus: sofort swap
+    // t=2.76–3.60  Explosion
 
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: section,
-        start:   'top 55%',
-        end:     'bottom 25%',
-        scrub:   1.4,
+        start:   'top 85%',
+        end:     'bottom 5%',
+        scrub:   0.8,
       },
     });
 
-    // Phase 1 (60 % of scroll range): scattered → assembled
+    // Assembly
     tl.to(shards, {
-      x: 0, y: 0,
-      rotateX: 0, rotateY: 0, rotateZ: 0,
-      scale: 1, opacity: 1,
-      transformPerspective: 700,
-      duration: 0.6,
-      stagger: { amount: 0.45, from: 'random', ease: 'none' },
+      x: 0, y: 0, rotateX: 0, rotateY: 0, rotateZ: 0,
+      scale: 1, opacity: 1, transformPerspective: 700,
+      duration: 1.05,
+      stagger: { amount: 0.65, from: 'random', ease: 'none' },
       ease: 'none',
-    });
+    }, 0);
 
-    // Phase 2 (35 % after 5 % hold): assembled → shatter outward
+    // Handoff rein: shards UND echtes Foto gleichzeitig cross-fade
+    // Beide zeigen dasselbe Bild → nahtloser Übergang, kein plötzliches Erscheinen
+    tl.to(photoEl, { opacity: 1, duration: 0.3, ease: 'none' }, 1.05);
+    tl.to(origImg, { opacity: 1, duration: 0.3, ease: 'none' }, 1.05);
+    tl.to(shards,  { opacity: 0, duration: 0.3, ease: 'none',
+      stagger: { amount: 0.18, from: 'random', ease: 'none' },
+    }, 1.05);
+
+    // Layer weg – kein Partikel mehr sichtbar, Foto sauber
+    tl.set(layer, { visibility: 'hidden' }, 1.36);
+
+    // Foto hält
+    tl.to(origImg, { opacity: 1, duration: 1.34, ease: 'none' }, 1.36);
+
+    // Handoff raus – sofort, kein Hang
+    tl.set(layer, { visibility: 'visible' }, 2.70);
+    tl.to(photoEl, { opacity: 0, duration: 0.06, ease: 'none' }, 2.70);
+    tl.to(origImg, { opacity: 0, duration: 0.06, ease: 'none' }, 2.70);
+    tl.to(shards,  { opacity: 1, duration: 0.06, ease: 'none' }, 2.70);
+
+    // Explosion – massiv, fast simultan, krachend
     tl.to(shards, {
-      x:       i => shatterTo[i].x,
-      y:       i => shatterTo[i].y,
-      rotateX: i => shatterTo[i].rotateX,
-      rotateY: i => shatterTo[i].rotateY,
+      x: i => shatterTo[i].x,
+      y: i => shatterTo[i].y,
       rotateZ: i => shatterTo[i].rotateZ,
-      scale:   i => shatterTo[i].scale,
-      opacity: 0,
-      transformPerspective: 700,
-      duration: 0.35,
-      stagger: { amount: 0.22, from: 'center', ease: 'none' },
+      scale: 0, opacity: 0, transformPerspective: 700,
+      duration: 0.84,
+      stagger: { amount: 0.06, from: 'center', ease: 'none' },
       ease: 'none',
-    }, '>0.05');
+    }, 2.76);
   }
 
-  // Wait for image natural dimensions, then settle layout one frame
   function init() {
     if (origImg.naturalWidth > 0) {
       requestAnimationFrame(setup);
