@@ -688,73 +688,24 @@ gsap.utils.toArray('.gs-tool').forEach((el, i) => {
     canvas.height = scene.offsetHeight || 480;
     const ctx = canvas.getContext('2d');
     const W = canvas.width, H = canvas.height;
-    const cx = W * 0.5, cy = H * 0.5;
-    const R  = Math.min(W, H) * 0.38;
-    // 7 arms × 2 points = 14 — alternating tip (far) / valley (close)
-    const ARMS = 7;
-    const N    = ARMS * 2;
+    const cx = W * 0.50, cy = H * 0.50;
+    const R  = Math.min(W, H) * 0.37;
 
-    const pts = Array.from({ length: N }, (_, i) => {
-      const isTip = i % 2 === 0;
-      return {
-        baseA : (i / N) * Math.PI * 2,
-        baseR : isTip ? 1.25 : 0.52,          // arms reach far, valleys pull in
-        rAmp  : isTip ? 0.18 : 0.10,
-        rFreq : 0.22 + Math.random() * 0.38,
-        aAmp  : isTip ? 0.10 : 0.06,
-        aFreq : 0.18 + Math.random() * 0.28,
-        phase : Math.random() * Math.PI * 2,
-      };
-    });
+    // 5 liquid arms — each is an elongated ellipse radiating from center
+    const arms = [
+      { angle: 0.20,  lenR: 1.00, wR: 0.36, lf: 0.19, af: 0.13, lA: 0.11, aA: 0.09, ph: 0.0 },
+      { angle: 1.48,  lenR: 0.88, wR: 0.31, lf: 0.23, af: 0.17, lA: 0.09, aA: 0.07, ph: 1.3 },
+      { angle: 2.72,  lenR: 0.95, wR: 0.34, lf: 0.17, af: 0.15, lA: 0.10, aA: 0.08, ph: 2.5 },
+      { angle: 4.05,  lenR: 0.90, wR: 0.30, lf: 0.21, af: 0.11, lA: 0.08, aA: 0.10, ph: 3.8 },
+      { angle: 5.30,  lenR: 0.85, wR: 0.32, lf: 0.25, af: 0.19, lA: 0.12, aA: 0.06, ph: 5.1 },
+    ];
 
-    let mx = W / 2, my = H / 2, mActive = false;
-
+    let mx = W/2, my = H/2, mActive = false;
     scene.addEventListener('mousemove', e => {
       const r = scene.getBoundingClientRect();
-      mx = e.clientX - r.left;
-      my = e.clientY - r.top;
-      mActive = true;
+      mx = e.clientX - r.left; my = e.clientY - r.top; mActive = true;
     });
     scene.addEventListener('mouseleave', () => { mActive = false; });
-
-    function getControlPts(t) {
-      return pts.map(p => {
-        const a = p.baseA + Math.sin(t * p.aFreq + p.phase) * p.aAmp;
-        const r = R * (1 + Math.sin(t * p.rFreq + p.phase) * p.rAmp);
-        let x = cx + Math.cos(a) * r;
-        let y = cy + Math.sin(a) * r * 0.82; // slightly flat vertically
-
-        // Magnetic pull toward mouse – stronger on arm tips
-        if (mActive) {
-          const mdx = mx - cx, mdy = my - cy;
-          const mAngle = Math.atan2(mdy, mdx);
-          const diff = a - mAngle;
-          const pull = p.baseR > 1.0 ? 0.38 : 0.15;
-          const w = Math.exp(-(diff * diff) * 2.0) * pull;
-          x += mdx * w;
-          y += mdy * w;
-        }
-        return [x, y];
-      });
-    }
-
-    function drawShape(points) {
-      const n = points.length;
-      ctx.beginPath();
-      for (let i = 0; i < n; i++) {
-        const p0 = points[(i - 1 + n) % n];
-        const p1 = points[i];
-        const p2 = points[(i + 1) % n];
-        const p3 = points[(i + 2) % n];
-        if (i === 0) ctx.moveTo(p1[0], p1[1]);
-        const cp1x = p1[0] + (p2[0] - p0[0]) / 6;
-        const cp1y = p1[1] + (p2[1] - p0[1]) / 6;
-        const cp2x = p2[0] - (p3[0] - p1[0]) / 6;
-        const cp2y = p2[1] - (p3[1] - p1[1]) / 6;
-        ctx.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, p2[0], p2[1]);
-      }
-      ctx.closePath();
-    }
 
     const start = performance.now();
     (function frame() {
@@ -762,91 +713,90 @@ gsap.utils.toArray('.gs-tool').forEach((el, i) => {
       const t = (performance.now() - start) / 1000;
       ctx.clearRect(0, 0, W, H);
 
-      const pts2 = getControlPts(t);
+      // Slowly rotating metallic gradient shared across everything
+      const ga = t * 0.09;
+      const g = ctx.createLinearGradient(
+        cx + Math.cos(ga) * R * 1.6, cy + Math.sin(ga) * R * 1.6,
+        cx - Math.cos(ga) * R * 1.6, cy - Math.sin(ga) * R * 1.6
+      );
+      g.addColorStop(0.00, '#000105');
+      g.addColorStop(0.10, '#030b1a');
+      g.addColorStop(0.25, '#082060');
+      g.addColorStop(0.42, '#1858c8');
+      g.addColorStop(0.52, '#4a90ee');
+      g.addColorStop(0.62, '#1248b0');
+      g.addColorStop(0.78, '#051228');
+      g.addColorStop(1.00, '#000208');
 
-      // ── Base: very dark chrome fill ──────────────────────────────────
-      drawShape(pts2);
-      const angle = t * 0.10;
-      const gx1 = cx + Math.cos(angle) * R * 1.2, gy1 = cy + Math.sin(angle) * R * 1.2;
-      const gx2 = cx - Math.cos(angle) * R * 1.2, gy2 = cy - Math.sin(angle) * R * 1.2;
-      const base = ctx.createLinearGradient(gx1, gy1, gx2, gy2);
-      base.addColorStop(0.00, '#00010a');
-      base.addColorStop(0.12, '#03081e');
-      base.addColorStop(0.28, '#071535');
-      base.addColorStop(0.42, '#1040a0');
-      base.addColorStop(0.52, '#3a80e8');
-      base.addColorStop(0.62, '#0d3080');
-      base.addColorStop(0.78, '#04102a');
-      base.addColorStop(1.00, '#000208');
-      ctx.fillStyle = base;
+      // Central core blob (connects all arms)
+      ctx.beginPath();
+      ctx.ellipse(cx, cy, R * 0.52, R * 0.48, t * 0.04, 0, Math.PI * 2);
+      ctx.fillStyle = g;
       ctx.fill();
 
-      // ── Rim light on arm tips (cyan-blue streak) ─────────────────────
-      drawShape(pts2);
-      ctx.save();
-      ctx.clip();
-      const rim = ctx.createLinearGradient(cx - R * 1.3, cy - R * 1.3, cx + R * 1.3, cy + R * 1.3);
-      rim.addColorStop(0.00, 'rgba(0,180,255,0.00)');
-      rim.addColorStop(0.35, 'rgba(0,160,255,0.00)');
-      rim.addColorStop(0.50, 'rgba(80,200,255,0.18)');
-      rim.addColorStop(0.65, 'rgba(0,140,220,0.04)');
-      rim.addColorStop(1.00, 'rgba(0,80,180,0.00)');
-      ctx.fillStyle = rim;
-      ctx.fillRect(0, 0, W, H);
-      ctx.restore();
+      // Each arm: elongated ellipse offset from center
+      arms.forEach(arm => {
+        const a   = arm.angle + Math.sin(t * arm.af + arm.ph) * arm.aA;
+        const len = R * arm.lenR * (1 + Math.sin(t * arm.lf + arm.ph) * arm.lA);
+        const w   = R * arm.wR;
 
-      // ── Primary sharp specular ───────────────────────────────────────
-      const h1x = cx - R * 0.18 + Math.sin(t * 0.31) * R * 0.14;
-      const h1y = cy - R * 0.28 + Math.cos(t * 0.27) * R * 0.10;
-      drawShape(pts2);
-      ctx.save();
-      ctx.clip();
-      const spec1 = ctx.createRadialGradient(h1x, h1y, 0, h1x, h1y, R * 0.32);
-      spec1.addColorStop(0.00, 'rgba(235, 245, 255, 0.92)');
-      spec1.addColorStop(0.15, 'rgba(180, 220, 255, 0.60)');
-      spec1.addColorStop(0.40, 'rgba(80, 150, 255, 0.18)');
-      spec1.addColorStop(1.00, 'rgba(0,0,0,0)');
-      ctx.fillStyle = spec1;
-      ctx.fillRect(0, 0, W, H);
-      ctx.restore();
+        // Mouse: stretch arm toward cursor
+        let extra = 0;
+        if (mActive) {
+          const mA = Math.atan2(my - cy, mx - cx);
+          let d = a - mA;
+          while (d >  Math.PI) d -= Math.PI * 2;
+          while (d < -Math.PI) d += Math.PI * 2;
+          extra = Math.exp(-(d * d) * 2.8) * R * 0.30;
+        }
 
-      // ── Secondary specular (arm) ─────────────────────────────────────
-      const h2x = cx + R * 0.55 + Math.cos(t * 0.41) * R * 0.10;
-      const h2y = cy - R * 0.10 + Math.sin(t * 0.37) * R * 0.08;
-      drawShape(pts2);
-      ctx.save();
-      ctx.clip();
-      const spec2 = ctx.createRadialGradient(h2x, h2y, 0, h2x, h2y, R * 0.20);
-      spec2.addColorStop(0.00, 'rgba(200, 230, 255, 0.75)');
-      spec2.addColorStop(0.40, 'rgba(60, 130, 255, 0.20)');
-      spec2.addColorStop(1.00, 'rgba(0,0,0,0)');
-      ctx.fillStyle = spec2;
-      ctx.fillRect(0, 0, W, H);
-      ctx.restore();
+        // Center of arm ellipse: offset so it starts at canvas center and extends outward
+        const offX = cx + Math.cos(a) * (len * 0.45 + extra * 0.5);
+        const offY = cy + Math.sin(a) * (len * 0.45 + extra * 0.5);
+        const totalLen = len + extra;
 
-      // ── Third tiny specular dot ──────────────────────────────────────
-      const h3x = cx - R * 0.40 + Math.sin(t * 0.53) * R * 0.08;
-      const h3y = cy + R * 0.38 + Math.cos(t * 0.46) * R * 0.07;
-      drawShape(pts2);
-      ctx.save();
-      ctx.clip();
-      const spec3 = ctx.createRadialGradient(h3x, h3y, 0, h3x, h3y, R * 0.14);
-      spec3.addColorStop(0.00, 'rgba(210, 235, 255, 0.65)');
-      spec3.addColorStop(1.00, 'rgba(0,0,0,0)');
-      ctx.fillStyle = spec3;
-      ctx.fillRect(0, 0, W, H);
-      ctx.restore();
+        ctx.beginPath();
+        ctx.ellipse(offX, offY, w, totalLen, a + Math.PI / 2, 0, Math.PI * 2);
+        ctx.fillStyle = g;
+        ctx.fill();
+      });
 
-      // ── Dark center depth ────────────────────────────────────────────
-      drawShape(pts2);
-      ctx.save();
-      ctx.clip();
-      const depth = ctx.createRadialGradient(cx, cy, 0, cx, cy, R * 0.75);
-      depth.addColorStop(0, 'rgba(0,1,8,0.50)');
-      depth.addColorStop(1, 'rgba(0,0,0,0)');
-      ctx.fillStyle = depth;
+      // Specular highlight 1 — main bright spot
+      const s1x = cx + Math.sin(t * 0.28) * R * 0.20 - R * 0.10;
+      const s1y = cy + Math.cos(t * 0.22) * R * 0.16 - R * 0.22;
+      const sg1 = ctx.createRadialGradient(s1x, s1y, 0, s1x, s1y, R * 0.28);
+      sg1.addColorStop(0.00, 'rgba(230,242,255,0.95)');
+      sg1.addColorStop(0.20, 'rgba(160,210,255,0.55)');
+      sg1.addColorStop(0.55, 'rgba(60,130,240,0.15)');
+      sg1.addColorStop(1.00, 'rgba(0,0,0,0)');
+      ctx.fillStyle = sg1;
       ctx.fillRect(0, 0, W, H);
-      ctx.restore();
+
+      // Specular highlight 2 — arm tip glint
+      const s2x = cx + Math.cos(arms[0].angle + t * 0.07) * R * 0.88 + Math.sin(t * 0.34) * R * 0.08;
+      const s2y = cy + Math.sin(arms[0].angle + t * 0.07) * R * 0.88 + Math.cos(t * 0.29) * R * 0.07;
+      const sg2 = ctx.createRadialGradient(s2x, s2y, 0, s2x, s2y, R * 0.17);
+      sg2.addColorStop(0.00, 'rgba(210,235,255,0.80)');
+      sg2.addColorStop(0.40, 'rgba(80,160,255,0.20)');
+      sg2.addColorStop(1.00, 'rgba(0,0,0,0)');
+      ctx.fillStyle = sg2;
+      ctx.fillRect(0, 0, W, H);
+
+      // Specular highlight 3 — small secondary glint
+      const s3x = cx + Math.cos(arms[2].angle + t * 0.06) * R * 0.75 + Math.cos(t * 0.41) * R * 0.06;
+      const s3y = cy + Math.sin(arms[2].angle + t * 0.06) * R * 0.75 + Math.sin(t * 0.38) * R * 0.05;
+      const sg3 = ctx.createRadialGradient(s3x, s3y, 0, s3x, s3y, R * 0.12);
+      sg3.addColorStop(0.00, 'rgba(200,228,255,0.70)');
+      sg3.addColorStop(1.00, 'rgba(0,0,0,0)');
+      ctx.fillStyle = sg3;
+      ctx.fillRect(0, 0, W, H);
+
+      // Dark center — adds depth so it doesn't look flat
+      const dc = ctx.createRadialGradient(cx, cy, 0, cx, cy, R * 0.58);
+      dc.addColorStop(0, 'rgba(0,2,12,0.52)');
+      dc.addColorStop(1, 'rgba(0,0,0,0)');
+      ctx.fillStyle = dc;
+      ctx.fillRect(0, 0, W, H);
     }());
   }
 
