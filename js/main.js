@@ -690,12 +690,10 @@ gsap.utils.toArray('.gs-tool').forEach((el, i) => {
   let W = wrap.clientWidth  || 500;
   let H = wrap.clientHeight || 480;
 
-  const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true, premultipliedAlpha: false });
+  const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
   renderer.setSize(W, H);
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-  renderer.outputEncoding = THREE.sRGBEncoding;
   renderer.setClearColor(0x000000, 0);
-  renderer.setClearAlpha(0);
   canvas.style.background = 'transparent';
 
   const scene  = new THREE.Scene();
@@ -710,10 +708,10 @@ gsap.utils.toArray('.gs-tool').forEach((el, i) => {
   fill.position.set(-3, -2, -3);
   scene.add(fill);
 
-  // Test-Kugel – wird entfernt sobald GLB geladen
+  // Test-Kugel – MeshBasicMaterial braucht kein Licht
   const testMesh = new THREE.Mesh(
     new THREE.SphereGeometry(1, 32, 32),
-    new THREE.MeshStandardMaterial({ color: 0x3a52d4, roughness: 0.3, metalness: 0.8 })
+    new THREE.MeshBasicMaterial({ color: 0x6a80ff })
   );
   scene.add(testMesh);
 
