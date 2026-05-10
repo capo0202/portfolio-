@@ -696,9 +696,6 @@ gsap.utils.toArray('.gs-tool').forEach((el, i) => {
       { id: 'ctG5', w: 115, h: 175, px: .58, py: .76, sx: .10, sy: .21, ph: 6.0, rot: -18 },
     ];
 
-    const cursor = document.getElementById('ctGCursor');
-    if (cursor) { cursor.style.width = '130px'; cursor.style.height = '200px'; }
-
     gems.forEach(g => {
       const el = document.getElementById(g.id);
       if (!el) return;
@@ -710,7 +707,6 @@ gsap.utils.toArray('.gs-tool').forEach((el, i) => {
     let mx = -9999, my = -9999, mActive = false;
 
     const cur = gems.map(g => ({ x: W * g.px, y: H * g.py }));
-    let cursorX = W / 2, cursorY = H / 2;
 
     scene.addEventListener('mousemove', e => {
       const r = scene.getBoundingClientRect();
@@ -763,15 +759,6 @@ gsap.utils.toArray('.gs-tool').forEach((el, i) => {
         el.style.transform = `rotate(${rot}deg)`;
       });
 
-      // Cursor gem – follows mouse directly
-      if (cursor) {
-        cursorX += (mx - cursorX) * 0.16;
-        cursorY += (my - cursorY) * 0.16;
-        const curRot = Math.sin(t * 0.4) * 25;
-        cursor.style.left      = (cursorX - 65) + 'px';
-        cursor.style.top       = (cursorY - 100) + 'px';
-        cursor.style.transform = `rotate(${curRot}deg)`;
-      }
     }());
   }
 
