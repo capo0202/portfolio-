@@ -682,20 +682,6 @@ gsap.utils.toArray('.gs-tool').forEach((el, i) => {
   if (!canvas) return;
   const wrap = canvas.parentElement;
 
-  // Quick 2D test to verify canvas visibility
-  window.addEventListener('load', function() {
-    const tw = wrap.offsetWidth, th = wrap.offsetHeight;
-    const t2 = canvas.getContext('2d');
-    if (t2) {
-      canvas.width = tw || 500; canvas.height = th || 480;
-      t2.fillStyle = '#3a52d4';
-      t2.fillRect(0, 0, canvas.width, canvas.height);
-      t2.fillStyle = '#fff';
-      t2.font = '24px sans-serif';
-      t2.fillText('Canvas: ' + canvas.width + 'x' + canvas.height, 20, 40);
-    }
-  });
-
   const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
   if (!gl) return;
 
@@ -716,85 +702,86 @@ gsap.utils.toArray('.gs-tool').forEach((el, i) => {
       return mix(b, a, h) - k*h*(1.0-h);
     }
 
-    float blob(vec3 p, float t, vec2 m) {
-      float d = length(p - vec3(sin(t*0.52)*0.55, cos(t*0.41)*0.40, sin(t*0.33)*0.20)) - 0.72;
-      d = smin(d, length(p - vec3(cos(t*0.63)*0.50, sin(t*0.71)*0.55, cos(t*0.44)*0.30)) - 0.55, 0.45);
-      d = smin(d, length(p - vec3(sin(t*0.81)*0.38, cos(t*0.59)*0.32, sin(t*0.67)*0.45)) - 0.48, 0.38);
-      d = smin(d, length(p - vec3(cos(t*0.37)*0.60, sin(t*0.48)*0.38, cos(t*0.55)*0.25)) - 0.40, 0.40);
-      vec3 mp = vec3(m.x * 1.4, m.y * 1.4, 0.6);
-      d = smin(d, length(p - mp) - (0.28 + u_hover * 0.18), 0.55 + u_hover * 0.25);
+    float scene(vec3 p, float t, vec3 mp) {
+      float d = length(p - vec3(sin(t*0.52)*0.45, cos(t*0.41)*0.35, 0.0)) - 0.65;
+      d = smin(d, length(p - vec3(cos(t*0.63)*0.42, sin(t*0.71)*0.48, 0.0)) - 0.55, 0.5);
+      d = smin(d, length(p - vec3(sin(t*0.81)*0.32, cos(t*0.59)*0.28, 0.0)) - 0.45, 0.45);
+      d = smin(d, length(p - vec3(cos(t*0.37)*0.50, sin(t*0.48)*0.32, 0.0)) - 0.38, 0.42);
+      d = smin(d, length(p - mp) - (0.30 + u_hover * 0.20), 0.6);
       return d;
     }
 
-    vec3 calcNormal(vec3 p, float t, vec2 m) {
-      float e = 0.0015;
+    vec3 getNormal(vec3 p, float t, vec3 mp) {
+      float e = 0.002;
       return normalize(vec3(
-        blob(p+vec3(e,0,0),t,m) - blob(p-vec3(e,0,0),t,m),
-        blob(p+vec3(0,e,0),t,m) - blob(p-vec3(0,e,0),t,m),
-        blob(p+vec3(0,0,e),t,m) - blob(p-vec3(0,0,e),t,m)
+        scene(p+vec3(e,0,0),t,mp) - scene(p-vec3(e,0,0),t,mp),
+        scene(p+vec3(0,e,0),t,mp) - scene(p-vec3(0,e,0),t,mp),
+        scene(p+vec3(0,0,e),t,mp) - scene(p-vec3(0,0,e),t,mp)
       ));
     }
 
     void main() {
-      vec2 uv = (gl_FragCoord.xy - u_res * 0.5) / min(u_res.x, u_res.y);
-      vec2 m  = (u_mouse / u_res - 0.5) * vec2(1.0, -1.0) * 2.0;
+      vec2 uv = (gl_FragCoord.xy - u_res * 0.5) / u_res.y;
+      vec2 m  = (u_mouse / u_res - 0.5) * vec2(2.0, -2.0);
+      vec3 mp = vec3(m * 0.9, 0.5);
 
-      vec3 ro = vec3(0.0, 0.0, 2.8);
-      vec3 rd = normalize(vec3(uv, -1.4));
+      vec3 ro = vec3(0.0, 0.0, 2.2);
+      vec3 rd = normalize(vec3(uv, -1.2));
 
-      float t = 0.0, hit = 0.0;
-      for (int i = 0; i < 90; i++) {
-        vec3 p = ro + rd * t;
-        float d = blob(p, u_time, m);
-        if (d < 0.001) { hit = 1.0; break; }
-        if (t > 5.5) break;
-        t += d * 0.65;
+      float td = 0.0;
+      bool hit = false;
+      for (int i = 0; i < 80; i++) {
+        vec3 p = ro + rd * td;
+        float d = scene(p, u_time, mp);
+        if (d < 0.002) { hit = true; break; }
+        if (td > 5.0) break;
+        td += d * 0.7;
       }
 
-      vec4 col = vec4(0.0);
-      if (hit > 0.5) {
-        vec3 p = ro + rd * t;
-        vec3 n = calcNormal(p, u_time, m);
-        vec3 r = reflect(rd, n);
+      if (!hit) { gl_FragColor = vec4(0.0); return; }
 
-        float fres = pow(1.0 - max(dot(-rd, n), 0.0), 2.5);
-        vec3 lA = normalize(vec3(1.2, 2.0, 2.0));
-        vec3 lB = normalize(vec3(-1.5, -0.5, 1.0));
-        vec3 lC = normalize(vec3(0.0, -2.0, -1.0));
+      vec3 pos = ro + rd * td;
+      vec3 nor = getNormal(pos, u_time, mp);
+      vec3 ref = reflect(rd, nor);
 
-        float envY = r.y * 0.5 + 0.5;
-        vec3 env = mix(vec3(0.04, 0.08, 0.35), vec3(0.55, 0.70, 1.00), envY);
-        env = mix(env, vec3(0.20, 0.35, 0.90), smoothstep(0.5, 1.0, envY));
+      float fres = pow(1.0 - max(dot(-rd, nor), 0.0), 3.0);
 
-        float sA = pow(max(dot(r, lA), 0.0), 96.0);
-        float sB = pow(max(dot(r, lB), 0.0), 48.0);
-        float sC = pow(max(dot(r, lC), 0.0), 32.0);
+      float envY = ref.y * 0.5 + 0.5;
+      vec3 env = mix(vec3(0.02, 0.05, 0.30), vec3(0.40, 0.60, 1.00), envY);
+      env = mix(env, vec3(0.70, 0.85, 1.00), pow(envY, 3.0));
 
-        vec3 c = env;
-        c += vec3(0.60, 0.75, 1.00) * sA * 1.8;
-        c += vec3(0.15, 0.25, 0.80) * sB * 0.9;
-        c += vec3(0.05, 0.10, 0.50) * sC * 0.6;
-        c  = mix(c, vec3(0.70, 0.85, 1.00), fres * 0.55);
-        c *= 0.85 + fres * 0.15;
-        c  = mix(c, vec3(0.08, 0.14, 0.60), 0.18);
-        c  = pow(clamp(c, 0.0, 1.0), vec3(0.9));
+      vec3 lA = normalize(vec3(1.0, 1.5, 2.0));
+      vec3 lB = normalize(vec3(-1.0, -0.5, 1.0));
+      float sA = pow(max(dot(ref, lA), 0.0), 80.0);
+      float sB = pow(max(dot(ref, lB), 0.0), 40.0);
 
-        float alpha = smoothstep(0.0, 0.003, 0.001 - (blob(ro + rd*t, u_time, m)));
-        col = vec4(c, 1.0);
-      }
-      gl_FragColor = col;
+      vec3 c = env;
+      c += vec3(0.8, 0.9, 1.0) * sA * 2.5;
+      c += vec3(0.3, 0.5, 1.0) * sB * 1.0;
+      c  = mix(c, vec3(0.8, 0.9, 1.0), fres * 0.6);
+      c  = pow(clamp(c, 0.0, 1.0), vec3(0.85));
+
+      gl_FragColor = vec4(c, 1.0);
     }
   `;
 
   function compile(type, src) {
     const s = gl.createShader(type);
-    gl.shaderSource(s, src); gl.compileShader(s);
+    gl.shaderSource(s, src);
+    gl.compileShader(s);
+    if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) {
+      console.error('Shader error:', gl.getShaderInfoLog(s));
+    }
     return s;
   }
   const prog = gl.createProgram();
   gl.attachShader(prog, compile(gl.VERTEX_SHADER, VS));
   gl.attachShader(prog, compile(gl.FRAGMENT_SHADER, FS));
   gl.linkProgram(prog);
+  if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) {
+    console.error('Program link error:', gl.getProgramInfoLog(prog));
+    return;
+  }
   gl.useProgram(prog);
 
   const buf = gl.createBuffer();
