@@ -682,6 +682,20 @@ gsap.utils.toArray('.gs-tool').forEach((el, i) => {
   if (!canvas) return;
   const wrap = canvas.parentElement;
 
+  // Quick 2D test to verify canvas visibility
+  window.addEventListener('load', function() {
+    const tw = wrap.offsetWidth, th = wrap.offsetHeight;
+    const t2 = canvas.getContext('2d');
+    if (t2) {
+      canvas.width = tw || 500; canvas.height = th || 480;
+      t2.fillStyle = '#3a52d4';
+      t2.fillRect(0, 0, canvas.width, canvas.height);
+      t2.fillStyle = '#fff';
+      t2.font = '24px sans-serif';
+      t2.fillText('Canvas: ' + canvas.width + 'x' + canvas.height, 20, 40);
+    }
+  });
+
   const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
   if (!gl) return;
 
