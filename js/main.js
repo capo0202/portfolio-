@@ -686,18 +686,18 @@ gsap.utils.toArray('.gs-tool').forEach((el, i) => {
     const H = scene.offsetHeight || 480;
     const cx = W * 0.5, cy = H * 0.5;
 
-    // Diamond gems — bigger so the shape is clearly visible
+    // Gems clustered tightly in center so goo filter actually merges them
     const gems = [
-      { id: 'ctG0', w: 160, h: 240, px: .50, py: .48, sx: .16, sy: .13, ph: 0.0, rot:  10 },
-      { id: 'ctG1', w: 140, h: 220, px: .30, py: .40, sx: .13, sy: .19, ph: 1.2, rot: -35 },
-      { id: 'ctG2', w: 145, h: 225, px: .70, py: .36, sx: .18, sy: .15, ph: 2.4, rot:  60 },
-      { id: 'ctG3', w: 130, h: 205, px: .60, py: .64, sx: .15, sy: .21, ph: 3.6, rot: -55 },
-      { id: 'ctG4', w: 125, h: 195, px: .24, py: .64, sx: .20, sy: .17, ph: 4.8, rot:  85 },
-      { id: 'ctG5', w: 118, h: 185, px: .74, py: .62, sx: .11, sy: .23, ph: 6.0, rot: -20 },
+      { id: 'ctG0', w: 175, h: 255, px: .50, py: .46, sx: .14, sy: .12, ph: 0.0, rot:   8 },
+      { id: 'ctG1', w: 158, h: 235, px: .38, py: .42, sx: .12, sy: .17, ph: 1.2, rot: -32 },
+      { id: 'ctG2', w: 162, h: 240, px: .62, py: .40, sx: .16, sy: .13, ph: 2.4, rot:  58 },
+      { id: 'ctG3', w: 148, h: 220, px: .56, py: .60, sx: .13, sy: .18, ph: 3.6, rot: -50 },
+      { id: 'ctG4', w: 142, h: 212, px: .36, py: .60, sx: .18, sy: .15, ph: 4.8, rot:  78 },
+      { id: 'ctG5', w: 135, h: 200, px: .50, py: .52, sx: .10, sy: .20, ph: 6.0, rot: -18 },
     ];
 
     const cursor = document.getElementById('ctGCursor');
-    if (cursor) { cursor.style.width = '130px'; cursor.style.height = '200px'; }
+    if (cursor) { cursor.style.width = '140px'; cursor.style.height = '210px'; }
 
     gems.forEach(g => {
       const el = document.getElementById(g.id);
@@ -707,9 +707,9 @@ gsap.utils.toArray('.gs-tool').forEach((el, i) => {
       el.style.transform = `rotate(${g.rot}deg)`;
     });
 
-    let mx = W / 2, my = H / 2, mActive = false;
+    let mx = -999, my = -999, mActive = false;
 
-    // Each gem tracks its own current position (lerped)
+    // Per-gem lerped current positions
     const cur = gems.map(g => ({ x: W * g.px, y: H * g.py }));
     let cursorX = W / 2, cursorY = H / 2;
 
@@ -719,9 +719,9 @@ gsap.utils.toArray('.gs-tool').forEach((el, i) => {
       my = e.clientY - r.top;
       mActive = true;
     });
-    scene.addEventListener('mouseleave', () => { mActive = false; });
+    scene.addEventListener('mouseleave', () => { mActive = false; mx = -999; my = -999; });
 
-    const ATTRACT_RADIUS = 180; // px – how close mouse must be to attract a gem
+    const RADIUS = 160; // px proximity trigger per gem
 
     const start = performance.now();
     (function tick() {
@@ -732,40 +732,38 @@ gsap.utils.toArray('.gs-tool').forEach((el, i) => {
         const el = document.getElementById(g.id);
         if (!el) return;
 
-        // Natural floating base position
-        const baseX = W * g.px + Math.sin(t * g.sx * 3.2 + g.ph) * W * 0.12;
-        const baseY = H * g.py + Math.cos(t * g.sy * 3.2 + g.ph) * H * 0.12;
+        // Organic base float
+        const baseX = W * g.px + Math.sin(t * g.sx * 3.0 + g.ph) * W * 0.10;
+        const baseY = H * g.py + Math.cos(t * g.sy * 3.0 + g.ph) * H * 0.10;
 
-        // Distance from mouse to this gem's current position
+        // Check distance from mouse to THIS gem only
         let targetX = baseX, targetY = baseY;
         if (mActive) {
           const dx = mx - cur[i].x;
           const dy = my - cur[i].y;
           const dist = Math.sqrt(dx * dx + dy * dy);
-          if (dist < ATTRACT_RADIUS) {
-            // Only THIS gem reacts – strength fades with distance
-            const pull = (1 - dist / ATTRACT_RADIUS) * 0.55;
+          if (dist < RADIUS) {
+            const pull = Math.pow(1 - dist / RADIUS, 1.4) * 0.65;
             targetX = baseX + dx * pull;
             targetY = baseY + dy * pull;
           }
         }
 
-        cur[i].x += (targetX - cur[i].x) * 0.08;
-        cur[i].y += (targetY - cur[i].y) * 0.08;
+        cur[i].x += (targetX - cur[i].x) * 0.09;
+        cur[i].y += (targetY - cur[i].y) * 0.09;
 
-        const rot = g.rot + Math.sin(t * 0.25 + g.ph) * 22;
+        const rot = g.rot + Math.sin(t * 0.22 + g.ph) * 20;
         el.style.left      = (cur[i].x - g.w / 2) + 'px';
         el.style.top       = (cur[i].y - g.h / 2) + 'px';
         el.style.transform = `rotate(${rot}deg)`;
       });
 
-      // Cursor gem – follows mouse directly
       if (cursor) {
-        cursorX += (mx - cursorX) * 0.16;
-        cursorY += (my - cursorY) * 0.16;
-        const curRot = Math.sin(t * 0.4) * 25;
-        cursor.style.left      = (cursorX - 65) + 'px';
-        cursor.style.top       = (cursorY - 100) + 'px';
+        cursorX += (mx - cursorX) * 0.15;
+        cursorY += (my - cursorY) * 0.15;
+        const curRot = Math.sin(t * 0.38) * 28;
+        cursor.style.left      = (cursorX - 70) + 'px';
+        cursor.style.top       = (cursorY - 105) + 'px';
         cursor.style.transform = `rotate(${curRot}deg)`;
       }
     }());
