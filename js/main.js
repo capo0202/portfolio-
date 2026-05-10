@@ -678,162 +678,59 @@ gsap.utils.toArray('.gs-tool').forEach((el, i) => {
 
 // ── CONTACT LIQUID SHADER ─────────────────────────────────────────────────────
 (function () {
-  const canvas = document.getElementById('ct3dCanvas');
-  if (!canvas) return;
-  const wrap = canvas.parentElement;
+  const scene = document.getElementById('ctScene');
+  if (!scene) return;
 
-  function initGL() {
-    // Dimensions MUST be set before getContext to avoid context reset
-    canvas.width  = wrap.offsetWidth  || 520;
-    canvas.height = wrap.offsetHeight || 480;
+  function initBlobs() {
+    const W = () => scene.offsetWidth;
+    const H = () => scene.offsetHeight;
 
-    const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
-    if (!gl) return;
+    const defs = [
+      { id: 'ctB0', w: 230, h: 210, px: .50, py: .50, sx: .28, sy: .22, ph: 0.0 },
+      { id: 'ctB1', w: 190, h: 180, px: .28, py: .62, sx: .22, sy: .30, ph: 1.3 },
+      { id: 'ctB2', w: 170, h: 160, px: .72, py: .30, sx: .32, sy: .24, ph: 2.6 },
+      { id: 'ctB3', w: 150, h: 140, px: .62, py: .68, sx: .26, sy: .28, ph: 3.9 },
+      { id: 'ctB4', w: 120, h: 115, px: .22, py: .32, sx: .20, sy: .32, ph: 5.2 },
+    ];
 
-    const VS = `
-      attribute vec2 a_pos;
-      void main() { gl_Position = vec4(a_pos, 0.0, 1.0); }
-    `;
+    const blobs = defs.map(d => ({ ...d, el: document.getElementById(d.id) })).filter(b => b.el);
+    const cursor = document.getElementById('ctBCursor');
+    if (!cursor) return;
 
-    const FS = `
-      precision highp float;
-      uniform vec2  u_res;
-      uniform float u_time;
-      uniform vec2  u_mouse;
-      uniform float u_hover;
+    blobs.forEach(b => { b.el.style.width = b.w + 'px'; b.el.style.height = b.h + 'px'; });
 
-      float smin(float a, float b, float k) {
-        float h = clamp(0.5 + 0.5*(b-a)/k, 0.0, 1.0);
-        return mix(b, a, h) - k*h*(1.0-h);
-      }
+    let mx = W() / 2, my = H() / 2;
+    let cx = mx, cy = my;
 
-      float scene(vec3 p, float t, vec3 mp) {
-        float d = length(p - vec3(sin(t*0.52)*0.45, cos(t*0.41)*0.35, 0.0)) - 0.65;
-        d = smin(d, length(p - vec3(cos(t*0.63)*0.42, sin(t*0.71)*0.48, 0.0)) - 0.55, 0.5);
-        d = smin(d, length(p - vec3(sin(t*0.81)*0.32, cos(t*0.59)*0.28, 0.0)) - 0.45, 0.45);
-        d = smin(d, length(p - vec3(cos(t*0.37)*0.50, sin(t*0.48)*0.32, 0.0)) - 0.38, 0.42);
-        d = smin(d, length(p - mp) - (0.30 + u_hover * 0.20), 0.6);
-        return d;
-      }
-
-      vec3 getNormal(vec3 p, float t, vec3 mp) {
-        float e = 0.002;
-        return normalize(vec3(
-          scene(p+vec3(e,0,0),t,mp) - scene(p-vec3(e,0,0),t,mp),
-          scene(p+vec3(0,e,0),t,mp) - scene(p-vec3(0,e,0),t,mp),
-          scene(p+vec3(0,0,e),t,mp) - scene(p-vec3(0,0,e),t,mp)
-        ));
-      }
-
-      void main() {
-        vec2 uv = (gl_FragCoord.xy - u_res * 0.5) / u_res.y;
-        vec2 m  = (u_mouse / u_res - 0.5) * vec2(2.0, -2.0);
-        vec3 mp = vec3(m * 0.9, 0.5);
-
-        vec3 ro = vec3(0.0, 0.0, 2.2);
-        vec3 rd = normalize(vec3(uv, -1.2));
-
-        float td = 0.0;
-        bool hit = false;
-        for (int i = 0; i < 80; i++) {
-          vec3 p = ro + rd * td;
-          float d = scene(p, u_time, mp);
-          if (d < 0.002) { hit = true; break; }
-          if (td > 5.0) break;
-          td += d * 0.7;
-        }
-
-        if (!hit) { gl_FragColor = vec4(0.0); return; }
-
-        vec3 pos = ro + rd * td;
-        vec3 nor = getNormal(pos, u_time, mp);
-        vec3 ref = reflect(rd, nor);
-
-        float fres = pow(1.0 - max(dot(-rd, nor), 0.0), 3.0);
-
-        float envY = ref.y * 0.5 + 0.5;
-        vec3 env = mix(vec3(0.02, 0.05, 0.30), vec3(0.40, 0.60, 1.00), envY);
-        env = mix(env, vec3(0.70, 0.85, 1.00), pow(envY, 3.0));
-
-        vec3 lA = normalize(vec3(1.0, 1.5, 2.0));
-        vec3 lB = normalize(vec3(-1.0, -0.5, 1.0));
-        float sA = pow(max(dot(ref, lA), 0.0), 80.0);
-        float sB = pow(max(dot(ref, lB), 0.0), 40.0);
-
-        vec3 c = env;
-        c += vec3(0.8, 0.9, 1.0) * sA * 2.5;
-        c += vec3(0.3, 0.5, 1.0) * sB * 1.0;
-        c  = mix(c, vec3(0.8, 0.9, 1.0), fres * 0.6);
-        c  = pow(clamp(c, 0.0, 1.0), vec3(0.85));
-
-        gl_FragColor = vec4(c, 1.0);
-      }
-    `;
-
-    function compile(type, src) {
-      const s = gl.createShader(type);
-      gl.shaderSource(s, src);
-      gl.compileShader(s);
-      if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) {
-        console.error('Shader error:', gl.getShaderInfoLog(s));
-      }
-      return s;
-    }
-
-    const prog = gl.createProgram();
-    gl.attachShader(prog, compile(gl.VERTEX_SHADER, VS));
-    gl.attachShader(prog, compile(gl.FRAGMENT_SHADER, FS));
-    gl.linkProgram(prog);
-    if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) {
-      console.error('Program link error:', gl.getProgramInfoLog(prog));
-      return;
-    }
-    gl.useProgram(prog);
-
-    const buf = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, buf);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 1,-1, -1,1, 1,1]), gl.STATIC_DRAW);
-    const loc = gl.getAttribLocation(prog, 'a_pos');
-    gl.enableVertexAttribArray(loc);
-    gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
-
-    const uRes   = gl.getUniformLocation(prog, 'u_res');
-    const uTime  = gl.getUniformLocation(prog, 'u_time');
-    const uMouse = gl.getUniformLocation(prog, 'u_mouse');
-    const uHover = gl.getUniformLocation(prog, 'u_hover');
-
-    let mx = canvas.width / 2;
-    let my = canvas.height / 2;
-    let hover = 0, hoverTarget = 0;
-
-    gl.viewport(0, 0, canvas.width, canvas.height);
-    gl.clearColor(0, 0, 0, 0);
-
-    wrap.addEventListener('mousemove', e => {
-      const r = canvas.getBoundingClientRect();
+    scene.addEventListener('mousemove', e => {
+      const r = scene.getBoundingClientRect();
       mx = e.clientX - r.left;
       my = e.clientY - r.top;
     });
-    wrap.addEventListener('mouseenter', () => { hoverTarget = 1; });
-    wrap.addEventListener('mouseleave', () => { hoverTarget = 0; });
+    scene.addEventListener('mouseenter', () => { cursor.style.width = '160px'; cursor.style.height = '160px'; });
+    scene.addEventListener('mouseleave', () => { cursor.style.width = '130px'; cursor.style.height = '130px'; });
 
     const start = performance.now();
-    (function frame() {
-      requestAnimationFrame(frame);
-      hover += (hoverTarget - hover) * 0.06;
+    (function tick() {
+      requestAnimationFrame(tick);
       const t = (performance.now() - start) / 1000;
-      gl.clear(gl.COLOR_BUFFER_BIT);
-      gl.uniform2f(uRes,   canvas.width, canvas.height);
-      gl.uniform1f(uTime,  t);
-      gl.uniform2f(uMouse, mx, canvas.height - my);
-      gl.uniform1f(uHover, hover);
-      gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+      const w = W(), h = H();
+
+      blobs.forEach(b => {
+        const x = w * b.px + Math.sin(t * b.sx * 3.1 + b.ph) * w * 0.17;
+        const y = h * b.py + Math.cos(t * b.sy * 3.1 + b.ph) * h * 0.16;
+        b.el.style.left = (x - b.w / 2) + 'px';
+        b.el.style.top  = (y - b.h / 2) + 'px';
+      });
+
+      cx += (mx - cx) * 0.09;
+      cy += (my - cy) * 0.09;
+      cursor.style.left = (cx - 65) + 'px';
+      cursor.style.top  = (cy - 65) + 'px';
     }());
   }
 
-  if (document.readyState === 'complete') {
-    initGL();
-  } else {
-    window.addEventListener('load', initGL);
-  }
+  if (document.readyState === 'complete') initBlobs();
+  else window.addEventListener('load', initBlobs);
 }());
+
