@@ -709,9 +709,9 @@ gsap.utils.toArray('.gs-tool').forEach((el, i) => {
 
     let mx = W / 2, my = H / 2, mActive = false;
 
-    // Smooth lerped positions per gem for mouse attraction
-    const lerpPos = gems.map(g => ({ x: W * g.px, y: H * g.py }));
-    let curX = W / 2, curY = H / 2;
+    // Each gem tracks its own current position (lerped)
+    const cur = gems.map(g => ({ x: W * g.px, y: H * g.py }));
+    let cursorX = W / 2, cursorY = H / 2;
 
     scene.addEventListener('mousemove', e => {
       const r = scene.getBoundingClientRect();
@@ -720,6 +720,8 @@ gsap.utils.toArray('.gs-tool').forEach((el, i) => {
       mActive = true;
     });
     scene.addEventListener('mouseleave', () => { mActive = false; });
+
+    const ATTRACT_RADIUS = 180; // px – how close mouse must be to attract a gem
 
     const start = performance.now();
     (function tick() {
@@ -730,30 +732,40 @@ gsap.utils.toArray('.gs-tool').forEach((el, i) => {
         const el = document.getElementById(g.id);
         if (!el) return;
 
-        // Base oscillation position
-        const baseX = W * g.px + Math.sin(t * g.sx * 3.2 + g.ph) * W * 0.13;
-        const baseY = H * g.py + Math.cos(t * g.sy * 3.2 + g.ph) * H * 0.13;
+        // Natural floating base position
+        const baseX = W * g.px + Math.sin(t * g.sx * 3.2 + g.ph) * W * 0.12;
+        const baseY = H * g.py + Math.cos(t * g.sy * 3.2 + g.ph) * H * 0.12;
 
-        // Each gem has a different attraction strength so they cluster differently
-        const strength = 0.10 + i * 0.04;
-        const targetX = mActive ? baseX + (mx - baseX) * 0.30 : baseX;
-        const targetY = mActive ? baseY + (my - baseY) * 0.30 : baseY;
+        // Distance from mouse to this gem's current position
+        let targetX = baseX, targetY = baseY;
+        if (mActive) {
+          const dx = mx - cur[i].x;
+          const dy = my - cur[i].y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < ATTRACT_RADIUS) {
+            // Only THIS gem reacts – strength fades with distance
+            const pull = (1 - dist / ATTRACT_RADIUS) * 0.55;
+            targetX = baseX + dx * pull;
+            targetY = baseY + dy * pull;
+          }
+        }
 
-        lerpPos[i].x += (targetX - lerpPos[i].x) * strength;
-        lerpPos[i].y += (targetY - lerpPos[i].y) * strength;
+        cur[i].x += (targetX - cur[i].x) * 0.08;
+        cur[i].y += (targetY - cur[i].y) * 0.08;
 
         const rot = g.rot + Math.sin(t * 0.25 + g.ph) * 22;
-        el.style.left      = (lerpPos[i].x - g.w / 2) + 'px';
-        el.style.top       = (lerpPos[i].y - g.h / 2) + 'px';
+        el.style.left      = (cur[i].x - g.w / 2) + 'px';
+        el.style.top       = (cur[i].y - g.h / 2) + 'px';
         el.style.transform = `rotate(${rot}deg)`;
       });
 
+      // Cursor gem – follows mouse directly
       if (cursor) {
-        curX += (mx - curX) * 0.18;
-        curY += (my - curY) * 0.18;
+        cursorX += (mx - cursorX) * 0.16;
+        cursorY += (my - cursorY) * 0.16;
         const curRot = Math.sin(t * 0.4) * 25;
-        cursor.style.left      = (curX - 65) + 'px';
-        cursor.style.top       = (curY - 100) + 'px';
+        cursor.style.left      = (cursorX - 65) + 'px';
+        cursor.style.top       = (cursorY - 100) + 'px';
         cursor.style.transform = `rotate(${curRot}deg)`;
       }
     }());
