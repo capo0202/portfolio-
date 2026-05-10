@@ -690,15 +690,17 @@ gsap.utils.toArray('.gs-tool').forEach((el, i) => {
   let W = wrap.clientWidth  || 500;
   let H = wrap.clientHeight || 480;
 
-  const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+  const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true, premultipliedAlpha: false });
   renderer.setSize(W, H);
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   renderer.outputEncoding = THREE.sRGBEncoding;
   renderer.setClearColor(0x000000, 0);
+  renderer.setClearAlpha(0);
+  canvas.style.background = 'transparent';
 
   const scene  = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(40, W / H, 0.1, 100);
-  camera.position.set(0, 1.5, 6);
+  const camera = new THREE.PerspectiveCamera(50, W / H, 0.1, 100);
+  camera.position.set(0, 0, 5);
 
   scene.add(new THREE.AmbientLight(0xffffff, 1.0));
   const key = new THREE.DirectionalLight(0x8899ff, 2.5);
