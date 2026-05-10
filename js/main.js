@@ -707,37 +707,53 @@ gsap.utils.toArray('.gs-tool').forEach((el, i) => {
       el.style.transform = `rotate(${g.rot}deg)`;
     });
 
-    let mx = W / 2, my = H / 2;
-    let curX = mx, curY = my;
+    let mx = W / 2, my = H / 2, mActive = false;
+
+    // Smooth lerped positions per gem for mouse attraction
+    const lerpPos = gems.map(g => ({ x: W * g.px, y: H * g.py }));
+    let curX = W / 2, curY = H / 2;
 
     scene.addEventListener('mousemove', e => {
       const r = scene.getBoundingClientRect();
       mx = e.clientX - r.left;
       my = e.clientY - r.top;
+      mActive = true;
     });
+    scene.addEventListener('mouseleave', () => { mActive = false; });
 
     const start = performance.now();
     (function tick() {
       requestAnimationFrame(tick);
       const t = (performance.now() - start) / 1000;
 
-      gems.forEach(g => {
+      gems.forEach((g, i) => {
         const el = document.getElementById(g.id);
         if (!el) return;
-        const x = W * g.px + Math.sin(t * g.sx * 3.2 + g.ph) * W * 0.14;
-        const y = H * g.py + Math.cos(t * g.sy * 3.2 + g.ph) * H * 0.14;
-        const rot = g.rot + Math.sin(t * 0.25 + g.ph) * 18;
-        el.style.left      = (x - g.w / 2) + 'px';
-        el.style.top       = (y - g.h / 2) + 'px';
+
+        // Base oscillation position
+        const baseX = W * g.px + Math.sin(t * g.sx * 3.2 + g.ph) * W * 0.13;
+        const baseY = H * g.py + Math.cos(t * g.sy * 3.2 + g.ph) * H * 0.13;
+
+        // Each gem has a different attraction strength so they cluster differently
+        const strength = 0.10 + i * 0.04;
+        const targetX = mActive ? baseX + (mx - baseX) * 0.30 : baseX;
+        const targetY = mActive ? baseY + (my - baseY) * 0.30 : baseY;
+
+        lerpPos[i].x += (targetX - lerpPos[i].x) * strength;
+        lerpPos[i].y += (targetY - lerpPos[i].y) * strength;
+
+        const rot = g.rot + Math.sin(t * 0.25 + g.ph) * 22;
+        el.style.left      = (lerpPos[i].x - g.w / 2) + 'px';
+        el.style.top       = (lerpPos[i].y - g.h / 2) + 'px';
         el.style.transform = `rotate(${rot}deg)`;
       });
 
       if (cursor) {
-        curX += (mx - curX) * 0.10;
-        curY += (my - curY) * 0.10;
+        curX += (mx - curX) * 0.18;
+        curY += (my - curY) * 0.18;
         const curRot = Math.sin(t * 0.4) * 25;
-        cursor.style.left      = (curX - 45) + 'px';
-        cursor.style.top       = (curY - 77) + 'px';
+        cursor.style.left      = (curX - 65) + 'px';
+        cursor.style.top       = (curY - 100) + 'px';
         cursor.style.transform = `rotate(${curRot}deg)`;
       }
     }());

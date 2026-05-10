@@ -1030,8 +1030,8 @@ ul { list-style: none; }
 
 .ct-gem {
   position: absolute;
-  /* Pentagon-Diamant-Form */
-  clip-path: polygon(50% 0%, 100% 32%, 82% 100%, 18% 100%, 0% 32%);
+  /* Echter Diamant – spitze oben und unten, breit in der Mitte */
+  clip-path: polygon(50% 0%, 100% 42%, 50% 100%, 0% 42%);
   background: linear-gradient(
     148deg,
     #deeeff  0%,
@@ -1046,8 +1046,7 @@ ul { list-style: none; }
 
 .ct-gem-cursor {
   pointer-events: none;
-  transition: width .25s, height .25s;
-  clip-path: polygon(50% 0%, 100% 32%, 82% 100%, 18% 100%, 0% 32%);
+  clip-path: polygon(50% 0%, 100% 42%, 50% 100%, 0% 42%);
   background: linear-gradient(
     148deg,
     #f0f6ff  0%,
