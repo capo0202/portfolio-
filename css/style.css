@@ -1079,6 +1079,19 @@ ul { list-style: none; }
 }
 .ct-btn-primary:hover .ct-btn-glow { opacity: 1; }
 
+/* Arrow icon inside primary button */
+.ct-btn-arrow {
+  display: flex;
+  align-items: center;
+  font-size: .78rem;
+  opacity: .7;
+  transition: transform .2s ease, opacity .2s ease;
+}
+.ct-btn-primary:hover .ct-btn-arrow {
+  transform: translateX(4px);
+  opacity: 1;
+}
+
 /* Ghost */
 .ct-btn-ghost {
   background: rgba(255,255,255,.03);
@@ -1094,6 +1107,23 @@ ul { list-style: none; }
   background: rgba(58,82,212,.06);
 }
 .ct-btn-ghost:hover .ct-btn-glow { opacity: 1; }
+
+/* LinkedIn */
+.ct-btn-linkedin {
+  background: #0A66C2;
+  color: #fff;
+  border-color: #0A66C2;
+  box-shadow: 0 4px 20px rgba(10,102,194,.35);
+}
+.ct-btn-linkedin .ct-btn-glow {
+  background: radial-gradient(circle at 50% 0%, rgba(255,255,255,.2), transparent 70%);
+}
+.ct-btn-linkedin:hover {
+  box-shadow: 0 6px 28px rgba(10,102,194,.55);
+  background: #0959a8;
+  border-color: #0959a8;
+}
+.ct-btn-linkedin:hover .ct-btn-glow { opacity: 1; }
 
 /* Divider + footer row */
 .ct-divider {
