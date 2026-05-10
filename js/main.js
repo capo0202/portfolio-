@@ -710,6 +710,13 @@ gsap.utils.toArray('.gs-tool').forEach((el, i) => {
   fill.position.set(-3, -2, -3);
   scene.add(fill);
 
+  // Test-Kugel – wird entfernt sobald GLB geladen
+  const testMesh = new THREE.Mesh(
+    new THREE.SphereGeometry(1, 32, 32),
+    new THREE.MeshStandardMaterial({ color: 0x3a52d4, roughness: 0.3, metalness: 0.8 })
+  );
+  scene.add(testMesh);
+
   const controls = new THREE.OrbitControls(camera, renderer.domElement);
   controls.enableZoom     = false;
   controls.enablePan      = false;
@@ -722,15 +729,17 @@ gsap.utils.toArray('.gs-tool').forEach((el, i) => {
   function loadModel(arrayBuffer) {
     const loader = new THREE.GLTFLoader();
     loader.parse(arrayBuffer, '', function (gltf) {
-      log('Modell geladen!');
+      scene.remove(testMesh);
+      log('');
       const model = gltf.scene;
       const box    = new THREE.Box3().setFromObject(model);
       const center = box.getCenter(new THREE.Vector3());
       const size   = box.getSize(new THREE.Vector3());
+      log('Größe: ' + size.x.toFixed(1) + ' x ' + size.y.toFixed(1) + ' x ' + size.z.toFixed(1));
       model.position.sub(center);
       model.scale.setScalar(3.5 / Math.max(size.x, size.y, size.z));
       scene.add(model);
-      setTimeout(() => { if(status) status.style.display='none'; }, 2000);
+      setTimeout(() => { if(status) status.style.display='none'; }, 3000);
     }, function (err) { log('FEHLER: ' + err.message); });
   }
 
