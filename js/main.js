@@ -681,56 +681,142 @@ gsap.utils.toArray('.gs-tool').forEach((el, i) => {
   const scene = document.getElementById('ctScene');
   if (!scene) return;
 
-  function initBlobs() {
-    const W = () => scene.offsetWidth;
-    const H = () => scene.offsetHeight;
+  function init() {
+    const canvas = document.createElement('canvas');
+    scene.appendChild(canvas);
+    canvas.width  = scene.offsetWidth  || 520;
+    canvas.height = scene.offsetHeight || 480;
+    const ctx = canvas.getContext('2d');
+    const W = canvas.width, H = canvas.height;
+    const cx = W * 0.5, cy = H * 0.5;
+    const R  = Math.min(W, H) * 0.40;
+    const N  = 12;
 
-    const defs = [
-      { id: 'ctB0', w: 280, h: 260, px: .50, py: .52, sx: .20, sy: .18, ph: 0.0 },
-      { id: 'ctB1', w: 240, h: 225, px: .25, py: .58, sx: .18, sy: .24, ph: 1.3 },
-      { id: 'ctB2', w: 210, h: 200, px: .75, py: .32, sx: .26, sy: .20, ph: 2.6 },
-      { id: 'ctB3', w: 185, h: 175, px: .60, py: .70, sx: .22, sy: .26, ph: 3.9 },
-      { id: 'ctB4', w: 160, h: 150, px: .20, py: .28, sx: .16, sy: .28, ph: 5.2 },
-    ];
+    // Oscillating control points around an ellipse
+    const pts = Array.from({ length: N }, (_, i) => ({
+      baseA : (i / N) * Math.PI * 2,
+      rAmp  : 0.10 + Math.random() * 0.18,
+      rFreq : 0.25 + Math.random() * 0.45,
+      aAmp  : 0.06 + Math.random() * 0.08,
+      aFreq : 0.20 + Math.random() * 0.35,
+      phase : Math.random() * Math.PI * 2,
+    }));
 
-    const blobs = defs.map(d => ({ ...d, el: document.getElementById(d.id) })).filter(b => b.el);
-    const cursor = document.getElementById('ctBCursor');
-    if (!cursor) return;
-
-    blobs.forEach(b => { b.el.style.width = b.w + 'px'; b.el.style.height = b.h + 'px'; });
-
-    let mx = W() / 2, my = H() / 2;
-    let cx = mx, cy = my;
+    let mx = W / 2, my = H / 2, mActive = false;
 
     scene.addEventListener('mousemove', e => {
       const r = scene.getBoundingClientRect();
       mx = e.clientX - r.left;
       my = e.clientY - r.top;
+      mActive = true;
     });
-    scene.addEventListener('mouseenter', () => { cursor.style.width = '160px'; cursor.style.height = '160px'; });
-    scene.addEventListener('mouseleave', () => { cursor.style.width = '130px'; cursor.style.height = '130px'; });
+    scene.addEventListener('mouseleave', () => { mActive = false; });
+
+    function getControlPts(t) {
+      return pts.map(p => {
+        const a = p.baseA + Math.sin(t * p.aFreq + p.phase) * p.aAmp;
+        const r = R * (1 + Math.sin(t * p.rFreq + p.phase) * p.rAmp);
+        let x = cx + Math.cos(a) * r;
+        let y = cy + Math.sin(a) * r * 0.82; // slightly flat vertically
+
+        // Subtle magnetic pull toward mouse
+        if (mActive) {
+          const mdx = mx - cx, mdy = my - cy;
+          const mAngle = Math.atan2(mdy, mdx);
+          const diff = a - mAngle;
+          const w = Math.exp(-(diff * diff) * 2.5) * 0.22;
+          x += mdx * w;
+          y += mdy * w;
+        }
+        return [x, y];
+      });
+    }
+
+    function drawShape(points) {
+      const n = points.length;
+      ctx.beginPath();
+      for (let i = 0; i < n; i++) {
+        const p0 = points[(i - 1 + n) % n];
+        const p1 = points[i];
+        const p2 = points[(i + 1) % n];
+        const p3 = points[(i + 2) % n];
+        if (i === 0) ctx.moveTo(p1[0], p1[1]);
+        const cp1x = p1[0] + (p2[0] - p0[0]) / 6;
+        const cp1y = p1[1] + (p2[1] - p0[1]) / 6;
+        const cp2x = p2[0] - (p3[0] - p1[0]) / 6;
+        const cp2y = p2[1] - (p3[1] - p1[1]) / 6;
+        ctx.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, p2[0], p2[1]);
+      }
+      ctx.closePath();
+    }
 
     const start = performance.now();
-    (function tick() {
-      requestAnimationFrame(tick);
+    (function frame() {
+      requestAnimationFrame(frame);
       const t = (performance.now() - start) / 1000;
-      const w = W(), h = H();
+      ctx.clearRect(0, 0, W, H);
 
-      blobs.forEach(b => {
-        const x = w * b.px + Math.sin(t * b.sx * 3.1 + b.ph) * w * 0.17;
-        const y = h * b.py + Math.cos(t * b.sy * 3.1 + b.ph) * h * 0.16;
-        b.el.style.left = (x - b.w / 2) + 'px';
-        b.el.style.top  = (y - b.h / 2) + 'px';
-      });
+      const pts2 = getControlPts(t);
 
-      cx += (mx - cx) * 0.09;
-      cy += (my - cy) * 0.09;
-      cursor.style.left = (cx - 65) + 'px';
-      cursor.style.top  = (cy - 65) + 'px';
+      // ── Base metallic fill ───────────────────────────────────────────
+      drawShape(pts2);
+      const angle = t * 0.12;
+      const gx1 = cx + Math.cos(angle) * R, gy1 = cy + Math.sin(angle) * R;
+      const gx2 = cx - Math.cos(angle) * R, gy2 = cy - Math.sin(angle) * R;
+      const base = ctx.createLinearGradient(gx1, gy1, gx2, gy2);
+      base.addColorStop(0.00, '#020510');
+      base.addColorStop(0.15, '#0b1840');
+      base.addColorStop(0.32, '#1a4a9e');
+      base.addColorStop(0.50, '#5ba3f5');
+      base.addColorStop(0.65, '#1d4faa');
+      base.addColorStop(0.82, '#0a1535');
+      base.addColorStop(1.00, '#010408');
+      ctx.fillStyle = base;
+      ctx.fill();
+
+      // ── Primary specular highlight ───────────────────────────────────
+      const h1x = cx - R * 0.22 + Math.sin(t * 0.37) * R * 0.12;
+      const h1y = cy - R * 0.30 + Math.cos(t * 0.29) * R * 0.09;
+      drawShape(pts2);
+      ctx.save();
+      ctx.clip();
+      const spec1 = ctx.createRadialGradient(h1x, h1y, 0, h1x, h1y, R * 0.42);
+      spec1.addColorStop(0.00, 'rgba(210, 230, 255, 0.82)');
+      spec1.addColorStop(0.25, 'rgba(130, 180, 255, 0.38)');
+      spec1.addColorStop(0.60, 'rgba(60, 120, 220, 0.10)');
+      spec1.addColorStop(1.00, 'rgba(0,0,0,0)');
+      ctx.fillStyle = spec1;
+      ctx.fillRect(0, 0, W, H);
+      ctx.restore();
+
+      // ── Secondary smaller highlight ──────────────────────────────────
+      const h2x = cx + R * 0.28 + Math.cos(t * 0.53) * R * 0.08;
+      const h2y = cy + R * 0.15 + Math.sin(t * 0.47) * R * 0.07;
+      drawShape(pts2);
+      ctx.save();
+      ctx.clip();
+      const spec2 = ctx.createRadialGradient(h2x, h2y, 0, h2x, h2y, R * 0.25);
+      spec2.addColorStop(0.00, 'rgba(180, 215, 255, 0.55)');
+      spec2.addColorStop(0.50, 'rgba(80, 150, 255, 0.15)');
+      spec2.addColorStop(1.00, 'rgba(0,0,0,0)');
+      ctx.fillStyle = spec2;
+      ctx.fillRect(0, 0, W, H);
+      ctx.restore();
+
+      // ── Dark edge vignette inside shape ─────────────────────────────
+      drawShape(pts2);
+      ctx.save();
+      ctx.clip();
+      const vign = ctx.createRadialGradient(cx, cy, R * 0.35, cx, cy, R * 1.05);
+      vign.addColorStop(0, 'rgba(0,0,0,0)');
+      vign.addColorStop(1, 'rgba(0,0,20,0.55)');
+      ctx.fillStyle = vign;
+      ctx.fillRect(0, 0, W, H);
+      ctx.restore();
     }());
   }
 
-  if (document.readyState === 'complete') initBlobs();
-  else window.addEventListener('load', initBlobs);
+  if (document.readyState === 'complete') init();
+  else window.addEventListener('load', init);
 }());
 

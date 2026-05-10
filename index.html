@@ -584,31 +584,8 @@
           </div>
         </div>
 
-        <!-- Liquid Blob Animation -->
-        <div class="ct-liquid-scene gs-r" id="ctScene">
-          <svg style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true">
-            <defs>
-              <filter id="gooFilter" x="-40%" y="-40%" width="180%" height="180%" color-interpolation-filters="sRGB">
-                <feGaussianBlur in="SourceGraphic" stdDeviation="22" result="blur"/>
-                <feColorMatrix in="blur" mode="matrix"
-                  values="1 0 0 0 0
-                          0 1 0 0 0
-                          0 0 1 0 0
-                          0 0 0 30 -12" result="goo"/>
-                <feComposite in="SourceGraphic" in2="goo" operator="atop"/>
-              </filter>
-            </defs>
-          </svg>
-          <div class="ct-blob-layer" id="ctBlobLayer">
-            <div class="ct-blob" id="ctB0"></div>
-            <div class="ct-blob" id="ctB1"></div>
-            <div class="ct-blob" id="ctB2"></div>
-            <div class="ct-blob" id="ctB3"></div>
-            <div class="ct-blob" id="ctB4"></div>
-            <div class="ct-blob ct-blob-cursor" id="ctBCursor"></div>
-          </div>
-          <div class="ct-liquid-gloss"></div>
-        </div>
+        <!-- Liquid Metal Animation -->
+        <div class="ct-liquid-scene gs-r" id="ctScene"></div>
 
         </div><!-- /.ct-grid -->
 

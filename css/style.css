@@ -1015,46 +1015,11 @@ ul { list-style: none; }
   background: transparent;
 }
 
-.ct-blob-layer {
-  position: absolute;
-  inset: -60px;
-  filter: url(#gooFilter);
-}
-
-.ct-blob {
-  position: absolute;
-  border-radius: 50%;
-  background: radial-gradient(
-    circle at 32% 28%,
-    #d4d8f0 0%,
-    #8a7fc4 18%,
-    #3b1f72 40%,
-    #0d0618 70%,
-    #050308 100%
-  );
-}
-
-.ct-blob-cursor {
-  width: 130px;
-  height: 130px;
-  pointer-events: none;
-  background: radial-gradient(
-    circle at 38% 32%,
-    #e8e4ff 0%,
-    #9d8fe8 20%,
-    #4a1fa8 48%,
-    #0a0515 100%
-  );
-  transition: width .3s, height .3s;
-}
-
-.ct-liquid-gloss {
+.ct-liquid-scene canvas {
   position: absolute;
   inset: 0;
-  pointer-events: none;
-  background:
-    radial-gradient(ellipse at 35% 25%, rgba(180,160,255,.10) 0%, transparent 50%),
-    radial-gradient(ellipse at 65% 75%, rgba(80,200,220,.07) 0%, transparent 45%);
+  width: 100%;
+  height: 100%;
 }
 
 .ct-title {
