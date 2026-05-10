@@ -686,11 +686,11 @@ gsap.utils.toArray('.gs-tool').forEach((el, i) => {
     const H = () => scene.offsetHeight;
 
     const defs = [
-      { id: 'ctB0', w: 230, h: 210, px: .50, py: .50, sx: .28, sy: .22, ph: 0.0 },
-      { id: 'ctB1', w: 190, h: 180, px: .28, py: .62, sx: .22, sy: .30, ph: 1.3 },
-      { id: 'ctB2', w: 170, h: 160, px: .72, py: .30, sx: .32, sy: .24, ph: 2.6 },
-      { id: 'ctB3', w: 150, h: 140, px: .62, py: .68, sx: .26, sy: .28, ph: 3.9 },
-      { id: 'ctB4', w: 120, h: 115, px: .22, py: .32, sx: .20, sy: .32, ph: 5.2 },
+      { id: 'ctB0', w: 280, h: 260, px: .50, py: .52, sx: .20, sy: .18, ph: 0.0 },
+      { id: 'ctB1', w: 240, h: 225, px: .25, py: .58, sx: .18, sy: .24, ph: 1.3 },
+      { id: 'ctB2', w: 210, h: 200, px: .75, py: .32, sx: .26, sy: .20, ph: 2.6 },
+      { id: 'ctB3', w: 185, h: 175, px: .60, py: .70, sx: .22, sy: .26, ph: 3.9 },
+      { id: 'ctB4', w: 160, h: 150, px: .20, py: .28, sx: .16, sy: .28, ph: 5.2 },
     ];
 
     const blobs = defs.map(d => ({ ...d, el: document.getElementById(d.id) })).filter(b => b.el);
