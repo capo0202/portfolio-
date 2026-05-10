@@ -798,12 +798,24 @@ gsap.utils.toArray('.gs-tool').forEach((el, i) => {
   let mx = 0, my = 0, hover = 0, hoverTarget = 0;
 
   function resize() {
-    canvas.width  = wrap.clientWidth  || 500;
-    canvas.height = wrap.clientHeight || 480;
-    gl.viewport(0, 0, canvas.width, canvas.height);
+    const W = wrap.offsetWidth  || 500;
+    const H = wrap.offsetHeight || 480;
+    canvas.width  = W;
+    canvas.height = H;
+    gl.viewport(0, 0, W, H);
+    mx = W / 2; my = H / 2;
   }
-  resize();
+
+  // Run after layout is ready
+  if (document.readyState === 'complete') {
+    resize();
+  } else {
+    window.addEventListener('load', resize);
+  }
   window.addEventListener('resize', resize);
+  if (typeof ResizeObserver !== 'undefined') {
+    new ResizeObserver(resize).observe(wrap);
+  }
 
   wrap.addEventListener('mousemove', e => {
     const r = canvas.getBoundingClientRect();
