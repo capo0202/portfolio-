@@ -221,6 +221,319 @@
       </div>
     </section>
 
+    <!-- ═══ WEB SHOWCASE ═══ -->
+    <section id="web-showcase">
+      <div class="wbs-container">
+
+        <!-- Left: Text -->
+        <div class="wbs-copy">
+          <p class="eyebrow gs-r">Web &amp; Digital Work</p>
+          <h2 class="wbs-title gs-r">Digital<br><em>Landingpage</em><br>Concept</h2>
+          <div class="wbs-tags gs-r">
+            <span>UI Design</span>
+            <span>Web Development</span>
+            <span>Animations</span>
+            <span>Cinematic UX</span>
+          </div>
+          <p class="wbs-desc gs-r">Konzeption und visuelle Umsetzung einer modernen digitalen Landingpage mit Fokus auf Benutzerführung, visuelle Ästhetik und immersive Web-Erfahrung.</p>
+          <ul class="wbs-list gs-r">
+            <li>Moderne digitale Interfaces</li>
+            <li>Visuelle Benutzerführung</li>
+            <li>Cinematic Web Experience</li>
+            <li>Animierte UI-Elemente</li>
+          </ul>
+        </div>
+
+        <!-- Right: Screen mockup -->
+        <div class="wbs-screen-wrap gs-r">
+          <div class="wbs-glow"></div>
+          <div class="wbs-mockup">
+            <div class="wbs-browser-bar">
+              <span class="wbs-dot"></span><span class="wbs-dot"></span><span class="wbs-dot"></span>
+              <span class="wbs-url">lucadigital.studio / landingpage</span>
+            </div>
+            <div class="wbs-screen">
+              <video class="wbs-video" autoplay muted loop playsinline>
+                <source src="assets/web-showcase.mp4" type="video/mp4">
+              </video>
+            </div>
+          </div>
+          <!-- Floating badge -->
+          <div class="wbs-badge">
+            <span class="wbs-badge-dot"></span>
+            Live Concept
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ═══ WORKFLOW ═══ -->
+    <section id="workflow">
+
+      <!-- Robot background -->
+      <div class="wf-robot-wrap" aria-hidden="true">
+        <svg class="wf-robot" id="wfRobot" viewBox="0 0 400 600" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <radialGradient id="bodyGrad" cx="50%" cy="35%" r="60%">
+              <stop offset="0%" stop-color="#2a2a3a"/>
+              <stop offset="100%" stop-color="#0d0c0e"/>
+            </radialGradient>
+            <radialGradient id="headGrad" cx="50%" cy="30%" r="65%">
+              <stop offset="0%" stop-color="#282838"/>
+              <stop offset="100%" stop-color="#0a0a12"/>
+            </radialGradient>
+            <radialGradient id="eyeGlow" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#7b8fff"/>
+              <stop offset="60%" stop-color="#3a52d4"/>
+              <stop offset="100%" stop-color="#1a2a8a"/>
+            </radialGradient>
+            <filter id="glow" x="-40%" y="-40%" width="180%" height="180%">
+              <feGaussianBlur stdDeviation="4" result="blur"/>
+              <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+            <filter id="softGlow" x="-60%" y="-60%" width="220%" height="220%">
+              <feGaussianBlur stdDeviation="8" result="blur"/>
+              <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+            <clipPath id="eyeLClip2"><ellipse cx="148" cy="148" rx="26" ry="18"/></clipPath>
+            <clipPath id="eyeRClip2"><ellipse cx="252" cy="148" rx="26" ry="18"/></clipPath>
+          </defs>
+
+          <!-- ── HEAD GROUP (rotates with mouse) ── -->
+          <g id="robotHead">
+            <!-- Head outer shell -->
+            <ellipse cx="200" cy="145" rx="88" ry="95" fill="url(#headGrad)" stroke="#3a52d4" stroke-width="1" stroke-opacity="0.4"/>
+            <ellipse cx="200" cy="145" rx="88" ry="95" fill="none" stroke="url(#eyeGlow)" stroke-width="0.5" stroke-opacity="0.15"/>
+            <!-- Forehead panel -->
+            <path d="M148 72 Q200 58 252 72 L258 105 Q200 96 142 105 Z" fill="#1a1a28" stroke="#3a52d4" stroke-width="0.6" stroke-opacity="0.3"/>
+            <!-- Status LED -->
+            <circle cx="200" cy="82" r="4" fill="#3a52d4" filter="url(#glow)">
+              <animate attributeName="opacity" values="0.5;1;0.5" dur="2s" repeatCount="indefinite"/>
+            </circle>
+            <!-- Visor band -->
+            <rect x="118" y="124" width="164" height="48" rx="10" fill="#080810" stroke="#3a52d4" stroke-width="0.8" stroke-opacity="0.5"/>
+            <rect x="120" y="126" width="160" height="44" rx="9" fill="rgba(10,12,30,0.9)"/>
+            <!-- Eye sockets -->
+            <ellipse cx="148" cy="148" rx="28" ry="19" fill="#05050f" stroke="#3a52d4" stroke-width="0.5" stroke-opacity="0.6"/>
+            <ellipse cx="252" cy="148" rx="28" ry="19" fill="#05050f" stroke="#3a52d4" stroke-width="0.5" stroke-opacity="0.6"/>
+            <!-- Scan line -->
+            <line x1="120" y1="140" x2="280" y2="140" stroke="#3a52d4" stroke-width="0.4" stroke-opacity="0.15">
+              <animate attributeName="y1" values="126;170;126" dur="2.5s" repeatCount="indefinite"/>
+              <animate attributeName="y2" values="126;170;126" dur="2.5s" repeatCount="indefinite"/>
+            </line>
+            <!-- Eyes – pupils moved by JS -->
+            <g id="eyeL">
+              <ellipse cx="148" cy="148" rx="18" ry="13" fill="url(#eyeGlow)" filter="url(#softGlow)"/>
+              <ellipse cx="148" cy="148" rx="9" ry="7" fill="#c0ccff"/>
+              <ellipse cx="150" cy="146" rx="3" ry="2.5" fill="white" opacity="0.8"/>
+            </g>
+            <g id="eyeR">
+              <ellipse cx="252" cy="148" rx="18" ry="13" fill="url(#eyeGlow)" filter="url(#softGlow)"/>
+              <ellipse cx="252" cy="148" rx="9" ry="7" fill="#c0ccff"/>
+              <ellipse cx="254" cy="146" rx="3" ry="2.5" fill="white" opacity="0.8"/>
+            </g>
+            <!-- Chin / jaw -->
+            <path d="M150 185 Q200 200 250 185 L248 198 Q200 215 152 198 Z" fill="#141420" stroke="#3a52d4" stroke-width="0.5" stroke-opacity="0.25"/>
+            <!-- Mouth grille -->
+            <rect x="168" y="194" width="64" height="16" rx="4" fill="#080812" stroke="#3a52d4" stroke-width="0.5" stroke-opacity="0.3"/>
+            <line x1="176" y1="198" x2="176" y2="206" stroke="#3a52d4" stroke-width="1" stroke-opacity="0.5" stroke-linecap="round">
+              <animate attributeName="opacity" values="0.3;0.8;0.3" dur="0.9s" repeatCount="indefinite"/>
+            </line>
+            <line x1="187" y1="196" x2="187" y2="208" stroke="#3a52d4" stroke-width="1" stroke-opacity="0.6" stroke-linecap="round">
+              <animate attributeName="opacity" values="0.6;1;0.6" dur="1.2s" repeatCount="indefinite"/>
+            </line>
+            <line x1="198" y1="197" x2="198" y2="207" stroke="#3a52d4" stroke-width="1" stroke-opacity="0.5" stroke-linecap="round">
+              <animate attributeName="opacity" values="0.4;0.9;0.4" dur="0.7s" repeatCount="indefinite"/>
+            </line>
+            <line x1="209" y1="196" x2="209" y2="208" stroke="#3a52d4" stroke-width="1" stroke-opacity="0.6" stroke-linecap="round">
+              <animate attributeName="opacity" values="0.5;1;0.5" dur="1.4s" repeatCount="indefinite"/>
+            </line>
+            <line x1="220" y1="198" x2="220" y2="206" stroke="#3a52d4" stroke-width="1" stroke-opacity="0.4" stroke-linecap="round">
+              <animate attributeName="opacity" values="0.3;0.7;0.3" dur="1s" repeatCount="indefinite"/>
+            </line>
+          </g>
+
+          <!-- ── NECK ── -->
+          <rect x="176" y="232" width="48" height="32" rx="6" fill="#111118" stroke="#3a52d4" stroke-width="0.6" stroke-opacity="0.3"/>
+          <line x1="188" y1="237" x2="188" y2="259" stroke="#3a52d4" stroke-width="0.7" opacity="0.2"/>
+          <line x1="200" y1="237" x2="200" y2="259" stroke="#3a52d4" stroke-width="0.7" opacity="0.2"/>
+          <line x1="212" y1="237" x2="212" y2="259" stroke="#3a52d4" stroke-width="0.7" opacity="0.2"/>
+
+          <!-- ── TORSO ── -->
+          <!-- Shoulder span -->
+          <path d="M60 280 Q80 262 140 260 L260 260 Q320 262 340 280 L336 310 Q300 295 200 294 Q100 295 64 310 Z" fill="url(#bodyGrad)" stroke="#3a52d4" stroke-width="0.8" stroke-opacity="0.35"/>
+
+          <!-- Chest plate -->
+          <path d="M118 294 Q200 286 282 294 L278 390 Q200 400 122 390 Z" fill="url(#bodyGrad)" stroke="#3a52d4" stroke-width="0.8" stroke-opacity="0.3"/>
+          <!-- Chest highlight -->
+          <path d="M150 296 Q200 290 250 296 L246 340 Q200 346 154 340 Z" fill="#1c1c2e" stroke="#3a52d4" stroke-width="0.5" stroke-opacity="0.25"/>
+          <!-- Chest core glow -->
+          <ellipse cx="200" cy="330" rx="22" ry="22" fill="#0a0a1a" stroke="#3a52d4" stroke-width="1" stroke-opacity="0.5"/>
+          <ellipse cx="200" cy="330" rx="14" ry="14" fill="#1a2a8a" filter="url(#glow)">
+            <animate attributeName="opacity" values="0.6;1;0.6" dur="2.8s" repeatCount="indefinite"/>
+          </ellipse>
+          <ellipse cx="200" cy="330" rx="7" ry="7" fill="#6a7fff" filter="url(#softGlow)">
+            <animate attributeName="opacity" values="0.8;1;0.8" dur="2.8s" repeatCount="indefinite"/>
+          </ellipse>
+
+          <!-- ── LEFT ARM (waves hello) ── -->
+          <g id="robotArmWave">
+          <!-- Upper arm L -->
+          <path d="M62 278 Q40 282 32 300 L28 350 Q32 368 52 370 L72 370 Q88 368 88 348 L90 296 Z" fill="url(#bodyGrad)" stroke="#3a52d4" stroke-width="0.8" stroke-opacity="0.3"/>
+          <!-- Elbow joint L -->
+          <ellipse cx="58" cy="370" rx="20" ry="14" fill="#141420" stroke="#3a52d4" stroke-width="0.8" stroke-opacity="0.4"/>
+          <!-- Forearm L -->
+          <path d="M38 378 Q26 390 20 420 L22 460 Q26 476 44 478 L68 478 Q84 474 86 456 L90 416 Q88 392 76 380 Z" fill="url(#bodyGrad)" stroke="#3a52d4" stroke-width="0.7" stroke-opacity="0.3"/>
+          <!-- Hand L -->
+          <ellipse cx="54" cy="484" rx="22" ry="16" fill="#111118" stroke="#3a52d4" stroke-width="0.7" stroke-opacity="0.4"/>
+          <!-- Arm accent stripe L -->
+          <line x1="54" y1="310" x2="48" y2="358" stroke="#3a52d4" stroke-width="1" stroke-opacity="0.3" stroke-linecap="round"/>
+          </g>
+
+          <!-- ── RIGHT ARM ── -->
+          <g id="robotArmR">
+          <!-- Upper arm R -->
+          <path d="M338 278 Q360 282 368 300 L372 350 Q368 368 348 370 L328 370 Q312 368 312 348 L310 296 Z" fill="url(#bodyGrad)" stroke="#3a52d4" stroke-width="0.8" stroke-opacity="0.3"/>
+          <!-- Elbow joint R -->
+          <ellipse cx="342" cy="370" rx="20" ry="14" fill="#141420" stroke="#3a52d4" stroke-width="0.8" stroke-opacity="0.4"/>
+          <!-- Forearm R -->
+          <path d="M362 378 Q374 390 380 420 L378 460 Q374 476 356 478 L332 478 Q316 474 314 456 L310 416 Q312 392 324 380 Z" fill="url(#bodyGrad)" stroke="#3a52d4" stroke-width="0.7" stroke-opacity="0.3"/>
+          <!-- Hand R -->
+          <ellipse cx="346" cy="484" rx="22" ry="16" fill="#111118" stroke="#3a52d4" stroke-width="0.7" stroke-opacity="0.4"/>
+          <!-- Arm accent stripe R -->
+          <line x1="346" y1="310" x2="352" y2="358" stroke="#3a52d4" stroke-width="1" stroke-opacity="0.3" stroke-linecap="round"/>
+          </g>
+
+          <!-- ── LOWER BODY ── -->
+          <path d="M140 390 Q200 400 260 390 L256 450 Q200 458 144 450 Z" fill="url(#bodyGrad)" stroke="#3a52d4" stroke-width="0.7" stroke-opacity="0.25"/>
+          <!-- Hip joint L -->
+          <ellipse cx="152" cy="456" rx="22" ry="14" fill="#141420" stroke="#3a52d4" stroke-width="0.7" stroke-opacity="0.35"/>
+          <!-- Hip joint R -->
+          <ellipse cx="248" cy="456" rx="22" ry="14" fill="#141420" stroke="#3a52d4" stroke-width="0.7" stroke-opacity="0.35"/>
+
+          <!-- Leg L -->
+          <path d="M130 462 L136 560 L168 560 L174 462 Z" fill="url(#bodyGrad)" stroke="#3a52d4" stroke-width="0.7" stroke-opacity="0.25"/>
+          <!-- Leg R -->
+          <path d="M226 462 L232 560 L264 560 L270 462 Z" fill="url(#bodyGrad)" stroke="#3a52d4" stroke-width="0.7" stroke-opacity="0.25"/>
+          <!-- Feet -->
+          <ellipse cx="152" cy="562" rx="24" ry="10" fill="#111118" stroke="#3a52d4" stroke-width="0.6" stroke-opacity="0.3"/>
+          <ellipse cx="248" cy="562" rx="24" ry="10" fill="#111118" stroke="#3a52d4" stroke-width="0.6" stroke-opacity="0.3"/>
+
+          <!-- Knee joints -->
+          <ellipse cx="152" cy="514" rx="16" ry="11" fill="#141420" stroke="#3a52d4" stroke-width="0.6" stroke-opacity="0.35"/>
+          <ellipse cx="248" cy="514" rx="16" ry="11" fill="#141420" stroke="#3a52d4" stroke-width="0.6" stroke-opacity="0.35"/>
+        </svg>
+      </div>
+
+      <div class="section-container">
+        <div class="section-head">
+          <p class="eyebrow gs-r">Workflow &#x2014; How I Work</p>
+          <h2 class="section-title gs-r">Mein <em>Prozess</em></h2>
+        </div>
+
+        <!-- WORKFLOW 1: Video / Content -->
+        <div class="wf-block" data-wf="1">
+          <div class="wf-label">
+            <span class="wf-tag">01</span>
+            <span class="wf-category">Video &amp; Content Creation</span>
+          </div>
+          <div class="wf-track">
+            <div class="wf-line"><div class="wf-line-fill"></div></div>
+            <div class="wf-steps">
+              <div class="wf-step">
+                <div class="wf-node"><span class="wf-node-icon">💡</span></div>
+                <p class="wf-step-label">Idee entwickeln</p>
+              </div>
+              <div class="wf-step">
+                <div class="wf-node"><span class="wf-node-icon">📝</span></div>
+                <p class="wf-step-label">Script &amp; Konzept</p>
+              </div>
+              <div class="wf-step">
+                <div class="wf-node"><span class="wf-node-icon">🤖</span></div>
+                <p class="wf-step-label">AI Tools &amp; Visuals</p>
+              </div>
+              <div class="wf-step">
+                <div class="wf-node"><span class="wf-node-icon">🎬</span></div>
+                <p class="wf-step-label">Editing &amp; Post</p>
+              </div>
+              <div class="wf-step">
+                <div class="wf-node"><span class="wf-node-icon">🚀</span></div>
+                <p class="wf-step-label">Export &amp; Output</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- WORKFLOW 2: Web / Landingpage -->
+        <div class="wf-block" data-wf="2">
+          <div class="wf-label">
+            <span class="wf-tag">02</span>
+            <span class="wf-category">Web &amp; Landingpage</span>
+          </div>
+          <div class="wf-track">
+            <div class="wf-line"><div class="wf-line-fill"></div></div>
+            <div class="wf-steps">
+              <div class="wf-step">
+                <div class="wf-node"><span class="wf-node-icon">🎯</span></div>
+                <p class="wf-step-label">Konzept &amp; Ziel</p>
+              </div>
+              <div class="wf-step">
+                <div class="wf-node"><span class="wf-node-icon">🗂️</span></div>
+                <p class="wf-step-label">Struktur &amp; Wireframe</p>
+              </div>
+              <div class="wf-step">
+                <div class="wf-node"><span class="wf-node-icon">🎨</span></div>
+                <p class="wf-step-label">Design &amp; Layout</p>
+              </div>
+              <div class="wf-step">
+                <div class="wf-node"><span class="wf-node-icon">⚡</span></div>
+                <p class="wf-step-label">Umsetzung &amp; Animationen</p>
+              </div>
+              <div class="wf-step">
+                <div class="wf-node"><span class="wf-node-icon">🌐</span></div>
+                <p class="wf-step-label">Live Output</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- WORKFLOW 3: AI / Digital -->
+        <div class="wf-block" data-wf="3">
+          <div class="wf-label">
+            <span class="wf-tag">03</span>
+            <span class="wf-category">AI &amp; Digital Workflow</span>
+          </div>
+          <div class="wf-track">
+            <div class="wf-line"><div class="wf-line-fill"></div></div>
+            <div class="wf-steps">
+              <div class="wf-step">
+                <div class="wf-node"><span class="wf-node-icon">🔍</span></div>
+                <p class="wf-step-label">Problem definieren</p>
+              </div>
+              <div class="wf-step">
+                <div class="wf-node"><span class="wf-node-icon">🧠</span></div>
+                <p class="wf-step-label">AI Tool Auswahl</p>
+              </div>
+              <div class="wf-step">
+                <div class="wf-node"><span class="wf-node-icon">🔗</span></div>
+                <p class="wf-step-label">Tool-Kombination</p>
+              </div>
+              <div class="wf-step">
+                <div class="wf-node"><span class="wf-node-icon">⚙️</span></div>
+                <p class="wf-step-label">Optimierung</p>
+              </div>
+              <div class="wf-step">
+                <div class="wf-node"><span class="wf-node-icon">📊</span></div>
+                <p class="wf-step-label">Output Generierung</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
     <!-- ═══ 04 SKILLS ═══ -->
     <section id="skills">
       <div class="section-container">

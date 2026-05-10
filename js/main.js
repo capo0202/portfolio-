@@ -185,9 +185,9 @@ if (isDesktop) {
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: section,
-        start:   'top 85%',
-        end:     'bottom 5%',
-        scrub:   0.8,
+        start:   'top 100%',
+        end:     'bottom 18%',
+        scrub:   0.5,
       },
     });
 
@@ -200,27 +200,26 @@ if (isDesktop) {
       ease: 'none',
     }, 0);
 
-    // Handoff rein: shards UND echtes Foto gleichzeitig cross-fade
-    // Beide zeigen dasselbe Bild → nahtloser Übergang, kein plötzliches Erscheinen
+    // Handoff rein: Foto blendet ein, shards mit Stagger raus
     tl.to(photoEl, { opacity: 1, duration: 0.3, ease: 'none' }, 1.05);
     tl.to(origImg, { opacity: 1, duration: 0.3, ease: 'none' }, 1.05);
-    tl.to(shards,  { opacity: 0, duration: 0.3, ease: 'none',
-      stagger: { amount: 0.18, from: 'random', ease: 'none' },
+    tl.to(shards,  { opacity: 0, duration: 0.22, ease: 'none',
+      stagger: { amount: 0.22, from: 'random', ease: 'none' },
     }, 1.05);
 
-    // Layer weg – kein Partikel mehr sichtbar, Foto sauber
-    tl.set(layer, { visibility: 'hidden' }, 1.36);
+    // Layer komplett ausblenden – kein Leak durch Rahmen-Ecken
+    tl.set(layer, { visibility: 'hidden' }, 1.50);
 
-    // Foto hält
-    tl.to(origImg, { opacity: 1, duration: 1.34, ease: 'none' }, 1.36);
+    // Foto hält sauber
+    tl.to(origImg, { opacity: 1, duration: 1.50, ease: 'none' }, 1.50);
 
-    // Handoff raus – sofort, kein Hang
-    tl.set(layer, { visibility: 'visible' }, 2.70);
-    tl.to(photoEl, { opacity: 0, duration: 0.06, ease: 'none' }, 2.70);
-    tl.to(origImg, { opacity: 0, duration: 0.06, ease: 'none' }, 2.70);
-    tl.to(shards,  { opacity: 1, duration: 0.06, ease: 'none' }, 2.70);
+    // Vor Explosion: layer sofort sichtbar, shards assembled, foto weg
+    tl.set(layer,   { visibility: 'visible' }, 3.00);
+    tl.set(photoEl, { opacity: 0 },            3.00);
+    tl.set(origImg, { opacity: 0 },            3.00);
+    tl.set(shards,  { opacity: 1 },            3.00);
 
-    // Explosion – massiv, fast simultan, krachend
+    // Explosion – sofort und massiv
     tl.to(shards, {
       x: i => shatterTo[i].x,
       y: i => shatterTo[i].y,
@@ -229,7 +228,7 @@ if (isDesktop) {
       duration: 0.84,
       stagger: { amount: 0.06, from: 'center', ease: 'none' },
       ease: 'none',
-    }, 2.76);
+    }, 3.00);
   }
 
   function init() {
@@ -241,6 +240,185 @@ if (isDesktop) {
   }
 
   requestAnimationFrame(init);
+}());
+
+// ── WORKFLOW ROBOT MOUSE TRACKING ────────────────────────────────────────────
+(function () {
+  const eyeL    = document.getElementById('eyeL');
+  const eyeR    = document.getElementById('eyeR');
+  const head    = document.getElementById('robotHead');
+  const robot   = document.getElementById('wfRobot');
+  const wrap    = robot && robot.closest('.wf-robot-wrap');
+  if (!eyeL || !eyeR || !head || !robot) return;
+
+  // SVG eye centers
+  const LC = { x: 148, y: 148 };
+  const RC = { x: 252, y: 148 };
+  const EYE_MAX = 8;
+  const HEAD_ROT_X = 18; // max vertical tilt  deg
+  const HEAD_ROT_Y = 22; // max horizontal turn deg
+
+  // Current interpolated values
+  let cur = { lx:0, ly:0, rx:0, ry:0, hx:0, hy:0 };
+  let tgt = { lx:0, ly:0, rx:0, ry:0, hx:0, hy:0 };
+
+  const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+
+  window.addEventListener('mousemove', e => {
+    const rect = robot.getBoundingClientRect();
+    if (!rect.width) return;
+
+    // Normalised mouse position relative to robot center (-1 … +1)
+    const nx = ((e.clientX - rect.left)  / rect.width  - 0.5) * 2;
+    const ny = ((e.clientY - rect.top)   / rect.height - 0.5) * 2;
+
+    // Head rotation targets
+    tgt.hx = clamp(ny * HEAD_ROT_X, -HEAD_ROT_X, HEAD_ROT_X);
+    tgt.hy = clamp(nx * HEAD_ROT_Y, -HEAD_ROT_Y, HEAD_ROT_Y);
+
+    // Eye pupil targets (SVG space)
+    const scaleX = 400 / rect.width;
+    const scaleY = 600 / rect.height;
+    const mx = (e.clientX - rect.left) * scaleX;
+    const my = (e.clientY - rect.top)  * scaleY;
+
+    const dir = (cx, cy) => {
+      const dx = mx - cx, dy = my - cy;
+      const d  = Math.sqrt(dx*dx + dy*dy) || 1;
+      const f  = Math.min(d, EYE_MAX) / d;
+      return { x: dx * f, y: dy * f };
+    };
+    const l = dir(LC.x, LC.y), r = dir(RC.x, RC.y);
+    tgt.lx = l.x; tgt.ly = l.y;
+    tgt.rx = r.x; tgt.ry = r.y;
+  });
+
+  // Smooth lerp render loop
+  (function loop() {
+    const t = 0.07;
+    for (const k in cur) cur[k] += (tgt[k] - cur[k]) * t;
+
+    // Head movement via SVG 2D transforms (reliable cross-browser)
+    // hx = vertical tilt (up/down), hy = horizontal turn (left/right)
+    const tx   =  cur.hy * 0.55;   // translate X
+    const ty   =  cur.hx * 0.4;    // translate Y
+    const skX  = -cur.hy * 0.35;   // skewX simulates perspective turn
+    const skY  =  cur.hx * 0.18;   // skewY simulates tilt depth
+    head.setAttribute('transform',
+      `translate(${tx.toFixed(2)},${ty.toFixed(2)}) skewX(${skX.toFixed(2)}) skewY(${skY.toFixed(2)})`
+    );
+
+    // Eye pupils (relative to head – no offset needed, head group moves them)
+    eyeL.setAttribute('transform', `translate(${cur.lx.toFixed(2)},${cur.ly.toFixed(2)})`);
+    eyeR.setAttribute('transform', `translate(${cur.rx.toFixed(2)},${cur.ry.toFixed(2)})`);
+
+    requestAnimationFrame(loop);
+  })();
+
+  // ── Wave – einmalig beim Sehen, rücksetzbar beim Verlassen ───────────────
+  const armWave = document.getElementById('robotArmWave');
+  if (armWave && wrap) {
+    gsap.set(armWave, { svgOrigin: '75 275' });
+    let wavePlaying = false;
+    let waveComplete = false;
+
+    function playWave() {
+      if (wavePlaying || waveComplete) return;
+      wavePlaying = true;
+      gsap.timeline({ onComplete: () => { wavePlaying = false; waveComplete = true; } })
+        // Arm hebt sich hoch – neben den Kopf
+        .to(armWave, { rotation: -168, duration: 0.7, ease: 'power2.out' })
+        // 2× links-rechts winken
+        .to(armWave, { rotation: -148, duration: 0.28, ease: 'power1.inOut' })
+        .to(armWave, { rotation: -172, duration: 0.28, ease: 'power1.inOut' })
+        .to(armWave, { rotation: -148, duration: 0.28, ease: 'power1.inOut' })
+        .to(armWave, { rotation: -172, duration: 0.28, ease: 'power1.inOut' })
+        // Arm fällt sanft zurück in Ruheposition
+        .to(armWave, { rotation: 0, duration: 0.8, ease: 'power2.inOut' });
+    }
+
+    function resetWave() {
+      if (wavePlaying) return;
+      gsap.killTweensOf(armWave);
+      gsap.to(armWave, { rotation: 0, duration: 0.4, ease: 'power2.out' });
+      waveComplete = false;
+    }
+
+    const waveObserver = new IntersectionObserver(entries => {
+      if (entries[0].isIntersecting) { setTimeout(playWave, 300); }
+      else { resetWave(); }
+    }, { threshold: 0.25 });
+    waveObserver.observe(wrap);
+  }
+
+  // ── Hover interaction ──────────────────────────────────────────────────────
+  if (wrap) {
+    wrap.addEventListener('mouseenter', () => {
+      wrap.classList.add('hovered');
+      // Robot "notices" – eyes flash, body bounces up slightly
+      gsap.to(robot, { y: -10, duration: 0.35, ease: 'back.out(2.5)' });
+      gsap.to([eyeL, eyeR], {
+        attr: { rx: 22, ry: 16 },
+        duration: 0.2, ease: 'power2.out',
+        yoyo: true, repeat: 1,
+      });
+    });
+
+    wrap.addEventListener('mouseleave', () => {
+      wrap.classList.remove('hovered');
+      gsap.to(robot, { y: 0, duration: 0.6, ease: 'elastic.out(1, 0.4)' });
+      // Head returns to center
+      tgt.hx = 0; tgt.hy = 0;
+    });
+
+    // Click – robot does a quick spin-nod
+    wrap.addEventListener('click', () => {
+      gsap.timeline()
+        .to(robot, { rotateZ: -8, duration: 0.18, ease: 'power2.out' })
+        .to(robot, { rotateZ:  8, duration: 0.18, ease: 'power2.inOut' })
+        .to(robot, { rotateZ:  0, duration: 0.5,  ease: 'elastic.out(1, 0.4)' });
+    });
+  }
+}());
+
+// ── WORKFLOW SECTION ──────────────────────────────────────────────────────────
+(function () {
+  const blocks = document.querySelectorAll('.wf-block');
+  if (!blocks.length) return;
+
+  blocks.forEach(block => {
+    const steps    = block.querySelectorAll('.wf-step');
+    const lineFill = block.querySelector('.wf-line-fill');
+    const total    = steps.length;
+
+    // Ensure initial state is set by GSAP (not CSS alone) so scrub works correctly
+    gsap.set(steps, { opacity: 0, y: 14 });
+    gsap.set(lineFill, { width: '0%' });
+
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: block,
+        start:   'top 80%',
+        end:     'top 22%',
+        scrub:   0.5,
+      },
+    });
+
+    // Line fills progressively across full timeline
+    tl.to(lineFill, { width: '100%', ease: 'none', duration: 1 }, 0);
+
+    // Steps appear one by one left to right
+    steps.forEach((step, i) => {
+      const t = i / (total - 1);
+      tl.to(step, { opacity: 1, y: 0, ease: 'none', duration: 0.2 }, t * 0.78);
+      tl.to(step.querySelector('.wf-node'), {
+        borderColor: 'rgba(58,82,212,.85)',
+        background:  'rgba(58,82,212,.2)',
+        boxShadow:   '0 0 16px rgba(58,82,212,.6), 0 0 32px rgba(58,82,212,.25)',
+        ease: 'none', duration: 0.14,
+      }, t * 0.78);
+    });
+  });
 }());
 
 // ── HERO TITLE HOVER JUMP ─────────────────────────────────────────────────────
@@ -371,7 +549,19 @@ if (workVideo) {
 
   function openModal(src) {
     if (!modal || !modalVideo) return;
-    modalVideo.src = src; modalVideo.load(); modalVideo.play();
+    modalVideo.src = src;
+    modalVideo.volume = 1;
+    modalVideo.muted = false;
+    modalVideo.load();
+    // Start muted to satisfy autoplay policy, then immediately unmute
+    modalVideo.muted = true;
+    const playPromise = modalVideo.play();
+    if (playPromise !== undefined) {
+      playPromise.then(() => {
+        modalVideo.muted = false;
+        modalVideo.volume = 1;
+      }).catch(() => {});
+    }
     modal.classList.add('open');
     modal.setAttribute('aria-hidden', 'false');
     document.body.style.overflow = 'hidden';
@@ -433,3 +623,55 @@ gsap.utils.toArray('.gs-tool').forEach((el, i) => {
     opacity: 0, y: 12, scale: .9, duration: .4, ease: 'back.out(1.5)', delay: i * .03
   });
 });
+
+// ── ABOUT PHOTO 3D TILT ───────────────────────────────────────────────────────
+(function () {
+  const card = document.getElementById('photoOuter');
+  if (!card) return;
+
+  const MAX_ROT = 18;
+  let raf = null;
+  let targetRX = 0, targetRY = 0, currentRX = 0, currentRY = 0;
+
+  function lerp(a, b, t) { return a + (b - a) * t; }
+
+  function tick() {
+    currentRX = lerp(currentRX, targetRX, 0.1);
+    currentRY = lerp(currentRY, targetRY, 0.1);
+    card.style.transform = `rotateX(${currentRX}deg) rotateY(${currentRY}deg) scale3d(1.04,1.04,1.04)`;
+    card.style.boxShadow = `
+      ${-currentRY * 1.2}px ${currentRX * 1.2}px 40px rgba(58,82,212,.55),
+      0 0 80px rgba(58,82,212,.2)
+    `;
+    raf = requestAnimationFrame(tick);
+  }
+
+  card.addEventListener('mouseenter', () => {
+    card.classList.add('tilt-active');
+    raf = requestAnimationFrame(tick);
+  });
+
+  card.addEventListener('mousemove', e => {
+    const rect = card.getBoundingClientRect();
+    const nx = (e.clientX - rect.left) / rect.width  - 0.5; // -0.5 … 0.5
+    const ny = (e.clientY - rect.top)  / rect.height - 0.5;
+    targetRY =  nx * MAX_ROT * 2;
+    targetRX = -ny * MAX_ROT * 2;
+    // gloss highlight position
+    card.style.setProperty('--mx', `${(nx + 0.5) * 100}%`);
+    card.style.setProperty('--my', `${(ny + 0.5) * 100}%`);
+  });
+
+  card.addEventListener('mouseleave', () => {
+    card.classList.remove('tilt-active');
+    targetRX = 0;
+    targetRY = 0;
+    setTimeout(() => {
+      cancelAnimationFrame(raf);
+      card.style.transform = '';
+      card.style.boxShadow = '';
+      currentRX = 0;
+      currentRY = 0;
+    }, 600);
+  });
+}());
