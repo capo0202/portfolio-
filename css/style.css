@@ -170,6 +170,16 @@ ul { list-style: none; }
 .btn-lg { padding: .85rem 2rem; font-size: .95rem; }
 
 /* ═══════════════════════════════════════════
+   ZOOM PARALLAX
+═══════════════════════════════════════════ */
+section {
+  position: relative;
+  transform-origin: top center;
+  will-change: transform, opacity;
+  overflow: clip;
+}
+
+/* ═══════════════════════════════════════════
    SECTION COMMONS
 ═══════════════════════════════════════════ */
 .section-container {

@@ -595,6 +595,22 @@ gsap.utils.toArray('section:not(#hero), .marquee-wrap').forEach(section => {
   });
 });
 
+// ── ZOOM PARALLAX ─────────────────────────────────────────────────────────────
+gsap.utils.toArray('section').forEach(section => {
+  gsap.to(section, {
+    scale: 0.88,
+    opacity: 0.5,
+    borderRadius: '18px',
+    ease: 'none',
+    scrollTrigger: {
+      trigger: section,
+      start: 'top top',
+      end: 'bottom top',
+      scrub: true,
+    }
+  });
+});
+
 // ── SCROLL REVEALS ────────────────────────────────────────────────────────────
 gsap.utils.toArray('.gs-r').forEach(el => {
   gsap.from(el, {
