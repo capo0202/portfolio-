@@ -993,10 +993,33 @@ ul { list-style: none; }
   z-index: 0;
 }
 
+.ct-grid {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  align-items: center;
+}
+
 .ct-content {
   position: relative;
   z-index: 1;
-  max-width: 680px;
+}
+
+.ct-model-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 480px;
+}
+
+.ct-model {
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  --progress-bar-color: transparent;
+  --progress-mask: transparent;
 }
 
 .ct-title {
@@ -1227,6 +1250,8 @@ ul { list-style: none; }
   .hero-btns { flex-direction: column; align-items: flex-start; }
   .hero-btns .btn { width: 100%; max-width: 300px; justify-content: center; }
 
+  .ct-grid { grid-template-columns: 1fr; gap: 2rem; }
+  .ct-model-wrap { height: 320px; }
   .ct-actions { flex-direction: column; align-items: flex-start; }
   .ct-footer-row { flex-direction: column; text-align: center; align-items: center; }
 }
