@@ -1024,7 +1024,8 @@ ul { list-style: none; }
 
 .ct-blob-layer {
   position: absolute;
-  inset: -80px;
+  inset: 0;
+  overflow: visible;
   filter: url(#gooFilter);
 }
 
