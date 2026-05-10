@@ -676,145 +676,64 @@ gsap.utils.toArray('.gs-tool').forEach((el, i) => {
   });
 }());
 
-// ── CONTACT BINARY SYSTEM ANIMATION ──────────────────────────────────────────
+// ── CONTACT 3D MODEL ─────────────────────────────────────────────────────────
 (function () {
   const canvas = document.getElementById('ct3dCanvas');
-  if (!canvas) return;
+  if (!canvas || typeof THREE === 'undefined') return;
 
-  const ctx = canvas.getContext('2d');
   const wrap = canvas.parentElement;
-  let W, H, cx, cy;
+  let W = wrap.clientWidth || 500;
+  let H = wrap.clientHeight || 480;
 
-  function resize() {
-    W = canvas.width  = wrap.clientWidth;
-    H = canvas.height = wrap.clientHeight;
-    cx = W / 2; cy = H / 2;
-  }
-  resize();
-  window.addEventListener('resize', resize);
+  const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+  renderer.setSize(W, H);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.outputEncoding = THREE.sRGBEncoding;
+  renderer.setClearColor(0x000000, 0);
 
-  // Stars background
-  const stars = Array.from({ length: 120 }, () => ({
-    x: Math.random(), y: Math.random(),
-    r: Math.random() * 1.2 + 0.2,
-    a: Math.random()
-  }));
+  const scene  = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(40, W / H, 0.1, 100);
+  camera.position.set(0, 1.5, 6);
 
-  // Two orbiting bodies
-  const bodies = [
-    { orbitR: 0, speed: 0.004, phase: 0,    size: 28, color: '#6a80ff', glowColor: 'rgba(106,128,255,' },
-    { orbitR: 0, speed: 0.007, phase: Math.PI, size: 18, color: '#a0b4ff', glowColor: 'rgba(160,180,255,' }
-  ];
+  scene.add(new THREE.AmbientLight(0xffffff, 1.0));
+  const key = new THREE.DirectionalLight(0x8899ff, 2.0);
+  key.position.set(3, 5, 4);
+  scene.add(key);
+  const fill = new THREE.DirectionalLight(0x3a52d4, 1.0);
+  fill.position.set(-3, -2, -3);
+  scene.add(fill);
 
-  // Particles trailing each body
-  const trails = [[], []];
-  const MAX_TRAIL = 60;
+  const controls = new THREE.OrbitControls(camera, renderer.domElement);
+  controls.enableZoom    = false;
+  controls.enablePan     = false;
+  controls.autoRotate    = true;
+  controls.autoRotateSpeed = 0.8;
+  controls.enableDamping = true;
+  controls.dampingFactor = 0.05;
+  controls.target.set(0, 0, 0);
 
-  let t = 0;
+  const src = window.GLB_BINARY_SYSTEM || 'assets/binary-system.glb';
+  const loader = new THREE.GLTFLoader();
+  loader.load(src, function (gltf) {
+    const model = gltf.scene;
+    const box   = new THREE.Box3().setFromObject(model);
+    const center = box.getCenter(new THREE.Vector3());
+    const size   = box.getSize(new THREE.Vector3());
+    model.position.sub(center);
+    model.scale.setScalar(3.5 / Math.max(size.x, size.y, size.z));
+    scene.add(model);
+  }, undefined, function(err) { console.warn('GLB load error', err); });
 
-  function drawGlow(x, y, r, color) {
-    const g = ctx.createRadialGradient(x, y, 0, x, y, r * 3.5);
-    g.addColorStop(0,   color + '0.35)');
-    g.addColorStop(0.4, color + '0.12)');
-    g.addColorStop(1,   color + '0)');
-    ctx.fillStyle = g;
-    ctx.beginPath();
-    ctx.arc(x, y, r * 3.5, 0, Math.PI * 2);
-    ctx.fill();
-  }
+  window.addEventListener('resize', () => {
+    W = wrap.clientWidth; H = wrap.clientHeight;
+    camera.aspect = W / H;
+    camera.updateProjectionMatrix();
+    renderer.setSize(W, H);
+  });
 
-  function drawOrbitRing(r) {
-    ctx.save();
-    ctx.strokeStyle = 'rgba(58,82,212,0.12)';
-    ctx.lineWidth = 1;
-    ctx.setLineDash([4, 8]);
-    ctx.beginPath();
-    ctx.arc(cx, cy, r, 0, Math.PI * 2);
-    ctx.stroke();
-    ctx.setLineDash([]);
-    ctx.restore();
-  }
-
-  function frame() {
-    ctx.clearRect(0, 0, W, H);
-
-    // Stars
-    stars.forEach(s => {
-      const pulse = 0.4 + 0.6 * (0.5 + 0.5 * Math.sin(t * 0.8 + s.a * 10));
-      ctx.globalAlpha = pulse * 0.5;
-      ctx.fillStyle = '#fff';
-      ctx.beginPath();
-      ctx.arc(s.x * W, s.y * H, s.r, 0, Math.PI * 2);
-      ctx.fill();
-    });
-    ctx.globalAlpha = 1;
-
-    const baseR = Math.min(W, H) * 0.28;
-
-    // Orbit rings
-    drawOrbitRing(baseR * 0.72);
-    drawOrbitRing(baseR * 1.1);
-
-    // Central core glow
-    const cg = ctx.createRadialGradient(cx, cy, 0, cx, cy, baseR * 0.35);
-    cg.addColorStop(0,   'rgba(58,82,212,0.18)');
-    cg.addColorStop(0.5, 'rgba(58,82,212,0.06)');
-    cg.addColorStop(1,   'rgba(58,82,212,0)');
-    ctx.fillStyle = cg;
-    ctx.beginPath();
-    ctx.arc(cx, cy, baseR * 0.35, 0, Math.PI * 2);
-    ctx.fill();
-
-    // Update & draw each body
-    bodies.forEach((b, i) => {
-      const orbitR = i === 0 ? baseR * 0.72 : baseR * 1.1;
-      const angle  = t * b.speed * 60 + b.phase;
-      const x = cx + Math.cos(angle) * orbitR;
-      const y = cy + Math.sin(angle) * orbitR * 0.42; // perspective tilt
-
-      // Trail
-      trails[i].push({ x, y, a: 1 });
-      if (trails[i].length > MAX_TRAIL) trails[i].shift();
-
-      trails[i].forEach((p, j) => {
-        const prog = j / trails[i].length;
-        ctx.globalAlpha = prog * 0.35;
-        ctx.fillStyle = b.color;
-        const tr = b.size * 0.25 * prog;
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, tr, 0, Math.PI * 2);
-        ctx.fill();
-      });
-      ctx.globalAlpha = 1;
-
-      // Glow
-      drawGlow(x, y, b.size, b.glowColor);
-
-      // Body
-      const grad = ctx.createRadialGradient(x - b.size * 0.3, y - b.size * 0.3, 0, x, y, b.size);
-      grad.addColorStop(0, '#fff');
-      grad.addColorStop(0.3, b.color);
-      grad.addColorStop(1, '#1a2a8a');
-      ctx.fillStyle = grad;
-      ctx.beginPath();
-      ctx.arc(x, y, b.size, 0, Math.PI * 2);
-      ctx.fill();
-    });
-
-    // Central dot
-    drawGlow(cx, cy, 10, 'rgba(106,128,255,');
-    const cdg = ctx.createRadialGradient(cx - 3, cy - 3, 0, cx, cy, 10);
-    cdg.addColorStop(0, '#fff');
-    cdg.addColorStop(0.5, '#6a80ff');
-    cdg.addColorStop(1, '#3a52d4');
-    ctx.fillStyle = cdg;
-    ctx.beginPath();
-    ctx.arc(cx, cy, 10, 0, Math.PI * 2);
-    ctx.fill();
-
-    t++;
-    requestAnimationFrame(frame);
-  }
-
-  frame();
+  (function animate() {
+    requestAnimationFrame(animate);
+    controls.update();
+    renderer.render(scene, camera);
+  }());
 }());
