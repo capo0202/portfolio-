@@ -689,18 +689,23 @@ gsap.utils.toArray('.gs-tool').forEach((el, i) => {
     const ctx = canvas.getContext('2d');
     const W = canvas.width, H = canvas.height;
     const cx = W * 0.5, cy = H * 0.5;
-    const R  = Math.min(W, H) * 0.40;
-    const N  = 12;
+    const R  = Math.min(W, H) * 0.38;
+    // 7 arms × 2 points = 14 — alternating tip (far) / valley (close)
+    const ARMS = 7;
+    const N    = ARMS * 2;
 
-    // Oscillating control points around an ellipse
-    const pts = Array.from({ length: N }, (_, i) => ({
-      baseA : (i / N) * Math.PI * 2,
-      rAmp  : 0.10 + Math.random() * 0.18,
-      rFreq : 0.25 + Math.random() * 0.45,
-      aAmp  : 0.06 + Math.random() * 0.08,
-      aFreq : 0.20 + Math.random() * 0.35,
-      phase : Math.random() * Math.PI * 2,
-    }));
+    const pts = Array.from({ length: N }, (_, i) => {
+      const isTip = i % 2 === 0;
+      return {
+        baseA : (i / N) * Math.PI * 2,
+        baseR : isTip ? 1.25 : 0.52,          // arms reach far, valleys pull in
+        rAmp  : isTip ? 0.18 : 0.10,
+        rFreq : 0.22 + Math.random() * 0.38,
+        aAmp  : isTip ? 0.10 : 0.06,
+        aFreq : 0.18 + Math.random() * 0.28,
+        phase : Math.random() * Math.PI * 2,
+      };
+    });
 
     let mx = W / 2, my = H / 2, mActive = false;
 
@@ -719,12 +724,13 @@ gsap.utils.toArray('.gs-tool').forEach((el, i) => {
         let x = cx + Math.cos(a) * r;
         let y = cy + Math.sin(a) * r * 0.82; // slightly flat vertically
 
-        // Subtle magnetic pull toward mouse
+        // Magnetic pull toward mouse – stronger on arm tips
         if (mActive) {
           const mdx = mx - cx, mdy = my - cy;
           const mAngle = Math.atan2(mdy, mdx);
           const diff = a - mAngle;
-          const w = Math.exp(-(diff * diff) * 2.5) * 0.22;
+          const pull = p.baseR > 1.0 ? 0.38 : 0.15;
+          const w = Math.exp(-(diff * diff) * 2.0) * pull;
           x += mdx * w;
           y += mdy * w;
         }
@@ -758,59 +764,87 @@ gsap.utils.toArray('.gs-tool').forEach((el, i) => {
 
       const pts2 = getControlPts(t);
 
-      // ── Base metallic fill ───────────────────────────────────────────
+      // ── Base: very dark chrome fill ──────────────────────────────────
       drawShape(pts2);
-      const angle = t * 0.12;
-      const gx1 = cx + Math.cos(angle) * R, gy1 = cy + Math.sin(angle) * R;
-      const gx2 = cx - Math.cos(angle) * R, gy2 = cy - Math.sin(angle) * R;
+      const angle = t * 0.10;
+      const gx1 = cx + Math.cos(angle) * R * 1.2, gy1 = cy + Math.sin(angle) * R * 1.2;
+      const gx2 = cx - Math.cos(angle) * R * 1.2, gy2 = cy - Math.sin(angle) * R * 1.2;
       const base = ctx.createLinearGradient(gx1, gy1, gx2, gy2);
-      base.addColorStop(0.00, '#020510');
-      base.addColorStop(0.15, '#0b1840');
-      base.addColorStop(0.32, '#1a4a9e');
-      base.addColorStop(0.50, '#5ba3f5');
-      base.addColorStop(0.65, '#1d4faa');
-      base.addColorStop(0.82, '#0a1535');
-      base.addColorStop(1.00, '#010408');
+      base.addColorStop(0.00, '#00010a');
+      base.addColorStop(0.12, '#03081e');
+      base.addColorStop(0.28, '#071535');
+      base.addColorStop(0.42, '#1040a0');
+      base.addColorStop(0.52, '#3a80e8');
+      base.addColorStop(0.62, '#0d3080');
+      base.addColorStop(0.78, '#04102a');
+      base.addColorStop(1.00, '#000208');
       ctx.fillStyle = base;
       ctx.fill();
 
-      // ── Primary specular highlight ───────────────────────────────────
-      const h1x = cx - R * 0.22 + Math.sin(t * 0.37) * R * 0.12;
-      const h1y = cy - R * 0.30 + Math.cos(t * 0.29) * R * 0.09;
+      // ── Rim light on arm tips (cyan-blue streak) ─────────────────────
       drawShape(pts2);
       ctx.save();
       ctx.clip();
-      const spec1 = ctx.createRadialGradient(h1x, h1y, 0, h1x, h1y, R * 0.42);
-      spec1.addColorStop(0.00, 'rgba(210, 230, 255, 0.82)');
-      spec1.addColorStop(0.25, 'rgba(130, 180, 255, 0.38)');
-      spec1.addColorStop(0.60, 'rgba(60, 120, 220, 0.10)');
+      const rim = ctx.createLinearGradient(cx - R * 1.3, cy - R * 1.3, cx + R * 1.3, cy + R * 1.3);
+      rim.addColorStop(0.00, 'rgba(0,180,255,0.00)');
+      rim.addColorStop(0.35, 'rgba(0,160,255,0.00)');
+      rim.addColorStop(0.50, 'rgba(80,200,255,0.18)');
+      rim.addColorStop(0.65, 'rgba(0,140,220,0.04)');
+      rim.addColorStop(1.00, 'rgba(0,80,180,0.00)');
+      ctx.fillStyle = rim;
+      ctx.fillRect(0, 0, W, H);
+      ctx.restore();
+
+      // ── Primary sharp specular ───────────────────────────────────────
+      const h1x = cx - R * 0.18 + Math.sin(t * 0.31) * R * 0.14;
+      const h1y = cy - R * 0.28 + Math.cos(t * 0.27) * R * 0.10;
+      drawShape(pts2);
+      ctx.save();
+      ctx.clip();
+      const spec1 = ctx.createRadialGradient(h1x, h1y, 0, h1x, h1y, R * 0.32);
+      spec1.addColorStop(0.00, 'rgba(235, 245, 255, 0.92)');
+      spec1.addColorStop(0.15, 'rgba(180, 220, 255, 0.60)');
+      spec1.addColorStop(0.40, 'rgba(80, 150, 255, 0.18)');
       spec1.addColorStop(1.00, 'rgba(0,0,0,0)');
       ctx.fillStyle = spec1;
       ctx.fillRect(0, 0, W, H);
       ctx.restore();
 
-      // ── Secondary smaller highlight ──────────────────────────────────
-      const h2x = cx + R * 0.28 + Math.cos(t * 0.53) * R * 0.08;
-      const h2y = cy + R * 0.15 + Math.sin(t * 0.47) * R * 0.07;
+      // ── Secondary specular (arm) ─────────────────────────────────────
+      const h2x = cx + R * 0.55 + Math.cos(t * 0.41) * R * 0.10;
+      const h2y = cy - R * 0.10 + Math.sin(t * 0.37) * R * 0.08;
       drawShape(pts2);
       ctx.save();
       ctx.clip();
-      const spec2 = ctx.createRadialGradient(h2x, h2y, 0, h2x, h2y, R * 0.25);
-      spec2.addColorStop(0.00, 'rgba(180, 215, 255, 0.55)');
-      spec2.addColorStop(0.50, 'rgba(80, 150, 255, 0.15)');
+      const spec2 = ctx.createRadialGradient(h2x, h2y, 0, h2x, h2y, R * 0.20);
+      spec2.addColorStop(0.00, 'rgba(200, 230, 255, 0.75)');
+      spec2.addColorStop(0.40, 'rgba(60, 130, 255, 0.20)');
       spec2.addColorStop(1.00, 'rgba(0,0,0,0)');
       ctx.fillStyle = spec2;
       ctx.fillRect(0, 0, W, H);
       ctx.restore();
 
-      // ── Dark edge vignette inside shape ─────────────────────────────
+      // ── Third tiny specular dot ──────────────────────────────────────
+      const h3x = cx - R * 0.40 + Math.sin(t * 0.53) * R * 0.08;
+      const h3y = cy + R * 0.38 + Math.cos(t * 0.46) * R * 0.07;
       drawShape(pts2);
       ctx.save();
       ctx.clip();
-      const vign = ctx.createRadialGradient(cx, cy, R * 0.35, cx, cy, R * 1.05);
-      vign.addColorStop(0, 'rgba(0,0,0,0)');
-      vign.addColorStop(1, 'rgba(0,0,20,0.55)');
-      ctx.fillStyle = vign;
+      const spec3 = ctx.createRadialGradient(h3x, h3y, 0, h3x, h3y, R * 0.14);
+      spec3.addColorStop(0.00, 'rgba(210, 235, 255, 0.65)');
+      spec3.addColorStop(1.00, 'rgba(0,0,0,0)');
+      ctx.fillStyle = spec3;
+      ctx.fillRect(0, 0, W, H);
+      ctx.restore();
+
+      // ── Dark center depth ────────────────────────────────────────────
+      drawShape(pts2);
+      ctx.save();
+      ctx.clip();
+      const depth = ctx.createRadialGradient(cx, cy, 0, cx, cy, R * 0.75);
+      depth.addColorStop(0, 'rgba(0,1,8,0.50)');
+      depth.addColorStop(1, 'rgba(0,0,0,0)');
+      ctx.fillStyle = depth;
       ctx.fillRect(0, 0, W, H);
       ctx.restore();
     }());
