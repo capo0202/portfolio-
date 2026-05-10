@@ -686,14 +686,14 @@ gsap.utils.toArray('.gs-tool').forEach((el, i) => {
     const H = scene.offsetHeight || 480;
     const cx = W * 0.5, cy = H * 0.5;
 
-    // Diamond gems — bigger so the shape is clearly visible
+    // Gems tighter together so goo merging is very visible
     const gems = [
-      { id: 'ctG0', w: 160, h: 240, px: .50, py: .48, sx: .16, sy: .13, ph: 0.0, rot:  10 },
-      { id: 'ctG1', w: 140, h: 220, px: .30, py: .40, sx: .13, sy: .19, ph: 1.2, rot: -35 },
-      { id: 'ctG2', w: 145, h: 225, px: .70, py: .36, sx: .18, sy: .15, ph: 2.4, rot:  60 },
-      { id: 'ctG3', w: 130, h: 205, px: .60, py: .64, sx: .15, sy: .21, ph: 3.6, rot: -55 },
-      { id: 'ctG4', w: 125, h: 195, px: .24, py: .64, sx: .20, sy: .17, ph: 4.8, rot:  85 },
-      { id: 'ctG5', w: 118, h: 185, px: .74, py: .62, sx: .11, sy: .23, ph: 6.0, rot: -20 },
+      { id: 'ctG0', w: 165, h: 245, px: .50, py: .48, sx: .13, sy: .11, ph: 0.0, rot:  10 },
+      { id: 'ctG1', w: 148, h: 225, px: .37, py: .44, sx: .11, sy: .16, ph: 1.2, rot: -35 },
+      { id: 'ctG2', w: 152, h: 230, px: .63, py: .42, sx: .15, sy: .12, ph: 2.4, rot:  60 },
+      { id: 'ctG3', w: 138, h: 210, px: .57, py: .58, sx: .12, sy: .17, ph: 3.6, rot: -55 },
+      { id: 'ctG4', w: 132, h: 200, px: .38, py: .58, sx: .16, sy: .13, ph: 4.8, rot:  85 },
+      { id: 'ctG5', w: 125, h: 190, px: .50, py: .52, sx: .09, sy: .18, ph: 6.0, rot: -18 },
     ];
 
     const cursor = document.getElementById('ctGCursor');
