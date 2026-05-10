@@ -584,8 +584,31 @@
           </div>
         </div>
 
-        <!-- Liquid Metal Animation -->
-        <div class="ct-liquid-scene gs-r" id="ctScene"></div>
+        <!-- Liquid Diamond Animation -->
+        <div class="ct-liquid-scene gs-r" id="ctScene">
+          <svg style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true">
+            <defs>
+              <filter id="gooFilter" x="-50%" y="-50%" width="200%" height="200%" color-interpolation-filters="sRGB">
+                <feGaussianBlur in="SourceGraphic" stdDeviation="14" result="blur"/>
+                <feColorMatrix in="blur" mode="matrix"
+                  values="1 0 0 0 0
+                          0 1 0 0 0
+                          0 0 1 0 0
+                          0 0 0 28 -11" result="goo"/>
+                <feComposite in="SourceGraphic" in2="goo" operator="atop"/>
+              </filter>
+            </defs>
+          </svg>
+          <div class="ct-blob-layer" id="ctBlobLayer">
+            <div class="ct-gem" id="ctG0"></div>
+            <div class="ct-gem" id="ctG1"></div>
+            <div class="ct-gem" id="ctG2"></div>
+            <div class="ct-gem" id="ctG3"></div>
+            <div class="ct-gem" id="ctG4"></div>
+            <div class="ct-gem" id="ctG5"></div>
+            <div class="ct-gem ct-gem-cursor" id="ctGCursor"></div>
+          </div>
+        </div>
 
         </div><!-- /.ct-grid -->
 

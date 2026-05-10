@@ -1022,6 +1022,32 @@ ul { list-style: none; }
   height: 100%;
 }
 
+.ct-blob-layer {
+  position: absolute;
+  inset: -80px;
+  filter: url(#gooFilter);
+}
+
+.ct-gem {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 38% 28%,
+    #ffffff 0%,
+    #c8dcff 12%,
+    #6ea8f8 28%,
+    #1848c8 50%,
+    #050e30 75%,
+    #020610 100%
+  );
+  box-shadow: inset 0 0 30px rgba(200,225,255,0.3);
+}
+
+.ct-gem-cursor {
+  pointer-events: none;
+  transition: width .25s, height .25s;
+}
+
 .ct-title {
   font-family: var(--mono);
   font-size: clamp(2.4rem, 5.5vw, 4.2rem);

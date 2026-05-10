@@ -682,125 +682,69 @@ gsap.utils.toArray('.gs-tool').forEach((el, i) => {
   if (!scene) return;
 
   function init() {
-    const canvas = document.createElement('canvas');
-    scene.appendChild(canvas);
-    canvas.width  = scene.offsetWidth  || 520;
-    canvas.height = scene.offsetHeight || 480;
-    const ctx = canvas.getContext('2d');
-    const W = canvas.width, H = canvas.height;
-    const cx = W * 0.50, cy = H * 0.50;
-    const R  = Math.min(W, H) * 0.37;
+    const W = scene.offsetWidth  || 520;
+    const H = scene.offsetHeight || 480;
+    const cx = W * 0.5, cy = H * 0.5;
 
-    // 5 liquid arms — each is an elongated ellipse radiating from center
-    const arms = [
-      { angle: 0.20,  lenR: 1.00, wR: 0.36, lf: 0.19, af: 0.13, lA: 0.11, aA: 0.09, ph: 0.0 },
-      { angle: 1.48,  lenR: 0.88, wR: 0.31, lf: 0.23, af: 0.17, lA: 0.09, aA: 0.07, ph: 1.3 },
-      { angle: 2.72,  lenR: 0.95, wR: 0.34, lf: 0.17, af: 0.15, lA: 0.10, aA: 0.08, ph: 2.5 },
-      { angle: 4.05,  lenR: 0.90, wR: 0.30, lf: 0.21, af: 0.11, lA: 0.08, aA: 0.10, ph: 3.8 },
-      { angle: 5.30,  lenR: 0.85, wR: 0.32, lf: 0.25, af: 0.19, lA: 0.12, aA: 0.06, ph: 5.1 },
+    // Diamond gems: elongated ellipses at different angles
+    const gems = [
+      { id: 'ctG0', w: 115, h: 195, px: .50, py: .50, sx: .18, sy: .14, ph: 0.0, rot: 15  },
+      { id: 'ctG1', w: 100, h: 175, px: .32, py: .42, sx: .14, sy: .20, ph: 1.2, rot: -30 },
+      { id: 'ctG2', w: 105, h: 180, px: .68, py: .38, sx: .20, sy: .16, ph: 2.4, rot: 55  },
+      { id: 'ctG3', w: 95,  h: 165, px: .58, py: .62, sx: .16, sy: .22, ph: 3.6, rot: -50 },
+      { id: 'ctG4', w: 90,  h: 158, px: .26, py: .62, sx: .22, sy: .18, ph: 4.8, rot: 80  },
+      { id: 'ctG5', w: 85,  h: 148, px: .72, py: .60, sx: .12, sy: .24, ph: 6.0, rot: -15 },
     ];
 
-    let mx = W/2, my = H/2, mActive = false;
+    const cursor = document.getElementById('ctGCursor');
+    if (cursor) { cursor.style.width = '90px'; cursor.style.height = '155px'; }
+
+    gems.forEach(g => {
+      const el = document.getElementById(g.id);
+      if (!el) return;
+      el.style.width    = g.w + 'px';
+      el.style.height   = g.h + 'px';
+      el.style.transform = `rotate(${g.rot}deg)`;
+    });
+
+    let mx = W / 2, my = H / 2;
+    let curX = mx, curY = my;
+
     scene.addEventListener('mousemove', e => {
       const r = scene.getBoundingClientRect();
-      mx = e.clientX - r.left; my = e.clientY - r.top; mActive = true;
+      mx = e.clientX - r.left;
+      my = e.clientY - r.top;
     });
-    scene.addEventListener('mouseleave', () => { mActive = false; });
 
     const start = performance.now();
-    (function frame() {
-      requestAnimationFrame(frame);
+    (function tick() {
+      requestAnimationFrame(tick);
       const t = (performance.now() - start) / 1000;
-      ctx.clearRect(0, 0, W, H);
 
-      // Slowly rotating metallic gradient shared across everything
-      const ga = t * 0.09;
-      const g = ctx.createLinearGradient(
-        cx + Math.cos(ga) * R * 1.6, cy + Math.sin(ga) * R * 1.6,
-        cx - Math.cos(ga) * R * 1.6, cy - Math.sin(ga) * R * 1.6
-      );
-      g.addColorStop(0.00, '#000105');
-      g.addColorStop(0.10, '#030b1a');
-      g.addColorStop(0.25, '#082060');
-      g.addColorStop(0.42, '#1858c8');
-      g.addColorStop(0.52, '#4a90ee');
-      g.addColorStop(0.62, '#1248b0');
-      g.addColorStop(0.78, '#051228');
-      g.addColorStop(1.00, '#000208');
-
-      // Central core blob (connects all arms)
-      ctx.beginPath();
-      ctx.ellipse(cx, cy, R * 0.52, R * 0.48, t * 0.04, 0, Math.PI * 2);
-      ctx.fillStyle = g;
-      ctx.fill();
-
-      // Each arm: elongated ellipse offset from center
-      arms.forEach(arm => {
-        const a   = arm.angle + Math.sin(t * arm.af + arm.ph) * arm.aA;
-        const len = R * arm.lenR * (1 + Math.sin(t * arm.lf + arm.ph) * arm.lA);
-        const w   = R * arm.wR;
-
-        // Mouse: stretch arm toward cursor
-        let extra = 0;
-        if (mActive) {
-          const mA = Math.atan2(my - cy, mx - cx);
-          let d = a - mA;
-          while (d >  Math.PI) d -= Math.PI * 2;
-          while (d < -Math.PI) d += Math.PI * 2;
-          extra = Math.exp(-(d * d) * 2.8) * R * 0.30;
-        }
-
-        // Center of arm ellipse: offset so it starts at canvas center and extends outward
-        const offX = cx + Math.cos(a) * (len * 0.45 + extra * 0.5);
-        const offY = cy + Math.sin(a) * (len * 0.45 + extra * 0.5);
-        const totalLen = len + extra;
-
-        ctx.beginPath();
-        ctx.ellipse(offX, offY, w, totalLen, a + Math.PI / 2, 0, Math.PI * 2);
-        ctx.fillStyle = g;
-        ctx.fill();
+      gems.forEach(g => {
+        const el = document.getElementById(g.id);
+        if (!el) return;
+        const x = W * g.px + Math.sin(t * g.sx * 3.2 + g.ph) * W * 0.14;
+        const y = H * g.py + Math.cos(t * g.sy * 3.2 + g.ph) * H * 0.14;
+        const rot = g.rot + Math.sin(t * 0.25 + g.ph) * 18;
+        el.style.left      = (x - g.w / 2) + 'px';
+        el.style.top       = (y - g.h / 2) + 'px';
+        el.style.transform = `rotate(${rot}deg)`;
       });
 
-      // Specular highlight 1 — main bright spot
-      const s1x = cx + Math.sin(t * 0.28) * R * 0.20 - R * 0.10;
-      const s1y = cy + Math.cos(t * 0.22) * R * 0.16 - R * 0.22;
-      const sg1 = ctx.createRadialGradient(s1x, s1y, 0, s1x, s1y, R * 0.28);
-      sg1.addColorStop(0.00, 'rgba(230,242,255,0.95)');
-      sg1.addColorStop(0.20, 'rgba(160,210,255,0.55)');
-      sg1.addColorStop(0.55, 'rgba(60,130,240,0.15)');
-      sg1.addColorStop(1.00, 'rgba(0,0,0,0)');
-      ctx.fillStyle = sg1;
-      ctx.fillRect(0, 0, W, H);
-
-      // Specular highlight 2 — arm tip glint
-      const s2x = cx + Math.cos(arms[0].angle + t * 0.07) * R * 0.88 + Math.sin(t * 0.34) * R * 0.08;
-      const s2y = cy + Math.sin(arms[0].angle + t * 0.07) * R * 0.88 + Math.cos(t * 0.29) * R * 0.07;
-      const sg2 = ctx.createRadialGradient(s2x, s2y, 0, s2x, s2y, R * 0.17);
-      sg2.addColorStop(0.00, 'rgba(210,235,255,0.80)');
-      sg2.addColorStop(0.40, 'rgba(80,160,255,0.20)');
-      sg2.addColorStop(1.00, 'rgba(0,0,0,0)');
-      ctx.fillStyle = sg2;
-      ctx.fillRect(0, 0, W, H);
-
-      // Specular highlight 3 — small secondary glint
-      const s3x = cx + Math.cos(arms[2].angle + t * 0.06) * R * 0.75 + Math.cos(t * 0.41) * R * 0.06;
-      const s3y = cy + Math.sin(arms[2].angle + t * 0.06) * R * 0.75 + Math.sin(t * 0.38) * R * 0.05;
-      const sg3 = ctx.createRadialGradient(s3x, s3y, 0, s3x, s3y, R * 0.12);
-      sg3.addColorStop(0.00, 'rgba(200,228,255,0.70)');
-      sg3.addColorStop(1.00, 'rgba(0,0,0,0)');
-      ctx.fillStyle = sg3;
-      ctx.fillRect(0, 0, W, H);
-
-      // Dark center — adds depth so it doesn't look flat
-      const dc = ctx.createRadialGradient(cx, cy, 0, cx, cy, R * 0.58);
-      dc.addColorStop(0, 'rgba(0,2,12,0.52)');
-      dc.addColorStop(1, 'rgba(0,0,0,0)');
-      ctx.fillStyle = dc;
-      ctx.fillRect(0, 0, W, H);
+      if (cursor) {
+        curX += (mx - curX) * 0.10;
+        curY += (my - curY) * 0.10;
+        const curRot = Math.sin(t * 0.4) * 25;
+        cursor.style.left      = (curX - 45) + 'px';
+        cursor.style.top       = (curY - 77) + 'px';
+        cursor.style.transform = `rotate(${curRot}deg)`;
+      }
     }());
   }
 
   if (document.readyState === 'complete') init();
   else window.addEventListener('load', init);
 }());
+
 
