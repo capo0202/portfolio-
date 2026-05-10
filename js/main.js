@@ -686,18 +686,18 @@ gsap.utils.toArray('.gs-tool').forEach((el, i) => {
     const H = scene.offsetHeight || 480;
     const cx = W * 0.5, cy = H * 0.5;
 
-    // Diamond gems: elongated ellipses at different angles
+    // Diamond gems — bigger so the shape is clearly visible
     const gems = [
-      { id: 'ctG0', w: 115, h: 195, px: .50, py: .50, sx: .18, sy: .14, ph: 0.0, rot: 15  },
-      { id: 'ctG1', w: 100, h: 175, px: .32, py: .42, sx: .14, sy: .20, ph: 1.2, rot: -30 },
-      { id: 'ctG2', w: 105, h: 180, px: .68, py: .38, sx: .20, sy: .16, ph: 2.4, rot: 55  },
-      { id: 'ctG3', w: 95,  h: 165, px: .58, py: .62, sx: .16, sy: .22, ph: 3.6, rot: -50 },
-      { id: 'ctG4', w: 90,  h: 158, px: .26, py: .62, sx: .22, sy: .18, ph: 4.8, rot: 80  },
-      { id: 'ctG5', w: 85,  h: 148, px: .72, py: .60, sx: .12, sy: .24, ph: 6.0, rot: -15 },
+      { id: 'ctG0', w: 160, h: 240, px: .50, py: .48, sx: .16, sy: .13, ph: 0.0, rot:  10 },
+      { id: 'ctG1', w: 140, h: 220, px: .30, py: .40, sx: .13, sy: .19, ph: 1.2, rot: -35 },
+      { id: 'ctG2', w: 145, h: 225, px: .70, py: .36, sx: .18, sy: .15, ph: 2.4, rot:  60 },
+      { id: 'ctG3', w: 130, h: 205, px: .60, py: .64, sx: .15, sy: .21, ph: 3.6, rot: -55 },
+      { id: 'ctG4', w: 125, h: 195, px: .24, py: .64, sx: .20, sy: .17, ph: 4.8, rot:  85 },
+      { id: 'ctG5', w: 118, h: 185, px: .74, py: .62, sx: .11, sy: .23, ph: 6.0, rot: -20 },
     ];
 
     const cursor = document.getElementById('ctGCursor');
-    if (cursor) { cursor.style.width = '90px'; cursor.style.height = '155px'; }
+    if (cursor) { cursor.style.width = '130px'; cursor.style.height = '200px'; }
 
     gems.forEach(g => {
       const el = document.getElementById(g.id);
