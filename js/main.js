@@ -686,14 +686,14 @@ gsap.utils.toArray('.gs-tool').forEach((el, i) => {
     const H = scene.offsetHeight || 480;
     const cx = W * 0.5, cy = H * 0.5;
 
-    // Gems tighter together so goo merging is very visible
+    // Gems spread out — only merge when natural float brings them close
     const gems = [
-      { id: 'ctG0', w: 165, h: 245, px: .50, py: .48, sx: .13, sy: .11, ph: 0.0, rot:  10 },
-      { id: 'ctG1', w: 148, h: 225, px: .37, py: .44, sx: .11, sy: .16, ph: 1.2, rot: -35 },
-      { id: 'ctG2', w: 152, h: 230, px: .63, py: .42, sx: .15, sy: .12, ph: 2.4, rot:  60 },
-      { id: 'ctG3', w: 138, h: 210, px: .57, py: .58, sx: .12, sy: .17, ph: 3.6, rot: -55 },
-      { id: 'ctG4', w: 132, h: 200, px: .38, py: .58, sx: .16, sy: .13, ph: 4.8, rot:  85 },
-      { id: 'ctG5', w: 125, h: 190, px: .50, py: .52, sx: .09, sy: .18, ph: 6.0, rot: -18 },
+      { id: 'ctG0', w: 155, h: 230, px: .52, py: .44, sx: .17, sy: .14, ph: 0.0, rot:  10 },
+      { id: 'ctG1', w: 138, h: 210, px: .25, py: .35, sx: .13, sy: .18, ph: 1.2, rot: -35 },
+      { id: 'ctG2', w: 142, h: 215, px: .75, py: .32, sx: .18, sy: .13, ph: 2.4, rot:  60 },
+      { id: 'ctG3', w: 128, h: 195, px: .68, py: .68, sx: .14, sy: .19, ph: 3.6, rot: -55 },
+      { id: 'ctG4', w: 122, h: 185, px: .22, py: .66, sx: .19, sy: .15, ph: 4.8, rot:  85 },
+      { id: 'ctG5', w: 115, h: 175, px: .50, py: .75, sx: .10, sy: .21, ph: 6.0, rot: -18 },
     ];
 
     const cursor = document.getElementById('ctGCursor');
@@ -707,9 +707,8 @@ gsap.utils.toArray('.gs-tool').forEach((el, i) => {
       el.style.transform = `rotate(${g.rot}deg)`;
     });
 
-    let mx = W / 2, my = H / 2, mActive = false;
+    let mx = -9999, my = -9999, mActive = false;
 
-    // Each gem tracks its own current position (lerped)
     const cur = gems.map(g => ({ x: W * g.px, y: H * g.py }));
     let cursorX = W / 2, cursorY = H / 2;
 
@@ -719,9 +718,9 @@ gsap.utils.toArray('.gs-tool').forEach((el, i) => {
       my = e.clientY - r.top;
       mActive = true;
     });
-    scene.addEventListener('mouseleave', () => { mActive = false; });
+    scene.addEventListener('mouseleave', () => { mActive = false; mx = -9999; my = -9999; });
 
-    const ATTRACT_RADIUS = 180; // px – how close mouse must be to attract a gem
+    const ATTRACT_RADIUS = 145; // each gem reacts only when mouse is THIS close
 
     const start = performance.now();
     (function tick() {
