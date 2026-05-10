@@ -682,7 +682,7 @@ gsap.utils.toArray('.gs-tool').forEach((el, i) => {
   if (!canvas || typeof THREE === 'undefined') return;
 
   const wrap = canvas.parentElement;
-  let W = wrap.clientWidth || 500;
+  let W = wrap.clientWidth  || 500;
   let H = wrap.clientHeight || 480;
 
   const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
@@ -696,33 +696,44 @@ gsap.utils.toArray('.gs-tool').forEach((el, i) => {
   camera.position.set(0, 1.5, 6);
 
   scene.add(new THREE.AmbientLight(0xffffff, 1.0));
-  const key = new THREE.DirectionalLight(0x8899ff, 2.0);
+  const key = new THREE.DirectionalLight(0x8899ff, 2.5);
   key.position.set(3, 5, 4);
   scene.add(key);
-  const fill = new THREE.DirectionalLight(0x3a52d4, 1.0);
+  const fill = new THREE.DirectionalLight(0x3a52d4, 1.2);
   fill.position.set(-3, -2, -3);
   scene.add(fill);
 
   const controls = new THREE.OrbitControls(camera, renderer.domElement);
-  controls.enableZoom    = false;
-  controls.enablePan     = false;
-  controls.autoRotate    = true;
+  controls.enableZoom     = false;
+  controls.enablePan      = false;
+  controls.autoRotate     = true;
   controls.autoRotateSpeed = 0.8;
-  controls.enableDamping = true;
-  controls.dampingFactor = 0.05;
-  controls.target.set(0, 0, 0);
+  controls.enableDamping  = true;
+  controls.dampingFactor  = 0.05;
 
-  const src = window.GLB_BINARY_SYSTEM || 'assets/binary-system.glb';
-  const loader = new THREE.GLTFLoader();
-  loader.load(src, function (gltf) {
-    const model = gltf.scene;
-    const box   = new THREE.Box3().setFromObject(model);
-    const center = box.getCenter(new THREE.Vector3());
-    const size   = box.getSize(new THREE.Vector3());
-    model.position.sub(center);
-    model.scale.setScalar(3.5 / Math.max(size.x, size.y, size.z));
-    scene.add(model);
-  }, undefined, function(err) { console.warn('GLB load error', err); });
+  // parse() braucht keinen fetch – funktioniert direkt auf file://
+  function loadModel(arrayBuffer) {
+    const loader = new THREE.GLTFLoader();
+    loader.parse(arrayBuffer, '', function (gltf) {
+      const model = gltf.scene;
+      const box    = new THREE.Box3().setFromObject(model);
+      const center = box.getCenter(new THREE.Vector3());
+      const size   = box.getSize(new THREE.Vector3());
+      model.position.sub(center);
+      model.scale.setScalar(3.5 / Math.max(size.x, size.y, size.z));
+      scene.add(model);
+    }, function (err) { console.warn('GLTFLoader parse error', err); });
+  }
+
+  // Base64 → ArrayBuffer ohne fetch
+  if (window.GLB_BINARY_SYSTEM) {
+    const b64 = window.GLB_BINARY_SYSTEM.split(',')[1];
+    const bin = atob(b64);
+    const buf = new ArrayBuffer(bin.length);
+    const view = new Uint8Array(buf);
+    for (let i = 0; i < bin.length; i++) view[i] = bin.charCodeAt(i);
+    loadModel(buf);
+  }
 
   window.addEventListener('resize', () => {
     W = wrap.clientWidth; H = wrap.clientHeight;
