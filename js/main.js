@@ -676,90 +676,155 @@ gsap.utils.toArray('.gs-tool').forEach((el, i) => {
   });
 }());
 
-// ── CONTACT 3D MODEL ─────────────────────────────────────────────────────────
+// ── CONTACT LIQUID SHADER ─────────────────────────────────────────────────────
 (function () {
-  const status = document.getElementById('ct3dStatus');
-  function log(msg) { if (status) status.textContent = msg; }
-
   const canvas = document.getElementById('ct3dCanvas');
-  if (!canvas) { log('ERROR: canvas nicht gefunden'); return; }
-  if (typeof THREE === 'undefined') { log('ERROR: THREE nicht geladen'); return; }
-  if (!window.GLB_BINARY_SYSTEM) { log('ERROR: GLB-Daten fehlen'); return; }
-
+  if (!canvas) return;
   const wrap = canvas.parentElement;
-  let W = wrap.clientWidth  || 500;
-  let H = wrap.clientHeight || 480;
 
-  const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
-  renderer.setSize(W, H);
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-  renderer.setClearColor(0x000000, 0);
-  canvas.style.background = 'transparent';
+  const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+  if (!gl) return;
 
-  const scene  = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(50, W / H, 0.1, 100);
-  camera.position.set(0, 0, 5);
+  const VS = `
+    attribute vec2 a_pos;
+    void main() { gl_Position = vec4(a_pos, 0.0, 1.0); }
+  `;
 
-  scene.add(new THREE.AmbientLight(0xffffff, 1.0));
-  const key = new THREE.DirectionalLight(0x8899ff, 2.5);
-  key.position.set(3, 5, 4);
-  scene.add(key);
-  const fill = new THREE.DirectionalLight(0x3a52d4, 1.2);
-  fill.position.set(-3, -2, -3);
-  scene.add(fill);
+  const FS = `
+    precision highp float;
+    uniform vec2  u_res;
+    uniform float u_time;
+    uniform vec2  u_mouse;
+    uniform float u_hover;
 
-  // Test-Kugel – MeshBasicMaterial braucht kein Licht
-  const testMesh = new THREE.Mesh(
-    new THREE.SphereGeometry(1, 32, 32),
-    new THREE.MeshBasicMaterial({ color: 0x6a80ff })
-  );
-  scene.add(testMesh);
+    float smin(float a, float b, float k) {
+      float h = clamp(0.5 + 0.5*(b-a)/k, 0.0, 1.0);
+      return mix(b, a, h) - k*h*(1.0-h);
+    }
 
-  const controls = new THREE.OrbitControls(camera, renderer.domElement);
-  controls.enableZoom     = false;
-  controls.enablePan      = false;
-  controls.autoRotate     = true;
-  controls.autoRotateSpeed = 0.8;
-  controls.enableDamping  = true;
-  controls.dampingFactor  = 0.05;
+    float blob(vec3 p, float t, vec2 m) {
+      float d = length(p - vec3(sin(t*0.52)*0.55, cos(t*0.41)*0.40, sin(t*0.33)*0.20)) - 0.72;
+      d = smin(d, length(p - vec3(cos(t*0.63)*0.50, sin(t*0.71)*0.55, cos(t*0.44)*0.30)) - 0.55, 0.45);
+      d = smin(d, length(p - vec3(sin(t*0.81)*0.38, cos(t*0.59)*0.32, sin(t*0.67)*0.45)) - 0.48, 0.38);
+      d = smin(d, length(p - vec3(cos(t*0.37)*0.60, sin(t*0.48)*0.38, cos(t*0.55)*0.25)) - 0.40, 0.40);
+      vec3 mp = vec3(m.x * 1.4, m.y * 1.4, 0.6);
+      d = smin(d, length(p - mp) - (0.28 + u_hover * 0.18), 0.55 + u_hover * 0.25);
+      return d;
+    }
 
-  // parse() braucht keinen fetch – funktioniert direkt auf file://
-  function loadModel(arrayBuffer) {
-    const loader = new THREE.GLTFLoader();
-    loader.parse(arrayBuffer, '', function (gltf) {
-      scene.remove(testMesh);
-      log('');
-      const model = gltf.scene;
-      const box    = new THREE.Box3().setFromObject(model);
-      const center = box.getCenter(new THREE.Vector3());
-      const size   = box.getSize(new THREE.Vector3());
-      log('Größe: ' + size.x.toFixed(1) + ' x ' + size.y.toFixed(1) + ' x ' + size.z.toFixed(1));
-      model.position.sub(center);
-      model.scale.setScalar(3.5 / Math.max(size.x, size.y, size.z));
-      scene.add(model);
-      setTimeout(() => { if(status) status.style.display='none'; }, 3000);
-    }, function (err) { log('FEHLER: ' + err.message); });
+    vec3 calcNormal(vec3 p, float t, vec2 m) {
+      float e = 0.0015;
+      return normalize(vec3(
+        blob(p+vec3(e,0,0),t,m) - blob(p-vec3(e,0,0),t,m),
+        blob(p+vec3(0,e,0),t,m) - blob(p-vec3(0,e,0),t,m),
+        blob(p+vec3(0,0,e),t,m) - blob(p-vec3(0,0,e),t,m)
+      ));
+    }
+
+    void main() {
+      vec2 uv = (gl_FragCoord.xy - u_res * 0.5) / min(u_res.x, u_res.y);
+      vec2 m  = (u_mouse / u_res - 0.5) * vec2(1.0, -1.0) * 2.0;
+
+      vec3 ro = vec3(0.0, 0.0, 2.8);
+      vec3 rd = normalize(vec3(uv, -1.4));
+
+      float t = 0.0, hit = 0.0;
+      for (int i = 0; i < 90; i++) {
+        vec3 p = ro + rd * t;
+        float d = blob(p, u_time, m);
+        if (d < 0.001) { hit = 1.0; break; }
+        if (t > 5.5) break;
+        t += d * 0.65;
+      }
+
+      vec4 col = vec4(0.0);
+      if (hit > 0.5) {
+        vec3 p = ro + rd * t;
+        vec3 n = calcNormal(p, u_time, m);
+        vec3 r = reflect(rd, n);
+
+        float fres = pow(1.0 - max(dot(-rd, n), 0.0), 2.5);
+        vec3 lA = normalize(vec3(1.2, 2.0, 2.0));
+        vec3 lB = normalize(vec3(-1.5, -0.5, 1.0));
+        vec3 lC = normalize(vec3(0.0, -2.0, -1.0));
+
+        float envY = r.y * 0.5 + 0.5;
+        vec3 env = mix(vec3(0.04, 0.08, 0.35), vec3(0.55, 0.70, 1.00), envY);
+        env = mix(env, vec3(0.20, 0.35, 0.90), smoothstep(0.5, 1.0, envY));
+
+        float sA = pow(max(dot(r, lA), 0.0), 96.0);
+        float sB = pow(max(dot(r, lB), 0.0), 48.0);
+        float sC = pow(max(dot(r, lC), 0.0), 32.0);
+
+        vec3 c = env;
+        c += vec3(0.60, 0.75, 1.00) * sA * 1.8;
+        c += vec3(0.15, 0.25, 0.80) * sB * 0.9;
+        c += vec3(0.05, 0.10, 0.50) * sC * 0.6;
+        c  = mix(c, vec3(0.70, 0.85, 1.00), fres * 0.55);
+        c *= 0.85 + fres * 0.15;
+        c  = mix(c, vec3(0.08, 0.14, 0.60), 0.18);
+        c  = pow(clamp(c, 0.0, 1.0), vec3(0.9));
+
+        float alpha = smoothstep(0.0, 0.003, 0.001 - (blob(ro + rd*t, u_time, m)));
+        col = vec4(c, 1.0);
+      }
+      gl_FragColor = col;
+    }
+  `;
+
+  function compile(type, src) {
+    const s = gl.createShader(type);
+    gl.shaderSource(s, src); gl.compileShader(s);
+    return s;
   }
+  const prog = gl.createProgram();
+  gl.attachShader(prog, compile(gl.VERTEX_SHADER, VS));
+  gl.attachShader(prog, compile(gl.FRAGMENT_SHADER, FS));
+  gl.linkProgram(prog);
+  gl.useProgram(prog);
 
-  log('Lade Modell (' + Math.round(window.GLB_BINARY_SYSTEM.length/1024) + 'KB)...');
-  const b64 = window.GLB_BINARY_SYSTEM.split(',')[1];
-  const bin = atob(b64);
-  const buf = new ArrayBuffer(bin.length);
-  const view = new Uint8Array(buf);
-  for (let i = 0; i < bin.length; i++) view[i] = bin.charCodeAt(i);
-  log('Parsing...');
-  loadModel(buf);
+  const buf = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 1,-1, -1,1, 1,1]), gl.STATIC_DRAW);
+  const loc = gl.getAttribLocation(prog, 'a_pos');
+  gl.enableVertexAttribArray(loc);
+  gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
 
-  window.addEventListener('resize', () => {
-    W = wrap.clientWidth; H = wrap.clientHeight;
-    camera.aspect = W / H;
-    camera.updateProjectionMatrix();
-    renderer.setSize(W, H);
+  const uRes   = gl.getUniformLocation(prog, 'u_res');
+  const uTime  = gl.getUniformLocation(prog, 'u_time');
+  const uMouse = gl.getUniformLocation(prog, 'u_mouse');
+  const uHover = gl.getUniformLocation(prog, 'u_hover');
+
+  let mx = 0, my = 0, hover = 0, hoverTarget = 0;
+
+  function resize() {
+    canvas.width  = wrap.clientWidth  || 500;
+    canvas.height = wrap.clientHeight || 480;
+    gl.viewport(0, 0, canvas.width, canvas.height);
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  wrap.addEventListener('mousemove', e => {
+    const r = canvas.getBoundingClientRect();
+    mx = e.clientX - r.left;
+    my = e.clientY - r.top;
   });
+  wrap.addEventListener('mouseenter', () => { hoverTarget = 1; });
+  wrap.addEventListener('mouseleave', () => { hoverTarget = 0; mx = canvas.width/2; my = canvas.height/2; });
 
-  (function animate() {
-    requestAnimationFrame(animate);
-    controls.update();
-    renderer.render(scene, camera);
+  mx = (wrap.clientWidth  || 500) / 2;
+  my = (wrap.clientHeight || 480) / 2;
+
+  const start = performance.now();
+  (function frame() {
+    requestAnimationFrame(frame);
+    hover += (hoverTarget - hover) * 0.06;
+    const t = (performance.now() - start) / 1000;
+    gl.uniform2f(uRes,   canvas.width, canvas.height);
+    gl.uniform1f(uTime,  t);
+    gl.uniform2f(uMouse, mx, canvas.height - my);
+    gl.uniform1f(uHover, hover);
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
   }());
 }());
