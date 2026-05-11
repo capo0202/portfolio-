@@ -596,19 +596,37 @@ gsap.utils.toArray('section:not(#hero), .marquee-wrap').forEach(section => {
 });
 
 // ── ZOOM PARALLAX ─────────────────────────────────────────────────────────────
-gsap.utils.toArray('section').forEach(section => {
-  gsap.to(section, {
-    scale: 0.88,
-    opacity: 0.5,
-    borderRadius: '18px',
-    ease: 'none',
-    scrollTrigger: {
-      trigger: section,
-      start: 'top top',
-      end: 'bottom top',
-      scrub: true,
-    }
-  });
+gsap.utils.toArray('section:not(#contact)').forEach(section => {
+  const sz = section.querySelector('.sz');
+  if (!sz) return;
+
+  if (section.id === 'workflow') {
+    // Workflow: Animation über das letzte 100vh-Fenster (wenn Contact von unten
+    // erscheint). 'bottom bottom'→'bottom top' = exakt das Fenster wo Contact steigt.
+    gsap.to(sz, {
+      scale: 0.88,
+      borderRadius: '18px',
+      ease: 'none',
+      scrollTrigger: {
+        trigger: section,
+        start: 'bottom bottom',
+        end: 'bottom top',
+        scrub: true,
+      }
+    });
+  } else {
+    gsap.to(sz, {
+      scale: 0.88,
+      borderRadius: '18px',
+      ease: 'none',
+      scrollTrigger: {
+        trigger: section,
+        start: 'top top',
+        end: 'bottom top',
+        scrub: true,
+      }
+    });
+  }
 });
 
 // ── SCROLL REVEALS ────────────────────────────────────────────────────────────

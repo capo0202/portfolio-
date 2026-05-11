@@ -173,10 +173,23 @@ ul { list-style: none; }
    ZOOM PARALLAX
 ═══════════════════════════════════════════ */
 section {
-  position: relative;
+  position: sticky;
+  top: 0;
+  background: var(--bg);
+  min-height: 100vh;
+}
+
+#hero         { z-index: 1; min-height: 100dvh; }
+#about        { z-index: 2; }
+#work         { z-index: 3; }
+#web-showcase { z-index: 4; }
+#workflow     { z-index: 5; }
+#contact      { z-index: 6; min-height: unset; }
+
+.sz {
+  width: 100%;
   transform-origin: top center;
-  will-change: transform, opacity;
-  overflow: clip;
+  will-change: transform;
 }
 
 /* ═══════════════════════════════════════════
@@ -211,11 +224,18 @@ section {
    HERO
 ═══════════════════════════════════════════ */
 #hero {
-  position: relative; min-height: 100dvh;
-  display: flex; align-items: flex-end;
-  text-align: left; overflow: hidden;
+  min-height: 100dvh;
+  display: flex;
+  text-align: left;
   padding-top: var(--nav);
   padding-bottom: 5rem;
+}
+
+#hero .sz {
+  flex: 1;
+  min-height: 100dvh;
+  display: flex;
+  align-items: flex-end;
 }
 
 /* --- background --- */
@@ -536,6 +556,9 @@ section {
 #workflow {
   border-top: 1px solid var(--border);
   background: var(--bg);
+}
+
+#workflow .sz {
   position: relative;
 }
 
@@ -809,13 +832,9 @@ section {
 #about::after {
   content: '';
   position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    to bottom,
-    rgba(13,12,10,.45) 0%,
-    rgba(13,12,10,.55) 60%,
-    rgba(13,12,10,1)   100%
-  );
+  bottom: 0; left: 0; right: 0;
+  height: 18%;
+  background: linear-gradient(to bottom, transparent, var(--bg));
   pointer-events: none;
   z-index: 0;
 }
@@ -987,7 +1006,7 @@ section {
   position: relative;
   max-width: var(--max);
   margin: 0 auto;
-  padding: 7rem var(--pad) 4rem;
+  padding: 7rem var(--pad) 1rem;
   overflow: hidden;
 }
 
@@ -1020,7 +1039,7 @@ section {
 .ct-liquid-scene {
   position: relative;
   width: 100%;
-  height: 480px;
+  height: 360px;
   overflow: visible;
   background: transparent;
 }

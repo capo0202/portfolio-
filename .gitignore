@@ -1,0 +1,22 @@
+# SSL certs (local dev only)
+cert.pem
+key.pem
+start.bat
+
+# Local notes
+SKILL.md
+
+# Unused animation folder
+3 d animation/
+
+# Root video (not part of site)
+*.mp4
+!assets/**/*.mp4
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+*.code-workspace
