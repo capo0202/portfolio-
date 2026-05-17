@@ -5,32 +5,52 @@ const ring      = document.getElementById('cRing');
 const isDesktop = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
 
 function createSparkle(x, y) {
-  const el = document.createElement('span');
-  el.textContent = '✦';
-  const size  = Math.random() * 9 + 5;
-  const color = Math.random() > 0.45 ? '#f5f2ee' : '#3a52d4';
-  el.style.cssText = [
-    'position:fixed', `left:${x}px`, `top:${y}px`,
-    'pointer-events:none', 'z-index:9997', `font-size:${size}px`,
-    `color:${color}`, 'transform:translate(-50%,-50%)',
-    'user-select:none', 'line-height:1', 'will-change:transform,opacity'
-  ].join(';');
-  document.body.appendChild(el);
-  gsap.to(el, {
-    y: -(Math.random() * 42 + 16), x: (Math.random() - 0.5) * 30,
-    opacity: 0, scale: Math.random() * 0.5 + 0.15,
-    rotation: (Math.random() - 0.5) * 160,
-    duration: 0.5 + Math.random() * 0.4, ease: 'power2.out',
-    onComplete: () => el.remove()
-  });
+  const count = Math.random() > 0.5 ? 2 : 1;
+  for (let i = 0; i < count; i++) {
+    const el = document.createElement('span');
+    el.textContent = '✦';
+    const size  = Math.random() * 11 + 5;
+    const color = Math.random() > 0.45 ? '#f5f2ee' : '#3a52d4';
+    const ox = (Math.random() - 0.5) * 18;
+    const oy = (Math.random() - 0.5) * 18;
+    el.style.cssText = [
+      'position:fixed', `left:${x + ox}px`, `top:${y + oy}px`,
+      'pointer-events:none', 'z-index:9997', `font-size:${size}px`,
+      `color:${color}`, 'transform:translate(-50%,-50%)',
+      'user-select:none', 'line-height:1', 'will-change:transform,opacity'
+    ].join(';');
+    document.body.appendChild(el);
+    gsap.to(el, {
+      y: -(Math.random() * 52 + 18), x: (Math.random() - 0.5) * 36,
+      opacity: 0, scale: Math.random() * 0.6 + 0.15,
+      rotation: (Math.random() - 0.5) * 200,
+      duration: 0.55 + Math.random() * 0.45, ease: 'power2.out',
+      onComplete: () => el.remove()
+    });
+  }
 }
+
+// Blue glow cloud that follows the mouse
+const glowOrb = document.createElement('div');
+glowOrb.style.cssText = [
+  'position:fixed', 'pointer-events:none', 'z-index:9990',
+  'width:520px', 'height:380px',
+  'border-radius:60% 40% 55% 45% / 45% 55% 40% 60%',
+  'background:radial-gradient(ellipse at 40% 50%, rgba(58,82,212,0.22) 0%, rgba(58,82,212,0.10) 40%, transparent 70%)',
+  'filter:blur(28px)',
+  'transform:translate(-50%,-50%)',
+  'will-change:transform', 'top:0', 'left:0',
+  'mix-blend-mode:screen',
+].join(';');
+document.body.appendChild(glowOrb);
 
 if (isDesktop) {
   let lx = 0, ly = 0;
   document.addEventListener('mousemove', e => {
     gsap.to(ring, { x: e.clientX, y: e.clientY, duration: .55, ease: 'power2.out' });
+    gsap.to(glowOrb, { left: e.clientX, top: e.clientY, duration: 1.1, ease: 'power2.out' });
     const dx = e.clientX - lx, dy = e.clientY - ly;
-    if (dx * dx + dy * dy > 900) {
+    if (dx * dx + dy * dy > 640) {
       createSparkle(e.clientX, e.clientY);
       lx = e.clientX; ly = e.clientY;
     }
@@ -600,13 +620,9 @@ if (window.innerWidth > 768) gsap.utils.toArray('section:not(#contact)').forEach
   const sz = section.querySelector('.sz');
   if (!sz) return;
 
-  if (section.id === 'workflow') {
-    // Workflow: Animation über das letzte 100vh-Fenster (wenn Contact von unten
-    // erscheint). 'bottom bottom'→'bottom top' = exakt das Fenster wo Contact steigt.
+  if (section.id === 'workflow' || section.id === 'web-showcase') {
     gsap.to(sz, {
-      scale: 0.88,
-      borderRadius: '18px',
-      ease: 'none',
+      scale: 0.88, borderRadius: '18px', ease: 'none',
       scrollTrigger: {
         trigger: section,
         start: 'bottom bottom',
@@ -616,9 +632,7 @@ if (window.innerWidth > 768) gsap.utils.toArray('section:not(#contact)').forEach
     });
   } else {
     gsap.to(sz, {
-      scale: 0.88,
-      borderRadius: '18px',
-      ease: 'none',
+      scale: 0.88, borderRadius: '18px', ease: 'none',
       scrollTrigger: {
         trigger: section,
         start: 'top top',
@@ -628,6 +642,28 @@ if (window.innerWidth > 768) gsap.utils.toArray('section:not(#contact)').forEach
     });
   }
 });
+
+// ── WEB SHOWCASE HORIZONTAL SLIDE ─────────────────────────────────────────────
+if (window.innerWidth > 768) {
+  const track = document.querySelector('#web-showcase .wbs-slides-track');
+  const dots  = document.querySelectorAll('.wbs-ind');
+  if (track) {
+    gsap.to(track, {
+      x: '-50%',
+      ease: 'none',
+      scrollTrigger: {
+        trigger: '#web-showcase',
+        start: 'top top',
+        end: 'bottom bottom',
+        scrub: true,
+        onUpdate(self) {
+          const active = self.progress > 0.5 ? 1 : 0;
+          dots.forEach((d, i) => d.classList.toggle('active', i === active));
+        }
+      }
+    });
+  }
+}
 
 // ── SCROLL REVEALS ────────────────────────────────────────────────────────────
 gsap.utils.toArray('.gs-r').forEach(el => {
