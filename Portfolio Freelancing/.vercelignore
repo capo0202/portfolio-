@@ -1,0 +1,10 @@
+# Large project videos - served via GitHub raw CDN
+assets/projects/
+
+# Unused files
+3 d animation/
+1 webseite für mein portfolio .mp4
+cert.pem
+key.pem
+start.bat
+SKILL.md

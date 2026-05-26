@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  body { margin: 0; background: #111; }
+  canvas { display: block; width: 100vw; height: 100vh; }
+  #info { position: fixed; top: 10px; left: 10px; color: #fff; font: 14px sans-serif; background: rgba(0,0,0,.7); padding: 10px; }
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="info">Lade...</div>
+<script src="js/three.min.js"></script>
+<script src="js/GLTFLoader.js"></script>
+<script>
+var info = document.getElementById('info');
+var canvas = document.getElementById('c');
+var renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true });
+renderer.setSize(window.innerWidth, window.innerHeight);
+
+var scene = new THREE.Scene();
+scene.background = new THREE.Color(0x111122);
+
+var camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 5000);
+camera.position.set(0, 0, 5);
+
+// Viele Lichter
+scene.add(new THREE.AmbientLight(0xffffff, 3));
+var d1 = new THREE.DirectionalLight(0xffffff, 5);
+d1.position.set(5, 10, 5);
+scene.add(d1);
+
+// Rote Kugel als Referenz
+var sphere = new THREE.Mesh(
+  new THREE.SphereGeometry(0.5, 32, 32),
+  new THREE.MeshStandardMaterial({ color: 0xff3300 })
+);
+sphere.position.set(-2, 0, 0);
+scene.add(sphere);
+info.textContent = 'Three.js OK. Lade GLB...';
+
+// GLB laden
+var loader = new THREE.GLTFLoader();
+loader.load('assets/meteorit1.glb', function(gltf) {
+  var m = gltf.scene;
+
+  // Bounding Box
+  var box = new THREE.Box3().setFromObject(m);
+  var size = new THREE.Vector3();
+  box.getSize(size);
+  var center = new THREE.Vector3();
+  box.getCenter(center);
+
+  info.textContent = 'GLB geladen! Größe: ' + size.x.toFixed(2) + ' x ' + size.y.toFixed(2) + ' x ' + size.z.toFixed(2);
+
+  // Zentrieren und skalieren auf 2 units
+  m.position.sub(center);
+  var maxDim = Math.max(size.x, size.y, size.z);
+  m.scale.setScalar(2 / maxDim);
+
+  // Material überschreiben
+  m.traverse(function(c) {
+    if (c.isMesh) {
+      c.material = new THREE.MeshStandardMaterial({
+        color: 0x888877,
+        roughness: 0.9,
+        metalness: 0.05
+      });
+    }
+  });
+
+  scene.add(m);
+}, undefined, function(e) {
+  info.textContent = 'FEHLER: ' + e.message;
+  console.error(e);
+});
+
+(function animate() {
+  requestAnimationFrame(animate);
+  sphere.rotation.y += 0.01;
+  renderer.render(scene, camera);
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,31 @@
+# SSL certs (local dev only)
+cert.pem
+key.pem
+start.bat
+
+# Local notes
+SKILL.md
+
+# Unused animation folder
+3 d animation/
+
+# Videos
+*.mp4
+*.mov
+!assets/hero-space.mp4
+!assets/work-bg.mp4
+!assets/web-showcase.mp4
+!assets/web-showcase-2.mp4
+
+# Project videos – served via GitHub CDN, not bundled in this repo
+assets/projects/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+*.code-workspace
+
+.vercel

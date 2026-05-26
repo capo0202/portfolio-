@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Luca Caponeri — Digital Content Creator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=Playfair+Display:ital,wght@1,800;1,900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <!-- Split preloader -->
+  <div id="preloader" aria-hidden="true">
+    <div class="pl-top"></div>
+    <div class="pl-bottom"></div>
+  </div>
+
+  <!-- Custom cursor ring (desktop only) -->
+  <div class="c-ring" id="cRing" aria-hidden="true"></div>
+
+  <!-- Noise overlay -->
+  <div class="noise" aria-hidden="true"></div>
+
+  <!-- ═══ NAV ═══ -->
+  <header id="navbar">
+    <nav class="nav-container">
+      <span class="nav-logo"><span class="lm">{</span>LC<span class="lm">}</span></span>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#work">Work</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#services">Leistungen</a></li>
+        <li><a href="#chat">Chat</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+      <a href="#contact" class="btn btn-nav magnetic">Let's talk</a>
+      <button class="nav-toggle" id="navToggle" aria-label="Menü">
+        <span></span><span></span>
+      </button>
+    </nav>
+  </header>
+
+  <main>
+
+    <!-- ═══ 01 HERO ═══ -->
+    <section id="hero">
+      <div class="sz">
+      <div class="hero-bg">
+        <video autoplay muted loop playsinline style="
+          position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;
+          filter:contrast(1.05) saturate(1.05);
+          mask-image: linear-gradient(to bottom, transparent 0%, black 12%, black 78%, transparent 100%),
+                      linear-gradient(to right,  transparent 0%, black 8%,  black 92%, transparent 100%);
+          mask-composite: intersect;
+          -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 12%, black 78%, transparent 100%),
+                              linear-gradient(to right,  transparent 0%, black 8%,  black 92%, transparent 100%);
+          -webkit-mask-composite: source-in;">
+          <source src="assets/hero-space.mp4" type="video/mp4">
+        </video>
+        <canvas id="meteorCanvas" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:2;"></canvas>
+      </div>
+      <div class="hero-content">
+        <h1 class="hero-title">
+          <span class="lw"><span class="li">Luca Caponeri</span></span>
+          <span class="lw"><span class="li hero-title-sub">Freelancer für Video, Web &amp; AI</span></span>
+        </h1>
+<div class="hero-btns" id="heroBtns">
+          <a href="#work"    class="btn btn-primary magnetic">Meine Arbeit</a>
+          <a href="#contact" class="btn btn-ghost">Kontakt &#x2197;</a>
+        </div>
+      </div>
+
+
+      </div><!-- /sz -->
+    </section>
+
+    <!-- ═══ MARQUEE ═══ -->
+    <div class="marquee-wrap" aria-hidden="true">
+      <div class="marquee-track">
+        <span>AI Content Creation</span><span class="mdot">&#x2726;</span>
+        <span>Video Editing</span><span class="mdot">&#x2726;</span>
+        <span>Social Media Management</span><span class="mdot">&#x2726;</span>
+        <span>AI Workflows</span><span class="mdot">&#x2726;</span>
+        <span>Digital Producer</span><span class="mdot">&#x2726;</span>
+        <span>Content Strategy</span><span class="mdot">&#x2726;</span>
+        <!-- duplicate for seamless loop -->
+        <span>AI Content Creation</span><span class="mdot">&#x2726;</span>
+        <span>Video Editing</span><span class="mdot">&#x2726;</span>
+        <span>Social Media Management</span><span class="mdot">&#x2726;</span>
+        <span>AI Workflows</span><span class="mdot">&#x2726;</span>
+        <span>Digital Producer</span><span class="mdot">&#x2726;</span>
+        <span>Content Strategy</span><span class="mdot">&#x2726;</span>
+      </div>
+    </div>
+
+    <!-- ═══ 02 ABOUT ═══ -->
+    <section id="about">
+      <div class="sz">
+      <video id="work-video" class="work-video-bg" autoplay muted playsinline>
+        <source src="assets/work-bg.mp4" type="video/mp4">
+      </video>
+      <div class="section-container">
+        <div class="about-grid">
+          <div class="about-visual gs-r">
+            <div class="photo-outer" id="photoOuter">
+              <div class="photo-frame">
+                <img src="assets/luca-web.jpg" alt="Luca Caponeri" class="about-photo" />
+              </div>
+            </div>
+          </div>
+          <div class="about-copy">
+            <p class="eyebrow gs-r">02 &#x2014; &#xDC;ber mich</p>
+            <h2 class="about-title gs-r">&#xDC;ber <em class="about-title-glow" data-text="mich">mich</em></h2>
+            <div class="about-text">
+              <p class="gs-r">Hi, ich bin <strong>Luca Caponeri</strong> &#x2014; ein Digital Content Creator mit Fokus auf Video, Social Media und KI-gest&#xFC;tzte Workflows.</p>
+              <p class="gs-r">Durch meine Freelance-Arbeit auf Plattformen wie <strong>Fiverr</strong> und <strong>Upwork</strong> habe ich praktische Erfahrung darin gesammelt, Projekte eigenst&#xE4;ndig von der Idee bis zur finalen Umsetzung zu entwickeln.</p>
+              <p class="gs-r">Dabei arbeite ich mit modernen KI-Tools und strukturierten digitalen Prozessen, um Inhalte effizient zu erstellen und kreative Ideen gezielt umzusetzen.</p>
+              <p class="gs-r">Zus&#xE4;tzlich habe ich eigene Content-Projekte auf <strong>YouTube</strong> umgesetzt und dabei meine F&#xE4;higkeiten in der Erstellung, Bearbeitung und Ver&#xF6;ffentlichung digitaler Inhalte weiterentwickelt.</p>
+              <p class="gs-r">Aktuell erweitere ich mein Know-how im Bereich <strong>Webentwicklung</strong> und digitale Technologien &#x2014; mit dem Ziel, moderne und wirkungsvolle digitale Projekte umzusetzen.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      </div><!-- /sz -->
+    </section>
+
+    <!-- ═══ 03 SERVICES ═══ -->
+    <section id="services">
+      <div class="sz">
+      <div class="section-container">
+        <div class="section-head">
+          <p class="eyebrow gs-r">Was ich anbiete</p>
+          <h2 class="section-title gs-r">Meine <em class="title-glow" data-text="Leistungen">Leistungen</em></h2>
+        </div>
+        <div class="wf-block" data-wf="1">
+          <div class="wf-label">
+            <span class="wf-tag">01</span>
+            <span class="wf-category">Video &amp; Content</span>
+          </div>
+          <div class="wf-track">
+            <div class="wf-line"><div class="wf-line-fill"></div></div>
+            <div class="wf-steps">
+              <div class="wf-step">
+                <div class="wf-node"><span class="wf-node-icon">🎬</span></div>
+                <p class="wf-step-label">Reels &amp; Shorts</p>
+              </div>
+              <div class="wf-step">
+                <div class="wf-node"><span class="wf-node-icon">📱</span></div>
+                <p class="wf-step-label">Social Media Content</p>
+              </div>
+              <div class="wf-step">
+                <div class="wf-node"><span class="wf-node-icon">🎥</span></div>
+                <p class="wf-step-label">Imagefilme</p>
+              </div>
+              <div class="wf-step">
+                <div class="wf-node"><span class="wf-node-icon">📺</span></div>
+                <p class="wf-step-label">YouTube Videos</p>
+              </div>
+              <div class="wf-step">
+                <div class="wf-node"><span class="wf-node-icon">🚀</span></div>
+                <p class="wf-step-label">Ads &amp; UGC</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="wf-block" data-wf="2">
+          <div class="wf-label">
+            <span class="wf-tag">02</span>
+            <span class="wf-category">Web &amp; Landingpage</span>
+          </div>
+          <div class="wf-track">
+            <div class="wf-line"><div class="wf-line-fill"></div></div>
+            <div class="wf-steps">
+              <div class="wf-step">
+                <div class="wf-node"><span class="wf-node-icon">🌐</span></div>
+                <p class="wf-step-label">Moderne Websites</p>
+              </div>
+              <div class="wf-step">
+                <div class="wf-node"><span class="wf-node-icon">🎯</span></div>
+                <p class="wf-step-label">Landingpages</p>
+              </div>
+              <div class="wf-step">
+                <div class="wf-node"><span class="wf-node-icon">🎨</span></div>
+                <p class="wf-step-label">UI &amp; Design</p>
+              </div>
+              <div class="wf-step">
+                <div class="wf-node"><span class="wf-node-icon">⚡</span></div>
+                <p class="wf-step-label">Animationen</p>
+              </div>
+              <div class="wf-step">
+                <div class="wf-node"><span class="wf-node-icon">📈</span></div>
+                <p class="wf-step-label">Conversion-Fokus</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="wf-block" data-wf="3">
+          <div class="wf-label">
+            <span class="wf-tag">03</span>
+            <span class="wf-category">AI &amp; Automatisierung</span>
+          </div>
+          <div class="wf-track">
+            <div class="wf-line"><div class="wf-line-fill"></div></div>
+            <div class="wf-steps">
+              <div class="wf-step">
+                <div class="wf-node"><span class="wf-node-icon">🤖</span></div>
+                <p class="wf-step-label">AI Content Tools</p>
+              </div>
+              <div class="wf-step">
+                <div class="wf-node"><span class="wf-node-icon">🔗</span></div>
+                <p class="wf-step-label">Workflow-Automation</p>
+              </div>
+              <div class="wf-step">
+                <div class="wf-node"><span class="wf-node-icon">🧠</span></div>
+                <p class="wf-step-label">Prompt Engineering</p>
+              </div>
+              <div class="wf-step">
+                <div class="wf-node"><span class="wf-node-icon">⚙️</span></div>
+                <p class="wf-step-label">Tool-Integration</p>
+              </div>
+              <div class="wf-step">
+                <div class="wf-node"><span class="wf-node-icon">📊</span></div>
+                <p class="wf-step-label">Schnellere Ergebnisse</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      </div><!-- /sz -->
+    </section>
+
+    <!-- ═══ 04 WORK ═══ -->
+    <section id="work">
+      <div class="sz">
+      <div class="section-container">
+        <div class="section-head">
+          <p class="eyebrow gs-r">03 &#x2014; Selected Work</p>
+          <h2 class="section-title">
+            <span class="tw"><span class="ti gs-title">Projekte</span></span>
+          </h2>
+        </div>
+      </div>
+
+      <!-- Video Laufband -->
+      <div class="proj-reel">
+        <button class="reel-arrow reel-prev" aria-label="Zur&#xFC;ck">
+          <i class="fa-solid fa-chevron-left"></i>
+        </button>
+        <button class="reel-arrow reel-next" aria-label="Weiter">
+          <i class="fa-solid fa-chevron-right"></i>
+        </button>
+        <div class="proj-track">
+
+          <div class="proj-tile">
+            <video class="proj-video" autoplay muted loop playsinline><source src="https://raw.githubusercontent.com/capo0202/portfolio-/main/assets/projects/project-1.mp4" type="video/mp4"></video>
+            <div class="proj-overlay"><div class="proj-info">
+              <span class="proj-num">01</span>
+              <h3 class="proj-title">AI UGC Ad Video &#x2013; Personalized Bottle Product</h3>
+              <p class="proj-desc">AI-basiertes UGC-Werbevideo f&#xFC;r ein personalisiertes Flaschenprodukt. Fokus auf authentischen Social-Media-Advertising-Stil.</p>
+              <div class="proj-tags"><span>AI UGC Video</span><span>Upwork</span><span>Social Media Ads</span></div>
+            </div></div>
+          </div>
+
+          <div class="proj-tile">
+            <video class="proj-video" autoplay muted loop playsinline><source src="https://raw.githubusercontent.com/capo0202/portfolio-/main/assets/projects/project-2.mp4" type="video/mp4"></video>
+            <div class="proj-overlay"><div class="proj-info">
+              <span class="proj-num">02</span>
+              <h3 class="proj-title">AI Demo Ad &#x2013; Solar Energy Company</h3>
+              <p class="proj-desc">Konzipiertes AI-Demo-Werbevideo f&#xFC;r ein Solarenergie-Unternehmen als moderne Social-Media-Anzeige f&#xFC;r erneuerbare Energien.</p>
+              <div class="proj-tags"><span>AI Video</span><span>Solar Energy</span><span>Meta Ads Style</span></div>
+            </div></div>
+          </div>
+
+          <div class="proj-tile">
+            <video class="proj-video" autoplay muted loop playsinline><source src="https://raw.githubusercontent.com/capo0202/portfolio-/main/assets/projects/project-3.mp4" type="video/mp4"></video>
+            <div class="proj-overlay"><div class="proj-info">
+              <span class="proj-num">03</span>
+              <h3 class="proj-title">Anime-Style Motivation Video</h3>
+              <p class="proj-desc">Anime-inspiriertes Motivationsvideo f&#xFC;r einen TikTok-Account mit Fokus auf virale Social-Media-Inhalte.</p>
+              <div class="proj-tags"><span>AI Video</span><span>TikTok</span><span>Viral Content</span></div>
+            </div></div>
+          </div>
+
+          <div class="proj-tile">
+            <video class="proj-video" autoplay muted loop playsinline><source src="https://raw.githubusercontent.com/capo0202/portfolio-/main/assets/projects/project-4.mp4" type="video/mp4"></video>
+            <div class="proj-overlay"><div class="proj-info">
+              <span class="proj-num">04</span>
+              <h3 class="proj-title">AI UGC Ad Video &#x2013; Perfume Product</h3>
+              <p class="proj-desc">UGC-Style Werbevideo f&#xFC;r ein Parfumprodukt mit Fokus auf emotionale, hochwertige Produktdarstellung im Social-Media-Umfeld.</p>
+              <div class="proj-tags"><span>AI UGC Video</span><span>Fiverr</span><span>Luxury Branding</span></div>
+            </div></div>
+          </div>
+
+          <div class="proj-tile">
+            <video class="proj-video" autoplay muted loop playsinline><source src="https://raw.githubusercontent.com/capo0202/portfolio-/main/assets/projects/project-5.mp4" type="video/mp4"></video>
+            <div class="proj-overlay"><div class="proj-info">
+              <span class="proj-num">05</span>
+              <h3 class="proj-title">AI Ad Video &#x2013; Heat Pump Energy Brand</h3>
+              <p class="proj-desc">AI-gest&#xFC;tztes Werbevideo f&#xFC;r ein Energieunternehmen mit Fokus auf moderne W&#xE4;rmepumpen und Social-Media-Marketing.</p>
+              <div class="proj-tags"><span>AI Video</span><span>Energy Marketing</span><span>Meta Ads</span></div>
+            </div></div>
+          </div>
+
+          <div class="proj-tile">
+            <video class="proj-video" autoplay muted loop playsinline><source src="https://raw.githubusercontent.com/capo0202/portfolio-/main/assets/projects/project-6.mp4" type="video/mp4"></video>
+            <div class="proj-overlay"><div class="proj-info">
+              <span class="proj-num">06</span>
+              <h3 class="proj-title">AI UGC Ad &#x2013; Contact Lenses Product</h3>
+              <p class="proj-desc">UGC-Style Werbevideo f&#xFC;r Kontaktlinsen im Auftrag eines Fiverr-Kunden. Authentische Social-Media-Anzeige im UGC-Format.</p>
+              <div class="proj-tags"><span>AI UGC Video</span><span>Fiverr</span><span>Beauty Marketing</span></div>
+            </div></div>
+          </div>
+
+          <div class="proj-tile">
+            <video class="proj-video" autoplay muted loop playsinline><source src="https://raw.githubusercontent.com/capo0202/portfolio-/main/assets/projects/project-7.mp4" type="video/mp4"></video>
+            <div class="proj-overlay"><div class="proj-info">
+              <span class="proj-num">07</span>
+              <h3 class="proj-title">AI Demo Ad &#x2013; Roofing Company</h3>
+              <p class="proj-desc">AI-Demo-Werbevideo f&#xFC;r ein Dachdecker-Unternehmen zur Kundenakquise im Bereich lokales Marketing.</p>
+              <div class="proj-tags"><span>AI Video</span><span>Local Business</span><span>Demo Project</span></div>
+            </div></div>
+          </div>
+
+          <div class="proj-tile">
+            <video class="proj-video" autoplay muted loop playsinline><source src="https://raw.githubusercontent.com/capo0202/portfolio-/main/assets/projects/project-8.mp4" type="video/mp4"></video>
+            <div class="proj-overlay"><div class="proj-info">
+              <span class="proj-num">08</span>
+              <h3 class="proj-title">Black Seed Oil Product Ad Video</h3>
+              <p class="proj-desc">AI-gest&#xFC;tztes Werbevideo f&#xFC;r ein Naturprodukt (Black Seed Oil), umgesetzt f&#xFC;r einen Upwork-Kunden mit Fokus auf Social Media Marketing.</p>
+              <div class="proj-tags"><span>AI Video</span><span>Upwork</span><span>Product Advertising</span></div>
+            </div></div>
+          </div>
+
+        </div>
+      </div>
+      </div><!-- /sz -->
+    </section>
+
+    <!-- ═══ WEB SHOWCASE ═══ -->
+    <section id="web-showcase">
+      <div class="sz">
+        <div class="wbs-clip">
+          <div class="wbs-slides-track">
+
+            <!-- ── Slide 01 ── -->
+            <div class="wbs-slide">
+              <div class="wbs-copy">
+                <p class="eyebrow gs-r">Web &amp; Digital Experiences</p>
+                <h2 class="wbs-title gs-r">Modern<br><em class="title-glow" data-text="Website">Website</em><br>Showcase</h2>
+                <div class="wbs-tags gs-r">
+                  <span>Web Design</span>
+                  <span>UI / UX</span>
+                  <span>Clean Structure</span>
+                  <span>Digital Experience</span>
+                </div>
+                <p class="wbs-desc gs-r">Modernes Webprojekt mit Fokus auf visuelle Darstellung, saubere Struktur und digitale Nutzererfahrung — umgesetzt als kreatives Website-Konzept als Teil meines digitalen Portfolios.</p>
+                <ul class="wbs-list gs-r">
+                  <li>Kreatives Website-Konzept</li>
+                  <li>Klare visuelle Struktur</li>
+                  <li>Moderne Nutzerführung</li>
+                  <li>Professionelles Webdesign</li>
+                </ul>
+              </div>
+              <div class="wbs-screen-wrap gs-r">
+                <div class="wbs-glow"></div>
+                <div class="wbs-mockup">
+                  <div class="wbs-browser-bar">
+                    <span class="wbs-dot"></span><span class="wbs-dot"></span><span class="wbs-dot"></span>
+                  </div>
+                  <div class="wbs-screen">
+                    <video class="wbs-video" autoplay muted loop playsinline>
+                      <source src="assets/web-showcase.mp4" type="video/mp4">
+                    </video>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- ── Slide 02 ── -->
+            <div class="wbs-slide wbs-slide--reverse">
+              <div class="wbs-screen-wrap gs-r">
+                <div class="wbs-glow"></div>
+                <div class="wbs-mockup">
+                  <div class="wbs-browser-bar">
+                    <span class="wbs-dot"></span><span class="wbs-dot"></span><span class="wbs-dot"></span>
+                    <span class="wbs-url">lucadigital.studio / portfolio</span>
+                  </div>
+                  <div class="wbs-screen">
+                    <video class="wbs-video" autoplay muted loop playsinline>
+                      <source src="assets/web-showcase-2.mp4" type="video/mp4">
+                    </video>
+                  </div>
+                </div>
+                <div class="wbs-badge">
+                  <span class="wbs-badge-dot"></span>
+                  Portfolio Design
+                </div>
+              </div>
+              <div class="wbs-copy">
+                <p class="eyebrow gs-r">Web &amp; Digital Experiences</p>
+                <h2 class="wbs-title gs-r">Interaktives<br><em class="title-glow" data-text="Portfolio">Portfolio</em><br>Design</h2>
+                <div class="wbs-tags gs-r">
+                  <span>Portfolio</span>
+                  <span>Interaction Design</span>
+                  <span>GSAP Animations</span>
+                  <span>UX / UI</span>
+                </div>
+                <p class="wbs-desc gs-r">Konzeption und Entwicklung eines modernen interaktiven Portfolio-Designs mit Fokus auf visuelle Präsentation, Animationen und digitale Nutzererfahrung.</p>
+                <ul class="wbs-list gs-r">
+                  <li>Scroll-basierte Animationen</li>
+                  <li>Cinematic Zoom-Parallax</li>
+                  <li>Interaktive UI-Elemente</li>
+                  <li>Moderne digitale Präsentation</li>
+                </ul>
+              </div>
+            </div>
+
+          </div><!-- /wbs-slides-track -->
+        </div><!-- /wbs-clip -->
+
+        <!-- Slide indicators -->
+        <div class="wbs-indicators">
+          <span class="wbs-ind active"></span>
+          <span class="wbs-ind"></span>
+        </div>
+      </div><!-- /sz -->
+      <div class="wbs-spacer"></div>
+    </section>
+
+    <!-- ═══ WORKFLOW ═══ -->
+    <section id="workflow">
+      <div class="sz">
+
+      <!-- Robot background -->
+      <div class="wf-robot-wrap" aria-hidden="true">
+        <svg class="wf-robot" id="wfRobot" viewBox="0 0 400 600" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <radialGradient id="bodyGrad" cx="50%" cy="35%" r="60%">
+              <stop offset="0%" stop-color="#2a2a3a"/>
+              <stop offset="100%" stop-color="#0d0c0e"/>
+            </radialGradient>
+            <radialGradient id="headGrad" cx="50%" cy="30%" r="65%">
+              <stop offset="0%" stop-color="#282838"/>
+              <stop offset="100%" stop-color="#0a0a12"/>
+            </radialGradient>
+            <radialGradient id="eyeGlow" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#7b8fff"/>
+              <stop offset="60%" stop-color="#3a52d4"/>
+              <stop offset="100%" stop-color="#1a2a8a"/>
+            </radialGradient>
+            <filter id="glow" x="-40%" y="-40%" width="180%" height="180%">
+              <feGaussianBlur stdDeviation="4" result="blur"/>
+              <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+            <filter id="softGlow" x="-60%" y="-60%" width="220%" height="220%">
+              <feGaussianBlur stdDeviation="8" result="blur"/>
+              <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+            <clipPath id="eyeLClip2"><ellipse cx="148" cy="148" rx="26" ry="18"/></clipPath>
+            <clipPath id="eyeRClip2"><ellipse cx="252" cy="148" rx="26" ry="18"/></clipPath>
+          </defs>
+
+          <!-- ── HEAD GROUP (rotates with mouse) ── -->
+          <g id="robotHead">
+            <!-- Head outer shell -->
+            <ellipse cx="200" cy="145" rx="88" ry="95" fill="url(#headGrad)" stroke="#3a52d4" stroke-width="1" stroke-opacity="0.4"/>
+            <ellipse cx="200" cy="145" rx="88" ry="95" fill="none" stroke="url(#eyeGlow)" stroke-width="0.5" stroke-opacity="0.15"/>
+            <!-- Forehead panel -->
+            <path d="M148 72 Q200 58 252 72 L258 105 Q200 96 142 105 Z" fill="#1a1a28" stroke="#3a52d4" stroke-width="0.6" stroke-opacity="0.3"/>
+            <!-- Status LED -->
+            <circle cx="200" cy="82" r="4" fill="#3a52d4" filter="url(#glow)">
+              <animate attributeName="opacity" values="0.5;1;0.5" dur="2s" repeatCount="indefinite"/>
+            </circle>
+            <!-- Visor band -->
+            <rect x="118" y="124" width="164" height="48" rx="10" fill="#080810" stroke="#3a52d4" stroke-width="0.8" stroke-opacity="0.5"/>
+            <rect x="120" y="126" width="160" height="44" rx="9" fill="rgba(10,12,30,0.9)"/>
+            <!-- Eye sockets -->
+            <ellipse cx="148" cy="148" rx="28" ry="19" fill="#05050f" stroke="#3a52d4" stroke-width="0.5" stroke-opacity="0.6"/>
+            <ellipse cx="252" cy="148" rx="28" ry="19" fill="#05050f" stroke="#3a52d4" stroke-width="0.5" stroke-opacity="0.6"/>
+            <!-- Scan line -->
+            <line x1="120" y1="140" x2="280" y2="140" stroke="#3a52d4" stroke-width="0.4" stroke-opacity="0.15">
+              <animate attributeName="y1" values="126;170;126" dur="2.5s" repeatCount="indefinite"/>
+              <animate attributeName="y2" values="126;170;126" dur="2.5s" repeatCount="indefinite"/>
+            </line>
+            <!-- Eyes – pupils moved by JS -->
+            <g id="eyeL">
+              <ellipse cx="148" cy="148" rx="18" ry="13" fill="url(#eyeGlow)" filter="url(#softGlow)"/>
+              <ellipse cx="148" cy="148" rx="9" ry="7" fill="#c0ccff"/>
+              <ellipse cx="150" cy="146" rx="3" ry="2.5" fill="white" opacity="0.8"/>
+            </g>
+            <g id="eyeR">
+              <ellipse cx="252" cy="148" rx="18" ry="13" fill="url(#eyeGlow)" filter="url(#softGlow)"/>
+              <ellipse cx="252" cy="148" rx="9" ry="7" fill="#c0ccff"/>
+              <ellipse cx="254" cy="146" rx="3" ry="2.5" fill="white" opacity="0.8"/>
+            </g>
+            <!-- Chin / jaw -->
+            <path d="M150 185 Q200 200 250 185 L248 198 Q200 215 152 198 Z" fill="#141420" stroke="#3a52d4" stroke-width="0.5" stroke-opacity="0.25"/>
+            <!-- Mouth grille -->
+            <rect x="168" y="194" width="64" height="16" rx="4" fill="#080812" stroke="#3a52d4" stroke-width="0.5" stroke-opacity="0.3"/>
+            <line x1="176" y1="198" x2="176" y2="206" stroke="#3a52d4" stroke-width="1" stroke-opacity="0.5" stroke-linecap="round">
+              <animate attributeName="opacity" values="0.3;0.8;0.3" dur="0.9s" repeatCount="indefinite"/>
+            </line>
+            <line x1="187" y1="196" x2="187" y2="208" stroke="#3a52d4" stroke-width="1" stroke-opacity="0.6" stroke-linecap="round">
+              <animate attributeName="opacity" values="0.6;1;0.6" dur="1.2s" repeatCount="indefinite"/>
+            </line>
+            <line x1="198" y1="197" x2="198" y2="207" stroke="#3a52d4" stroke-width="1" stroke-opacity="0.5" stroke-linecap="round">
+              <animate attributeName="opacity" values="0.4;0.9;0.4" dur="0.7s" repeatCount="indefinite"/>
+            </line>
+            <line x1="209" y1="196" x2="209" y2="208" stroke="#3a52d4" stroke-width="1" stroke-opacity="0.6" stroke-linecap="round">
+              <animate attributeName="opacity" values="0.5;1;0.5" dur="1.4s" repeatCount="indefinite"/>
+            </line>
+            <line x1="220" y1="198" x2="220" y2="206" stroke="#3a52d4" stroke-width="1" stroke-opacity="0.4" stroke-linecap="round">
+              <animate attributeName="opacity" values="0.3;0.7;0.3" dur="1s" repeatCount="indefinite"/>
+            </line>
+          </g>
+
+          <!-- ── NECK ── -->
+          <rect x="176" y="232" width="48" height="32" rx="6" fill="#111118" stroke="#3a52d4" stroke-width="0.6" stroke-opacity="0.3"/>
+          <line x1="188" y1="237" x2="188" y2="259" stroke="#3a52d4" stroke-width="0.7" opacity="0.2"/>
+          <line x1="200" y1="237" x2="200" y2="259" stroke="#3a52d4" stroke-width="0.7" opacity="0.2"/>
+          <line x1="212" y1="237" x2="212" y2="259" stroke="#3a52d4" stroke-width="0.7" opacity="0.2"/>
+
+          <!-- ── TORSO ── -->
+          <!-- Shoulder span -->
+          <path d="M60 280 Q80 262 140 260 L260 260 Q320 262 340 280 L336 310 Q300 295 200 294 Q100 295 64 310 Z" fill="url(#bodyGrad)" stroke="#3a52d4" stroke-width="0.8" stroke-opacity="0.35"/>
+
+          <!-- Chest plate -->
+          <path d="M118 294 Q200 286 282 294 L278 390 Q200 400 122 390 Z" fill="url(#bodyGrad)" stroke="#3a52d4" stroke-width="0.8" stroke-opacity="0.3"/>
+          <!-- Chest highlight -->
+          <path d="M150 296 Q200 290 250 296 L246 340 Q200 346 154 340 Z" fill="#1c1c2e" stroke="#3a52d4" stroke-width="0.5" stroke-opacity="0.25"/>
+          <!-- Chest core glow -->
+          <ellipse cx="200" cy="330" rx="22" ry="22" fill="#0a0a1a" stroke="#3a52d4" stroke-width="1" stroke-opacity="0.5"/>
+          <ellipse cx="200" cy="330" rx="14" ry="14" fill="#1a2a8a" filter="url(#glow)">
+            <animate attributeName="opacity" values="0.6;1;0.6" dur="2.8s" repeatCount="indefinite"/>
+          </ellipse>
+          <ellipse cx="200" cy="330" rx="7" ry="7" fill="#6a7fff" filter="url(#softGlow)">
+            <animate attributeName="opacity" values="0.8;1;0.8" dur="2.8s" repeatCount="indefinite"/>
+          </ellipse>
+
+          <!-- ── LEFT ARM (waves hello) ── -->
+          <g id="robotArmWave">
+          <!-- Upper arm L -->
+          <path d="M62 278 Q40 282 32 300 L28 350 Q32 368 52 370 L72 370 Q88 368 88 348 L90 296 Z" fill="url(#bodyGrad)" stroke="#3a52d4" stroke-width="0.8" stroke-opacity="0.3"/>
+          <!-- Elbow joint L -->
+          <ellipse cx="58" cy="370" rx="20" ry="14" fill="#141420" stroke="#3a52d4" stroke-width="0.8" stroke-opacity="0.4"/>
+          <!-- Forearm L -->
+          <path d="M38 378 Q26 390 20 420 L22 460 Q26 476 44 478 L68 478 Q84 474 86 456 L90 416 Q88 392 76 380 Z" fill="url(#bodyGrad)" stroke="#3a52d4" stroke-width="0.7" stroke-opacity="0.3"/>
+          <!-- Hand L -->
+          <ellipse cx="54" cy="484" rx="22" ry="16" fill="#111118" stroke="#3a52d4" stroke-width="0.7" stroke-opacity="0.4"/>
+          <!-- Arm accent stripe L -->
+          <line x1="54" y1="310" x2="48" y2="358" stroke="#3a52d4" stroke-width="1" stroke-opacity="0.3" stroke-linecap="round"/>
+          </g>
+
+          <!-- ── RIGHT ARM ── -->
+          <g id="robotArmR">
+          <!-- Upper arm R -->
+          <path d="M338 278 Q360 282 368 300 L372 350 Q368 368 348 370 L328 370 Q312 368 312 348 L310 296 Z" fill="url(#bodyGrad)" stroke="#3a52d4" stroke-width="0.8" stroke-opacity="0.3"/>
+          <!-- Elbow joint R -->
+          <ellipse cx="342" cy="370" rx="20" ry="14" fill="#141420" stroke="#3a52d4" stroke-width="0.8" stroke-opacity="0.4"/>
+          <!-- Forearm R -->
+          <path d="M362 378 Q374 390 380 420 L378 460 Q374 476 356 478 L332 478 Q316 474 314 456 L310 416 Q312 392 324 380 Z" fill="url(#bodyGrad)" stroke="#3a52d4" stroke-width="0.7" stroke-opacity="0.3"/>
+          <!-- Hand R -->
+          <ellipse cx="346" cy="484" rx="22" ry="16" fill="#111118" stroke="#3a52d4" stroke-width="0.7" stroke-opacity="0.4"/>
+          <!-- Arm accent stripe R -->
+          <line x1="346" y1="310" x2="352" y2="358" stroke="#3a52d4" stroke-width="1" stroke-opacity="0.3" stroke-linecap="round"/>
+          </g>
+
+          <!-- ── LOWER BODY ── -->
+          <path d="M140 390 Q200 400 260 390 L256 450 Q200 458 144 450 Z" fill="url(#bodyGrad)" stroke="#3a52d4" stroke-width="0.7" stroke-opacity="0.25"/>
+          <!-- Hip joint L -->
+          <ellipse cx="152" cy="456" rx="22" ry="14" fill="#141420" stroke="#3a52d4" stroke-width="0.7" stroke-opacity="0.35"/>
+          <!-- Hip joint R -->
+          <ellipse cx="248" cy="456" rx="22" ry="14" fill="#141420" stroke="#3a52d4" stroke-width="0.7" stroke-opacity="0.35"/>
+
+          <!-- Leg L -->
+          <path d="M130 462 L136 560 L168 560 L174 462 Z" fill="url(#bodyGrad)" stroke="#3a52d4" stroke-width="0.7" stroke-opacity="0.25"/>
+          <!-- Leg R -->
+          <path d="M226 462 L232 560 L264 560 L270 462 Z" fill="url(#bodyGrad)" stroke="#3a52d4" stroke-width="0.7" stroke-opacity="0.25"/>
+          <!-- Feet -->
+          <ellipse cx="152" cy="562" rx="24" ry="10" fill="#111118" stroke="#3a52d4" stroke-width="0.6" stroke-opacity="0.3"/>
+          <ellipse cx="248" cy="562" rx="24" ry="10" fill="#111118" stroke="#3a52d4" stroke-width="0.6" stroke-opacity="0.3"/>
+
+          <!-- Knee joints -->
+          <ellipse cx="152" cy="514" rx="16" ry="11" fill="#141420" stroke="#3a52d4" stroke-width="0.6" stroke-opacity="0.35"/>
+          <ellipse cx="248" cy="514" rx="16" ry="11" fill="#141420" stroke="#3a52d4" stroke-width="0.6" stroke-opacity="0.35"/>
+        </svg>
+      </div>
+
+      <div class="section-container">
+        <div class="section-head">
+          <p class="eyebrow gs-r">Workflow &#x2014; How I Work</p>
+          <h2 class="section-title gs-r">Wie wir <em class="title-glow" data-text="zusammenarbeiten">zusammenarbeiten</em></h2>
+        </div>
+
+        <!-- WORKFLOW 1: Video / Content -->
+        <div class="wf-block" data-wf="1">
+          <div class="wf-label">
+            <span class="wf-tag">01</span>
+            <span class="wf-category">Video &amp; Content Creation</span>
+          </div>
+          <div class="wf-track">
+            <div class="wf-line"><div class="wf-line-fill"></div></div>
+            <div class="wf-steps">
+              <div class="wf-step">
+                <div class="wf-node"><span class="wf-node-icon">💡</span></div>
+                <p class="wf-step-label">Idee entwickeln</p>
+              </div>
+              <div class="wf-step">
+                <div class="wf-node"><span class="wf-node-icon">📝</span></div>
+                <p class="wf-step-label">Script &amp; Konzept</p>
+              </div>
+              <div class="wf-step">
+                <div class="wf-node"><span class="wf-node-icon">🤖</span></div>
+                <p class="wf-step-label">AI Tools &amp; Visuals</p>
+              </div>
+              <div class="wf-step">
+                <div class="wf-node"><span class="wf-node-icon">🎬</span></div>
+                <p class="wf-step-label">Editing &amp; Post</p>
+              </div>
+              <div class="wf-step">
+                <div class="wf-node"><span class="wf-node-icon">🚀</span></div>
+                <p class="wf-step-label">Export &amp; Output</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- WORKFLOW 2: Web / Landingpage -->
+        <div class="wf-block" data-wf="2">
+          <div class="wf-label">
+            <span class="wf-tag">02</span>
+            <span class="wf-category">Web &amp; Landingpage</span>
+          </div>
+          <div class="wf-track">
+            <div class="wf-line"><div class="wf-line-fill"></div></div>
+            <div class="wf-steps">
+              <div class="wf-step">
+                <div class="wf-node"><span class="wf-node-icon">🎯</span></div>
+                <p class="wf-step-label">Konzept &amp; Ziel</p>
+              </div>
+              <div class="wf-step">
+                <div class="wf-node"><span class="wf-node-icon">🗂️</span></div>
+                <p class="wf-step-label">Struktur &amp; Wireframe</p>
+              </div>
+              <div class="wf-step">
+                <div class="wf-node"><span class="wf-node-icon">🎨</span></div>
+                <p class="wf-step-label">Design &amp; Layout</p>
+              </div>
+              <div class="wf-step">
+                <div class="wf-node"><span class="wf-node-icon">⚡</span></div>
+                <p class="wf-step-label">Umsetzung &amp; Animationen</p>
+              </div>
+              <div class="wf-step">
+                <div class="wf-node"><span class="wf-node-icon">🌐</span></div>
+                <p class="wf-step-label">Live Output</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- WORKFLOW 3: AI / Digital -->
+        <div class="wf-block" data-wf="3">
+          <div class="wf-label">
+            <span class="wf-tag">03</span>
+            <span class="wf-category">AI &amp; Digital Workflow</span>
+          </div>
+          <div class="wf-track">
+            <div class="wf-line"><div class="wf-line-fill"></div></div>
+            <div class="wf-steps">
+              <div class="wf-step">
+                <div class="wf-node"><span class="wf-node-icon">🔍</span></div>
+                <p class="wf-step-label">Problem definieren</p>
+              </div>
+              <div class="wf-step">
+                <div class="wf-node"><span class="wf-node-icon">🧠</span></div>
+                <p class="wf-step-label">AI Tool Auswahl</p>
+              </div>
+              <div class="wf-step">
+                <div class="wf-node"><span class="wf-node-icon">🔗</span></div>
+                <p class="wf-step-label">Tool-Kombination</p>
+              </div>
+              <div class="wf-step">
+                <div class="wf-node"><span class="wf-node-icon">⚙️</span></div>
+                <p class="wf-step-label">Optimierung</p>
+              </div>
+              <div class="wf-step">
+                <div class="wf-node"><span class="wf-node-icon">📊</span></div>
+                <p class="wf-step-label">Output Generierung</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      </div><!-- /sz -->
+      <div style="height:55vh;"></div>
+    </section>
+
+    <!-- ═══ CHAT SECTION ═══ -->
+    <section id="chat" class="cb-section">
+      <div class="sz">
+        <p class="eyebrow gs-r" style="text-align:center;">KI-Assistent</p>
+        <h2 class="section-title gs-r" style="text-align:center;margin-bottom:2.5rem;">
+          Stell mir eine<br><em class="title-glow" data-text="Frage">Frage</em>
+        </h2>
+        <div class="cb-embed">
+          <div class="cb-embed-messages" id="chatEmbedMessages"></div>
+          <div class="cb-embed-footer">
+            <input id="chatEmbedInput" class="cb-input" type="text" placeholder="Deine Frage…" autocomplete="off" />
+            <button id="chatEmbedSend" class="cb-send-btn" aria-label="Senden">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ CONTACT ═══ -->
+    <section id="contact">
+
+      <!-- Scanline Grid Background -->
+      <div class="ct-grid-bg" aria-hidden="true"></div>
+
+      <!-- Top accent line -->
+      <div class="ct-accent-line" aria-hidden="true"></div>
+
+      <div class="ct-inner">
+
+        <!-- Glow orbs -->
+        <div class="ct-glow ct-glow--left" aria-hidden="true"></div>
+        <div class="ct-glow ct-glow--right" aria-hidden="true"></div>
+
+        <!-- ── SPLIT LAYOUT ── -->
+        <div class="ct-split gs-r">
+
+          <!-- LEFT: Statement + Info -->
+          <div class="ct-left">
+            <p class="eyebrow">Kontakt</p>
+            <h2 class="ct-title">
+              Lassen Sie uns<br>
+              <em class="title-glow" data-text="zusammenarbeiten.">zusammenarbeiten.</em>
+            </h2>
+            <p class="ct-subtitle">Ob Website, Video oder KI-Workflow — beschreiben Sie Ihr Projekt und ich melde mich innerhalb von 24 Stunden.</p>
+
+            <div class="ct-info-list">
+              <a href="mailto:lucacaponeri02@gmail.com" class="ct-info-item">
+                <span class="ct-info-icon"><i class="fa-solid fa-envelope"></i></span>
+                <div>
+                  <span class="ct-info-label">E-Mail</span>
+                  <span class="ct-info-value">lucacaponeri02@gmail.com</span>
+                </div>
+              </a>
+              <a href="https://www.linkedin.com/in/luca-ca" target="_blank" rel="noopener" class="ct-info-item">
+                <span class="ct-info-icon"><i class="fa-brands fa-linkedin"></i></span>
+                <div>
+                  <span class="ct-info-label">LinkedIn</span>
+                  <span class="ct-info-value">Luca Caponeri</span>
+                </div>
+              </a>
+              <a href="https://github.com/capo0202" target="_blank" rel="noopener" class="ct-info-item">
+                <span class="ct-info-icon"><i class="fa-brands fa-github"></i></span>
+                <div>
+                  <span class="ct-info-label">GitHub</span>
+                  <span class="ct-info-value">capo0202</span>
+                </div>
+              </a>
+            </div>
+          </div>
+
+          <!-- RIGHT: Form -->
+          <div class="ct-right">
+            <form class="ct-form" action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
+              <div class="ct-form-field">
+                <div class="ct-field-wrap">
+                  <input type="text" name="name" class="ct-input" placeholder="Ihr Name" required autocomplete="name" />
+                </div>
+              </div>
+              <div class="ct-form-field">
+                <div class="ct-field-wrap">
+                  <input type="email" name="email" class="ct-input" placeholder="Ihre E-Mail-Adresse" required autocomplete="email" />
+                </div>
+              </div>
+              <div class="ct-form-field">
+                <div class="ct-field-wrap">
+                  <textarea name="message" class="ct-textarea" placeholder="Beschreiben Sie Ihr Projekt oder Ihre Idee..." rows="5" required></textarea>
+                </div>
+              </div>
+              <button type="submit" class="ct-submit">
+                <span class="ct-submit-label">Nachricht senden</span>
+                <span class="ct-submit-arrow">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+                  </svg>
+                </span>
+                <span class="ct-submit-glow"></span>
+              </button>
+            </form>
+          </div>
+
+        </div>
+
+        <!-- ── FOOTER ── -->
+        <div class="ct-divider"></div>
+        <div class="ct-footer-row gs-r">
+          <span class="nav-logo"><span class="lm">{</span>LC<span class="lm">}</span></span>
+          <p class="ct-copy">&copy; 2026 Luca Caponeri &mdash; Digital Content Creator</p>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ═══ VIDEO MODAL ═══ -->
+  <div id="videoModal" class="v-modal" aria-hidden="true" role="dialog">
+    <div class="v-modal-bg"></div>
+    <div class="v-modal-box">
+      <button class="v-modal-close" aria-label="Schlie&#xDF;en">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+      <video class="v-modal-video" controls playsinline></video>
+    </div>
+  </div>
+
+  <!-- ═══ CHATBOT FLOATING ═══ -->
+  <div id="chatWindow" class="cb-window" role="dialog" aria-label="KI-Assistent">
+    <div class="cb-header">
+      <div class="cb-avatar">
+        <canvas id="botHeaderCanvas" width="38" height="38"></canvas>
+      </div>
+      <div class="cb-header-info">
+        <span class="cb-name">Luca's Assistent</span>
+        <span class="cb-status"><span class="cb-dot"></span>Online</span>
+      </div>
+      <button id="chatClose" class="cb-close" aria-label="Schließen">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="cb-messages" id="chatMessages"></div>
+    <div class="cb-footer">
+      <input id="chatInput" class="cb-input" type="text" placeholder="Deine Frage…" autocomplete="off" />
+      <button id="chatSend" class="cb-send-btn" aria-label="Senden">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+      </button>
+    </div>
+  </div>
+  <div class="cb-float-wrap">
+    <div class="cb-speech-bubble">👋✨ Fragen? Ich bin für Sie da.</div>
+    <button id="chatFloatBtn" class="cb-float-btn" aria-label="Chat öffnen">
+      <canvas id="botFloatCanvas" width="130" height="130"></canvas>
+    </button>
+  </div>
+
+  <script src="js/three.min.js"></script>
+  <script src="js/GLTFLoader.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="js/meteors.js"></script>
+  <script src="js/main.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  <script src="js/bot3d.js"></script>
+  <script src="js/chatbot.js"></script>
+  <script>
+    (function () {
+      var wrap = document.querySelector('.cb-float-wrap');
+      var contact = document.getElementById('contact');
+      if (!wrap || !contact) return;
+
+      var observer = new IntersectionObserver(function (entries) {
+        if (!entries[0].isIntersecting) return;
+        observer.disconnect(); /* nur einmal */
+
+        var rect = wrap.getBoundingClientRect();
+        /* Ziel: linke Mitte der Contact Section */
+        var targetX = window.innerWidth * 0.25;
+        var targetY = window.innerHeight * 0.5;
+        var dx = targetX - (rect.left + rect.width / 2);
+        var dy = targetY - (rect.top  + rect.height / 2);
+
+        /* Rein fliegen */
+        wrap.style.transition = 'transform 0.7s cubic-bezier(0.25,0.46,0.45,0.94)';
+        wrap.style.transform = 'translateX(' + dx.toFixed(0) + 'px) translateY(' + dy.toFixed(0) + 'px)';
+
+        /* Zurück fliegen */
+        setTimeout(function () {
+          wrap.style.transform = 'translateX(0) translateY(0)';
+          setTimeout(function () { wrap.style.transition = ''; wrap.style.transform = ''; }, 700);
+        }, 1400);
+      }, { threshold: 0.6 });
+
+      observer.observe(contact);
+    })();
+  </script>
+</body>
+</html>
