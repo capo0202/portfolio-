@@ -1877,10 +1877,11 @@ section {
   .cb-float-wrap {
     bottom: 1rem;
     right: 1rem;
+    transform-origin: bottom right;
+    transform: scale(0.45);
   }
-  .cb-float-btn {
-    width: 50px;
-    height: 50px;
+  .cb-float-wrap.cb-attention {
+    transform-origin: bottom right;
   }
   .cb-speech-bubble {
     font-size: 0.68rem;
@@ -1894,17 +1895,21 @@ section {
     bottom: 5rem;
     height: 65vh;
     max-height: 480px;
+    transform: none;
+    transform-origin: unset;
+  }
+  .cb-window.cb-open {
+    transform: translateY(0) scale(1);
   }
 }
 
 /* ── Chatbot Small Mobile (≤ 480px) ── */
 @media (max-width: 480px) {
-  .cb-float-btn {
-    width: 44px;
-    height: 44px;
+  .cb-float-wrap {
+    transform: scale(0.38);
   }
   .cb-window {
-    bottom: 4.5rem;
+    bottom: 4rem;
     height: 70vh;
   }
 }
