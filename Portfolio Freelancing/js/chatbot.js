@@ -172,7 +172,7 @@
     var bubble = document.createElement('div');
     bubble.className = 'cb-bubble';
     if (role === 'assistant') {
-      bubble.innerHTML = content;
+      bubble.innerHTML = content.replace(/\n/g, '<br>');
     } else {
       bubble.textContent = content;
     }
