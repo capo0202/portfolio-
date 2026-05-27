@@ -33,9 +33,9 @@
   scene.add(fill);
 
   var lanes = [
-    { file: 'assets/meteorit2.glb', scale: 1.8, xStart: 22, xEnd: -22, y:  0.5, z: -10, scrollStart: 0.0,  scrollEnd: 0.3,  rot: [0.003,0.007,0.002] },
-    { file: 'assets/meteorit2.glb', scale: 2.4, xStart: 26, xEnd: -26, y: -3.5, z:  -7, scrollStart: 0.16, scrollEnd: 0.46, rot: [0.005,0.003,0.006] },
-    { file: 'assets/meteorit2.glb', scale: 1.6, xStart: 28, xEnd: -28, y: -5.5, z:  -6, scrollStart: 0.42, scrollEnd: 0.78, rot: [0.004,0.009,0.003] },
+    { file: 'assets/meteorit2.glb', scale: 2.6, xStart: 22, xEnd: -22, y:  0.5, z: -10, scrollStart: 0.0,  scrollEnd: 0.3,  rot: [0.003,0.007,0.002] },
+    { file: 'assets/meteorit2.glb', scale: 3.2, xStart: 26, xEnd: -26, y: -3.5, z:  -7, scrollStart: 0.16, scrollEnd: 0.46, rot: [0.005,0.003,0.006] },
+    { file: 'assets/meteorit2.glb', scale: 2.4, xStart: 28, xEnd: -28, y: -5.5, z:  -6, scrollStart: 0.42, scrollEnd: 0.78, rot: [0.004,0.009,0.003] },
   ];
 
   var meshes = [];
