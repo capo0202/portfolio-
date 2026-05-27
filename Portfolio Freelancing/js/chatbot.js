@@ -213,15 +213,26 @@
     if (typeof emailjs === 'undefined') return;
     emailSent = true;
 
-    var transcript = messages.map(function (m) {
-      return (m.role === 'user' ? 'Besucher' : 'Assistent') + ': ' + m.content;
-    }).join('\n\n');
+    var rows = messages.map(function (m) {
+      var isUser = m.role === 'user';
+      var align = isUser ? 'right' : 'left';
+      var bg    = isUser ? '#3a52d4' : '#f0f0f0';
+      var color = isUser ? '#ffffff' : '#222222';
+      var label = isUser ? '👤 Kunde' : '🤖 KI-Assistent';
+      return '<tr><td style="padding:8px 0;text-align:' + align + ';">' +
+        '<div style="display:inline-block;max-width:75%;background:' + bg + ';color:' + color + ';border-radius:12px;padding:10px 14px;font-size:13px;line-height:1.5;">' +
+        '<div style="font-size:10px;opacity:0.7;margin-bottom:4px;">' + label + '</div>' +
+        m.content.replace(/</g,'&lt;').replace(/>/g,'&gt;') +
+        '</div></td></tr>';
+    }).join('');
+
+    var htmlTranscript = '<table width="100%" cellpadding="0" cellspacing="0" style="font-family:Arial,sans-serif;">' + rows + '</table>';
 
     emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
       name: 'Portfolio Besucher',
       title: 'Neuer Chat – ' + new Date().toLocaleString('de-DE'),
-      message: transcript,
-      transcript: transcript,
+      message: htmlTranscript,
+      transcript: htmlTranscript,
       date: new Date().toLocaleString('de-DE')
     }, EMAILJS_PUBLIC_KEY).catch(function (err) {
       console.warn('EmailJS error:', err);
