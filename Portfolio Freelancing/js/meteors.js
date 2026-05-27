@@ -76,9 +76,11 @@
 
   /* ── Hintergrund-Meteoriten (frei schwebend) ── */
   var floaters = [
-    { x: -4,  y:  2,  z: -14, scale: 1.4, rot: [0.002, 0.004, 0.001], floatSpeed: 0.0007, floatAmp: 0.5 },
-    { x:  5,  y: -1,  z: -16, scale: 1.1, rot: [0.003, 0.002, 0.003], floatSpeed: 0.0011, floatAmp: 0.3 },
-    { x:  1,  y:  3,  z: -18, scale: 0.9, rot: [0.001, 0.005, 0.002], floatSpeed: 0.0009, floatAmp: 0.6 },
+    { x: -5,  y:  2.5, z: -11, scale: 1.5, rot: [0.002, 0.005, 0.001], floatSpeed: 0.0008, floatAmp: 0.7 },
+    { x:  5,  y: -1.5, z: -12, scale: 1.2, rot: [0.003, 0.002, 0.004], floatSpeed: 0.0012, floatAmp: 0.5 },
+    { x:  0,  y:  3.5, z: -13, scale: 1.0, rot: [0.001, 0.006, 0.002], floatSpeed: 0.0009, floatAmp: 0.9 },
+    { x: -3,  y: -3,   z: -10, scale: 1.3, rot: [0.004, 0.003, 0.002], floatSpeed: 0.0006, floatAmp: 0.4 },
+    { x:  4,  y:  1,   z: -14, scale: 0.9, rot: [0.002, 0.004, 0.003], floatSpeed: 0.0010, floatAmp: 0.6 },
   ];
   var floaterMeshes = [];
   var clock = 0;
@@ -143,14 +145,36 @@
     smoothMY += (mouseY - smoothMY) * 0.04;
 
     /* Hintergrund-Meteoriten animieren */
-    floaterMeshes.forEach(function (item) {
+    floaterMeshes.forEach(function (item, idx) {
       if (!item) return;
       var f = item.f;
-      item.root.position.x = item.baseX + Math.sin(clock * f.floatSpeed * 1.3) * 1.2 + smoothMX * 1.5;
-      item.root.position.y = item.baseY + Math.sin(clock * f.floatSpeed) * f.floatAmp + smoothMY * -1.0;
-      item.root.rotation.x += f.rot[0];
-      item.root.rotation.y += f.rot[1];
-      item.root.rotation.z += f.rot[2];
+
+      /* Freie Schwebe-Bewegung */
+      var floatX = Math.sin(clock * f.floatSpeed * 1.3 + idx) * 1.4;
+      var floatY = Math.sin(clock * f.floatSpeed + idx * 0.7) * f.floatAmp;
+
+      /* Maus-Position in 3D-Raum umrechnen (grob) */
+      var mxWorld = smoothMX * 10;
+      var myWorld = smoothMY * -6;
+
+      /* Abstand zwischen Maus und Meteorit */
+      var dx = mxWorld - item.baseX;
+      var dy = myWorld - item.baseY;
+      var dist = Math.sqrt(dx * dx + dy * dy);
+      var influence = Math.max(0, 1 - dist / 8); /* Reichweite: 8 Einheiten */
+
+      /* Meteorit bewegt sich zur Maus wenn nah, sonst frei */
+      var targetX = item.baseX + floatX + dx * influence * 0.4;
+      var targetY = item.baseY + floatY + dy * influence * 0.4;
+
+      item.root.position.x += (targetX - item.root.position.x) * 0.05;
+      item.root.position.y += (targetY - item.root.position.y) * 0.05;
+
+      /* Rotation schneller wenn Maus nah */
+      var boost = 1 + influence * 3;
+      item.root.rotation.x += f.rot[0] * boost;
+      item.root.rotation.y += f.rot[1] * boost;
+      item.root.rotation.z += f.rot[2] * boost;
     });
 
     meshes.forEach(function (item) {
