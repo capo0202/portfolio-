@@ -1879,19 +1879,19 @@ section {
     right: 1rem;
   }
   .cb-float-btn {
-    width: 90px;
-    height: 90px;
+    width: 64px;
+    height: 64px;
   }
   .cb-speech-bubble {
-    font-size: 0.72rem;
-    max-width: 160px;
-    padding: 0.4rem 0.75rem;
+    font-size: 0.68rem;
+    max-width: 140px;
+    padding: 0.35rem 0.65rem;
   }
   .cb-window {
     width: calc(100vw - 1.5rem);
     right: 0.75rem;
     left: 0.75rem;
-    bottom: 6rem;
+    bottom: 5rem;
     height: 65vh;
     max-height: 480px;
   }
@@ -1900,11 +1900,11 @@ section {
 /* ── Chatbot Small Mobile (≤ 480px) ── */
 @media (max-width: 480px) {
   .cb-float-btn {
-    width: 76px;
-    height: 76px;
+    width: 56px;
+    height: 56px;
   }
   .cb-window {
-    bottom: 5.5rem;
+    bottom: 4.5rem;
     height: 70vh;
   }
 }
