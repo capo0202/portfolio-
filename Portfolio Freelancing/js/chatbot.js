@@ -58,6 +58,7 @@
     window.addEventListener('beforeunload', function () {
       if (messages.length >= 2 && !emailSent) sendEmail();
     });
+    /* Hinweis: E-Mail wird nur gesendet wenn Chat geöffnet war (mind. 1 Antwort) */
 
     /* Greeting */
     pushMessage('assistant', 'Hi! Ich bin Lucas digitaler Assistent. Stell mir gerne Fragen zu seinen Services, Projekten oder wie eine Zusammenarbeit aussehen könnte. 👋');
@@ -115,7 +116,7 @@
     isOpen = false;
     chatWindow.classList.remove('cb-open');
     floatBtn.classList.remove('cb-active');
-    if (messages.length >= 4 && !emailSent) sendEmail();
+    if (messages.length >= 2 && !emailSent) sendEmail();
   }
 
   /* ── Send ── */
@@ -143,9 +144,7 @@
       var reply = data.reply || 'Entschuldigung, ich konnte keine Antwort generieren.';
       pushMessage('assistant', reply);
       if (embedded) syncEmbedMessages();
-      if (messages.filter(function(m){return m.role==='user';}).length >= 3 && !emailSent) {
-        sendEmail();
-      }
+      /* E-Mail wird nur beim Schließen des Chats oder der Seite gesendet */
     })
     .catch(function (err) {
       hideTyping();
