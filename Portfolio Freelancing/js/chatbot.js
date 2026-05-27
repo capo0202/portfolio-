@@ -215,10 +215,18 @@
 
     var htmlTranscript = messages.map(function (m) {
       var isUser = m.role === 'user';
-      var label = isUser ? '👤 KUNDE' : '🤖 KI-ASSISTENT';
-      var cleanText = m.content.replace(/<[^>]*>/g, '');
-      return label + '\n' + cleanText;
-    }).join('\n\n─────────────────────────────\n\n');
+      var bg    = isUser ? '#3a52d4' : '#f0f4ff';
+      var color = isUser ? '#ffffff' : '#111111';
+      var align = isUser ? 'right' : 'left';
+      var label = isUser ? '👤 Kunde' : '🤖 KI-Assistent';
+      var text  = m.content.replace(/<[^>]*>/g, '');
+      return '<div style="text-align:' + align + ';margin:10px 0;">' +
+        '<div style="display:inline-block;max-width:80%;background:' + bg + ';color:' + color + ';' +
+        'border-radius:14px;padding:10px 16px;font-family:Arial,sans-serif;font-size:13px;line-height:1.6;text-align:left;">' +
+        '<div style="font-size:10px;font-weight:bold;margin-bottom:5px;opacity:0.75;">' + label + '</div>' +
+        text +
+        '</div></div>';
+    }).join('<br>');
 
     emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
       name: 'Portfolio Besucher',
