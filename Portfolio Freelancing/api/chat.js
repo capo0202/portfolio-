@@ -87,40 +87,37 @@ module.exports = async function handler(req, res) {
     return res.status(400).json({ error: 'messages array required' });
   }
 
-  const apiKey = process.env.GEMINI_API_KEY;
+  const apiKey = process.env.GROQ_API_KEY;
   if (!apiKey) return res.status(500).json({ error: 'API key not configured' });
 
-  // Gemini erwartet "model" statt "assistant"
-  const contents = messages.map(m => ({
-    role: m.role === 'assistant' ? 'model' : 'user',
-    parts: [{ text: m.content }]
-  }));
+  const groqMessages = [
+    { role: 'system', content: SYSTEM_PROMPT },
+    ...messages.map(m => ({ role: m.role === 'assistant' ? 'assistant' : 'user', content: m.content }))
+  ];
 
   try {
-    const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          system_instruction: { parts: [{ text: SYSTEM_PROMPT }] },
-          contents,
-          generationConfig: {
-            temperature: 0.7,
-            maxOutputTokens: 512,
-          }
-        })
-      }
-    );
+    const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${apiKey}`
+      },
+      body: JSON.stringify({
+        model: 'llama-3.3-70b-versatile',
+        messages: groqMessages,
+        temperature: 0.7,
+        max_tokens: 512,
+      })
+    });
 
     const data = await response.json();
 
     if (!response.ok) {
-      console.error('Gemini error status:', response.status, JSON.stringify(data));
-      return res.status(500).json({ error: 'Gemini API error', status: response.status, details: data });
+      console.error('Groq error:', response.status, JSON.stringify(data));
+      return res.status(500).json({ error: 'Groq API error', status: response.status, details: data });
     }
 
-    const reply = data.candidates?.[0]?.content?.parts?.[0]?.text || 'Entschuldigung, ich konnte keine Antwort generieren.';
+    const reply = data.choices?.[0]?.message?.content || 'Entschuldigung, ich konnte keine Antwort generieren.';
     return res.status(200).json({ reply });
 
   } catch (err) {
