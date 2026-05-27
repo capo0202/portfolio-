@@ -45,7 +45,7 @@
   loader.load(lanes[0].file, function (gltf) {
     lanes.forEach(function (lane, i) {
       var root = new THREE.Group();
-      var m = i === 0 ? gltf.scene : gltf.scene.clone(true);
+      var m = gltf.scene.clone(true);
 
       var box = new THREE.Box3().setFromObject(m);
       var center = new THREE.Vector3();
