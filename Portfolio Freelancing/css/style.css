@@ -1879,8 +1879,8 @@ section {
     right: 1rem;
   }
   .cb-float-btn {
-    width: 64px;
-    height: 64px;
+    width: 50px;
+    height: 50px;
   }
   .cb-speech-bubble {
     font-size: 0.68rem;
@@ -1900,8 +1900,8 @@ section {
 /* ── Chatbot Small Mobile (≤ 480px) ── */
 @media (max-width: 480px) {
   .cb-float-btn {
-    width: 56px;
-    height: 56px;
+    width: 44px;
+    height: 44px;
   }
   .cb-window {
     bottom: 4.5rem;
