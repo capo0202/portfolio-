@@ -1,5 +1,8 @@
 (function () {
 
+  /* Auf mobilen Geräten deaktivieren (Performance) */
+  if (window.innerWidth <= 768) return;
+
   var canvas = document.getElementById('meteorCanvas');
   if (!canvas) return;
 

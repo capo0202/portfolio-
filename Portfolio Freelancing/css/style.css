@@ -1876,42 +1876,53 @@ section {
 /* ── Chatbot Mobile (≤ 768px) ── */
 @media (max-width: 768px) {
   .cb-float-wrap {
-    bottom: 1rem;
-    right: 1rem;
+    bottom: 1.2rem;
+    right: 1.2rem;
     transform-origin: bottom right;
-    transform: scale(0.45);
+    transform: scale(0.55);
   }
   .cb-float-wrap.cb-attention {
     transform-origin: bottom right;
   }
   .cb-speech-bubble {
-    font-size: 0.68rem;
-    max-width: 140px;
-    padding: 0.35rem 0.65rem;
+    font-size: 0.72rem;
+    max-width: 160px;
+    padding: 0.4rem 0.75rem;
   }
   .cb-window {
-    width: calc(100vw - 1.5rem);
-    right: 0.75rem;
-    left: 0.75rem;
-    bottom: 5rem;
-    height: 65vh;
-    max-height: 480px;
-    transform: none;
-    transform-origin: unset;
+    width: calc(100vw - 1rem);
+    right: 0.5rem;
+    left: 0.5rem;
+    bottom: 5.5rem;
+    height: 70vh;
+    max-height: 520px;
+    border-radius: 16px;
   }
   .cb-window.cb-open {
     transform: translateY(0) scale(1);
+  }
+  .cb-messages {
+    padding: 1rem;
+  }
+  .cb-footer {
+    padding: 0.75rem 1rem;
+  }
+  .cb-bubble {
+    font-size: 0.84rem;
+    padding: 0.65rem 0.9rem;
   }
 }
 
 /* ── Chatbot Small Mobile (≤ 480px) ── */
 @media (max-width: 480px) {
   .cb-float-wrap {
-    transform: scale(0.38);
+    transform: scale(0.5);
+    bottom: 1rem;
+    right: 1rem;
   }
   .cb-window {
-    bottom: 4rem;
-    height: 70vh;
+    bottom: 5rem;
+    height: 72vh;
   }
 }
 
@@ -1925,7 +1936,7 @@ section {
     padding-top: 0;
   }
   .ct-inner {
-    padding: 4rem var(--pad) 3rem;
+    padding: 3rem var(--pad) 3rem;
   }
   .ct-title {
     font-size: clamp(1.9rem, 7vw, 2.6rem);
@@ -1944,4 +1955,132 @@ section {
   .ct-card-list {
     gap: 0.75rem;
   }
+  .ct-info-item {
+    padding: 0.7rem 0.85rem;
+  }
+  .ct-info-value {
+    font-size: 0.82rem;
+  }
+}
+
+/* ══════════════════════════════════════════
+   MOBILE GLOBAL IMPROVEMENTS (≤ 768px)
+══════════════════════════════════════════ */
+@media (max-width: 768px) {
+
+  /* ── Hero ── */
+  .hero-title {
+    font-size: clamp(2.1rem, 9vw, 2.8rem);
+    letter-spacing: -0.03em;
+  }
+  .hero-title-sub {
+    font-size: 0.62em;
+  }
+  .hero-eyebrow {
+    font-size: 0.65rem;
+  }
+  #hero .sz {
+    padding-bottom: 5rem;
+  }
+  /* 3D Meteor Canvas: hide on mobile for performance */
+  #meteorCanvas {
+    display: none;
+  }
+
+  /* ── Marquee ── */
+  .marquee-track { gap: 1.6rem; }
+  .marquee-track span { font-size: 0.7rem; }
+
+  /* ── About ── */
+  .about-title {
+    font-size: clamp(2rem, 7vw, 2.8rem);
+  }
+  .about-text p {
+    font-size: 0.93rem;
+    line-height: 1.75;
+  }
+  .photo-outer {
+    width: 150px;
+  }
+
+  /* ── Services / Workflow steps ── */
+  .wf-steps {
+    gap: 0.3rem;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding-bottom: 0.5rem;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .wf-steps::-webkit-scrollbar { display: none; }
+  .wf-step {
+    flex: 0 0 auto;
+    min-width: 60px;
+  }
+  .wf-step-label {
+    font-size: 0.58rem;
+    max-width: 62px;
+    text-align: center;
+  }
+  .wf-node {
+    width: 38px;
+    height: 38px;
+    font-size: 0.95rem;
+  }
+  .wf-block {
+    padding: 1.4rem 0 1.8rem;
+    overflow: hidden;
+  }
+  .wf-line {
+    display: none;
+  }
+
+  /* ── Work Reel ── */
+  .proj-tile { width: 200px; }
+  .reel-arrow {
+    width: 34px;
+    height: 34px;
+    font-size: 0.8rem;
+  }
+  .reel-prev { left: 0.5rem; }
+  .reel-next { right: 0.5rem; }
+
+  /* ── Section titles ── */
+  .section-title {
+    font-size: clamp(2.2rem, 8vw, 3rem);
+  }
+  .section-container {
+    padding: 3.5rem var(--pad);
+  }
+
+  /* ── Footer row ── */
+  .ct-footer-row {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 0.75rem;
+  }
+}
+
+/* ── Small Mobile (≤ 480px) ── */
+@media (max-width: 480px) {
+  .hero-title {
+    font-size: clamp(1.8rem, 8.5vw, 2.2rem);
+  }
+  .section-title {
+    font-size: clamp(1.9rem, 8vw, 2.5rem);
+  }
+  .about-title {
+    font-size: clamp(1.8rem, 7.5vw, 2.4rem);
+  }
+  .wbs-title {
+    font-size: clamp(1.6rem, 7vw, 2rem);
+  }
+  .ct-title {
+    font-size: clamp(1.7rem, 7.5vw, 2.2rem);
+  }
+  .proj-tile { width: 175px; }
+  .section-container { padding: 3rem var(--pad); }
+  .wf-step { min-width: 55px; }
+  .wf-node { width: 34px; height: 34px; }
 }
