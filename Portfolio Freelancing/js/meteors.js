@@ -6,7 +6,7 @@
   var W = window.innerWidth, H = window.innerHeight;
 
   var renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
   renderer.setClearColor(0x000000, 0);
   renderer.setSize(W, H, false);
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -41,12 +41,12 @@
   var meshes = [];
   var loader = new THREE.GLTFLoader();
 
-  lanes.forEach(function (lane, i) {
-    loader.load(lane.file, function (gltf) {
+  /* GLB nur einmal laden, dann für jede Lane klonen */
+  loader.load(lanes[0].file, function (gltf) {
+    lanes.forEach(function (lane, i) {
       var root = new THREE.Group();
-      var m = gltf.scene;
+      var m = i === 0 ? gltf.scene : gltf.scene.clone(true);
 
-      /* Normalisieren + zentrieren im lokalen Group */
       var box = new THREE.Box3().setFromObject(m);
       var center = new THREE.Vector3();
       box.getCenter(center);
@@ -56,7 +56,6 @@
       var s = lane.scale / maxDim;
 
       m.scale.setScalar(s);
-      /* Verschiebe Mesh so, dass seine Mitte bei (0,0,0) der Group liegt */
       m.position.set(-center.x * s, -center.y * s, -center.z * s);
 
       m.traverse(function (c) {
@@ -69,12 +68,11 @@
       });
 
       root.add(m);
-      /* Startposition: rechts außerhalb */
       root.position.set(lane.xStart, lane.y, lane.z);
       scene.add(root);
       meshes[i] = { root: root, lane: lane };
-    }, undefined, function(e){ console.error(lane.file, e); });
-  });
+    });
+  }, undefined, function(e){ console.error(lanes[0].file, e); });
 
   var smoothP = 0;
   function rawP() {
