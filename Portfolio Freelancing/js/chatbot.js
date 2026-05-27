@@ -171,7 +171,11 @@
     div.className = 'cb-msg cb-msg--' + role;
     var bubble = document.createElement('div');
     bubble.className = 'cb-bubble';
-    bubble.textContent = content;
+    if (role === 'assistant') {
+      bubble.innerHTML = content;
+    } else {
+      bubble.textContent = content;
+    }
     div.appendChild(bubble);
     container.appendChild(div);
   }
