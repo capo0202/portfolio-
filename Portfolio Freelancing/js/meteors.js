@@ -76,9 +76,9 @@
 
   /* ── Hintergrund-Meteoriten (frei schwebend) ── */
   var floaters = [
-    { x: -8,  y:  3,  z: -22, scale: 1.1, rot: [0.002, 0.004, 0.001], floatSpeed: 0.0007, floatAmp: 0.6 },
-    { x:  7,  y: -2,  z: -26, scale: 0.8, rot: [0.003, 0.002, 0.003], floatSpeed: 0.0011, floatAmp: 0.4 },
-    { x:  2,  y:  5,  z: -30, scale: 0.6, rot: [0.001, 0.005, 0.002], floatSpeed: 0.0009, floatAmp: 0.8 },
+    { x: -4,  y:  2,  z: -14, scale: 1.4, rot: [0.002, 0.004, 0.001], floatSpeed: 0.0007, floatAmp: 0.5 },
+    { x:  5,  y: -1,  z: -16, scale: 1.1, rot: [0.003, 0.002, 0.003], floatSpeed: 0.0011, floatAmp: 0.3 },
+    { x:  1,  y:  3,  z: -18, scale: 0.9, rot: [0.001, 0.005, 0.002], floatSpeed: 0.0009, floatAmp: 0.6 },
   ];
   var floaterMeshes = [];
   var clock = 0;
