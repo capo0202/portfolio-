@@ -220,10 +220,10 @@
       var align = isUser ? 'right' : 'left';
       var label = isUser ? '👤 Kunde' : '🤖 KI-Assistent';
       var text  = m.content.replace(/<[^>]*>/g, '');
-      return '<div style="text-align:' + align + ';margin:10px 0;">' +
-        '<div style="display:inline-block;max-width:80%;background:' + bg + ';color:' + color + ';' +
-        'border-radius:14px;padding:10px 16px;font-family:Arial,sans-serif;font-size:13px;line-height:1.6;text-align:left;">' +
-        '<div style="font-size:10px;font-weight:bold;margin-bottom:5px;opacity:0.75;">' + label + '</div>' +
+      return '<div style="margin:12px 0;">' +
+        '<div style="font-size:11px;font-weight:bold;color:#888;margin-bottom:4px;">' + label + '</div>' +
+        '<div style="background:' + bg + ';color:' + color + ';' +
+        'border-radius:10px;padding:10px 14px;font-family:Arial,sans-serif;font-size:13px;line-height:1.6;width:100%;box-sizing:border-box;">' +
         text +
         '</div></div>';
     }).join('<br>');
