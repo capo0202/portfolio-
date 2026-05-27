@@ -76,11 +76,13 @@
 
   /* ── Hintergrund-Meteoriten (frei schwebend) ── */
   var floaters = [
-    { x: -5,  y:  2.5, z: -11, scale: 1.5, rot: [0.002, 0.005, 0.001], floatSpeed: 0.0008, floatAmp: 0.7 },
-    { x:  5,  y: -1.5, z: -12, scale: 1.2, rot: [0.003, 0.002, 0.004], floatSpeed: 0.0012, floatAmp: 0.5 },
-    { x:  0,  y:  3.5, z: -13, scale: 1.0, rot: [0.001, 0.006, 0.002], floatSpeed: 0.0009, floatAmp: 0.9 },
-    { x: -3,  y: -3,   z: -10, scale: 1.3, rot: [0.004, 0.003, 0.002], floatSpeed: 0.0006, floatAmp: 0.4 },
-    { x:  4,  y:  1,   z: -14, scale: 0.9, rot: [0.002, 0.004, 0.003], floatSpeed: 0.0010, floatAmp: 0.6 },
+    { x: -9,  y:  4,   z: -11, scale: 1.4, rot: [0.002, 0.005, 0.001], floatSpeed: 0.0008, floatAmp: 0.7 }, /* links oben */
+    { x:  9,  y:  3,   z: -12, scale: 1.1, rot: [0.003, 0.002, 0.004], floatSpeed: 0.0012, floatAmp: 0.5 }, /* rechts oben */
+    { x: -8,  y: -3,   z: -10, scale: 1.3, rot: [0.004, 0.003, 0.002], floatSpeed: 0.0006, floatAmp: 0.4 }, /* links unten */
+    { x:  8,  y: -4,   z: -13, scale: 1.0, rot: [0.002, 0.004, 0.003], floatSpeed: 0.0010, floatAmp: 0.6 }, /* rechts unten */
+    { x:  0,  y:  5,   z: -14, scale: 0.9, rot: [0.001, 0.006, 0.002], floatSpeed: 0.0009, floatAmp: 0.8 }, /* mitte oben */
+    { x: -4,  y:  0,   z: -11, scale: 1.2, rot: [0.003, 0.004, 0.001], floatSpeed: 0.0007, floatAmp: 0.5 }, /* links mitte */
+    { x:  5,  y: -1,   z: -12, scale: 1.0, rot: [0.002, 0.003, 0.004], floatSpeed: 0.0011, floatAmp: 0.6 }, /* rechts mitte */
   ];
   var floaterMeshes = [];
   var clock = 0;
