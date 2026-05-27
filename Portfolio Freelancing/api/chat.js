@@ -103,7 +103,7 @@ module.exports = async function handler(req, res) {
         'Authorization': `Bearer ${apiKey}`
       },
       body: JSON.stringify({
-        model: 'llama-3.3-70b-versatile',
+        model: 'mixtral-8x7b-32768',
         messages: groqMessages,
         temperature: 0.7,
         max_tokens: 512,
