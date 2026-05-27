@@ -78,14 +78,15 @@
   }, undefined, function(e){ console.error(lanes[0].file, e); });
 
   /* ── Hintergrund-Meteoriten (frei schwebend) ── */
+  /* opacity: nah=kräftig, weit=transparent → verstärkt Tiefenwirkung */
   var floaters = [
-    { x: -9,  y:  4,   z:  -7, scale: 1.8, rot: [0.002, 0.005, 0.001], floatSpeed: 0.0008, floatAmp: 0.7 }, /* links oben — nah, groß */
-    { x:  9,  y:  3,   z: -18, scale: 0.6, rot: [0.003, 0.002, 0.004], floatSpeed: 0.0012, floatAmp: 0.5 }, /* rechts oben — weit, klein */
-    { x: -8,  y: -3,   z:  -9, scale: 1.5, rot: [0.004, 0.003, 0.002], floatSpeed: 0.0006, floatAmp: 0.4 }, /* links unten — nah */
-    { x:  8,  y: -4,   z: -20, scale: 0.5, rot: [0.002, 0.004, 0.003], floatSpeed: 0.0010, floatAmp: 0.6 }, /* rechts unten — sehr weit, winzig */
-    { x:  0,  y:  5,   z: -15, scale: 0.8, rot: [0.001, 0.006, 0.002], floatSpeed: 0.0009, floatAmp: 0.8 }, /* mitte oben — mittel */
-    { x: -4,  y:  0,   z: -12, scale: 1.2, rot: [0.003, 0.004, 0.001], floatSpeed: 0.0007, floatAmp: 0.5 }, /* links mitte — mittel */
-    { x:  5,  y: -1,   z:  -8, scale: 1.6, rot: [0.002, 0.003, 0.004], floatSpeed: 0.0011, floatAmp: 0.6 }, /* rechts mitte — nah, groß */
+    { x: -9,  y:  4,   z:  -5, scale: 2.2, opacity: 0.85, rot: [0.002, 0.005, 0.001], floatSpeed: 0.0008, floatAmp: 0.7 }, /* links oben — sehr nah, sehr groß */
+    { x:  9,  y:  3,   z: -22, scale: 0.4, opacity: 0.25, rot: [0.003, 0.002, 0.004], floatSpeed: 0.0012, floatAmp: 0.5 }, /* rechts oben — extrem weit, winzig */
+    { x: -8,  y: -4,   z:  -8, scale: 1.7, opacity: 0.75, rot: [0.004, 0.003, 0.002], floatSpeed: 0.0006, floatAmp: 0.4 }, /* links unten — nah */
+    { x:  7,  y: -5,   z: -25, scale: 0.3, opacity: 0.18, rot: [0.002, 0.004, 0.003], floatSpeed: 0.0010, floatAmp: 0.6 }, /* rechts unten — sehr weit, kaum sichtbar */
+    { x:  1,  y:  5,   z: -14, scale: 0.9, opacity: 0.45, rot: [0.001, 0.006, 0.002], floatSpeed: 0.0009, floatAmp: 0.8 }, /* mitte oben — mittlere Tiefe */
+    { x: -3,  y:  1,   z: -10, scale: 1.4, opacity: 0.62, rot: [0.003, 0.004, 0.001], floatSpeed: 0.0007, floatAmp: 0.5 }, /* links mitte — etwas nah */
+    { x:  6,  y: -1,   z: -18, scale: 0.6, opacity: 0.32, rot: [0.002, 0.003, 0.004], floatSpeed: 0.0011, floatAmp: 0.6 }, /* rechts mitte — weit hinten */
   ];
   var floaterMeshes = [];
   var clock = 0;
@@ -118,7 +119,7 @@
           c.material.roughness = 0.7;
           c.material.metalness = 0.1;
           c.material.transparent = true;
-          c.material.opacity = 0.55;
+          c.material.opacity = f.opacity !== undefined ? f.opacity : 0.55;
         }
       });
 
