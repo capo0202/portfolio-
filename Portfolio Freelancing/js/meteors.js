@@ -74,6 +74,54 @@
     });
   }, undefined, function(e){ console.error(lanes[0].file, e); });
 
+  /* ── Hintergrund-Meteoriten (frei schwebend) ── */
+  var floaters = [
+    { x: -8,  y:  3,  z: -22, scale: 1.1, rot: [0.002, 0.004, 0.001], floatSpeed: 0.0007, floatAmp: 0.6 },
+    { x:  7,  y: -2,  z: -26, scale: 0.8, rot: [0.003, 0.002, 0.003], floatSpeed: 0.0011, floatAmp: 0.4 },
+    { x:  2,  y:  5,  z: -30, scale: 0.6, rot: [0.001, 0.005, 0.002], floatSpeed: 0.0009, floatAmp: 0.8 },
+  ];
+  var floaterMeshes = [];
+  var clock = 0;
+
+  /* Maus-Tracking */
+  var mouseX = 0, mouseY = 0, smoothMX = 0, smoothMY = 0;
+  window.addEventListener('mousemove', function (e) {
+    mouseX = (e.clientX / window.innerWidth  - 0.5) * 2;
+    mouseY = (e.clientY / window.innerHeight - 0.5) * 2;
+  });
+
+  loader.load('assets/meteorit2.glb', function (gltf) {
+    floaters.forEach(function (f, i) {
+      var root = new THREE.Group();
+      var m = gltf.scene.clone(true);
+
+      var box = new THREE.Box3().setFromObject(m);
+      var center = new THREE.Vector3();
+      box.getCenter(center);
+      var size = new THREE.Vector3();
+      box.getSize(size);
+      var maxDim = Math.max(size.x, size.y, size.z) || 1;
+      var s = f.scale / maxDim;
+      m.scale.setScalar(s);
+      m.position.set(-center.x * s, -center.y * s, -center.z * s);
+
+      m.traverse(function (c) {
+        if (c.isMesh && c.material) {
+          c.material = c.material.clone();
+          c.material.roughness = 0.7;
+          c.material.metalness = 0.1;
+          c.material.transparent = true;
+          c.material.opacity = 0.55;
+        }
+      });
+
+      root.add(m);
+      root.position.set(f.x, f.y, f.z);
+      scene.add(root);
+      floaterMeshes[i] = { root: root, f: f, baseX: f.x, baseY: f.y };
+    });
+  });
+
   var smoothP = 0;
   function rawP() {
     var hero = document.getElementById('hero');
@@ -87,7 +135,23 @@
 
   function animate() {
     requestAnimationFrame(animate);
+    clock += 1;
     smoothP += (rawP() - smoothP) * 0.15;
+
+    /* Maus smooth */
+    smoothMX += (mouseX - smoothMX) * 0.04;
+    smoothMY += (mouseY - smoothMY) * 0.04;
+
+    /* Hintergrund-Meteoriten animieren */
+    floaterMeshes.forEach(function (item) {
+      if (!item) return;
+      var f = item.f;
+      item.root.position.x = item.baseX + Math.sin(clock * f.floatSpeed * 1.3) * 1.2 + smoothMX * 1.5;
+      item.root.position.y = item.baseY + Math.sin(clock * f.floatSpeed) * f.floatAmp + smoothMY * -1.0;
+      item.root.rotation.x += f.rot[0];
+      item.root.rotation.y += f.rot[1];
+      item.root.rotation.z += f.rot[2];
+    });
 
     meshes.forEach(function (item) {
       if (!item) return;
