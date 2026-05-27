@@ -98,7 +98,7 @@ module.exports = async function handler(req, res) {
 
   try {
     const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -116,8 +116,8 @@ module.exports = async function handler(req, res) {
     const data = await response.json();
 
     if (!response.ok) {
-      console.error('Gemini error:', data);
-      return res.status(500).json({ error: 'Gemini API error', details: data });
+      console.error('Gemini error status:', response.status, JSON.stringify(data));
+      return res.status(500).json({ error: 'Gemini API error', status: response.status, details: data });
     }
 
     const reply = data.candidates?.[0]?.content?.parts?.[0]?.text || 'Entschuldigung, ich konnte keine Antwort generieren.';
