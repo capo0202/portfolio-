@@ -110,12 +110,16 @@
     isOpen = true;
     chatWindow.classList.add('cb-open');
     floatBtn.classList.add('cb-active');
+    var bubble = document.querySelector('.cb-speech-bubble');
+    if (bubble) bubble.style.display = 'none';
     setTimeout(function () { inputEl && inputEl.focus(); }, 300);
   }
   function closeChat() {
     isOpen = false;
     chatWindow.classList.remove('cb-open');
     floatBtn.classList.remove('cb-active');
+    var bubble = document.querySelector('.cb-speech-bubble');
+    if (bubble) bubble.style.display = '';
     if (messages.length >= 2 && !emailSent) sendEmail();
   }
 
