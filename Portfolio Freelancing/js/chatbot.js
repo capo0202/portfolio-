@@ -8,9 +8,9 @@
   var emailSent = false;
 
   /* ── EmailJS config (user fills these in) ── */
-  var EMAILJS_SERVICE_ID  = 'YOUR_SERVICE_ID';
-  var EMAILJS_TEMPLATE_ID = 'YOUR_TEMPLATE_ID';
-  var EMAILJS_PUBLIC_KEY  = 'YOUR_PUBLIC_KEY';
+  var EMAILJS_SERVICE_ID  = 'service_f6inkto';
+  var EMAILJS_TEMPLATE_ID = 'template_v8z8mqd';
+  var EMAILJS_PUBLIC_KEY  = 'VEaBwSV__6DqYsv3C';
 
   /* ── DOM refs ── */
   var floatBtn, chatWindow, messagesEl, inputEl, sendBtn, closeBtn;
