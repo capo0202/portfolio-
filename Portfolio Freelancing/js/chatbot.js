@@ -214,6 +214,9 @@
     }).join('\n\n');
 
     emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+      name: 'Portfolio Besucher',
+      title: 'Neuer Chat – ' + new Date().toLocaleString('de-DE'),
+      message: transcript,
       transcript: transcript,
       date: new Date().toLocaleString('de-DE')
     }, EMAILJS_PUBLIC_KEY).catch(function (err) {
