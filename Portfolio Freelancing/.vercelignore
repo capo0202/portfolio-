@@ -1,6 +1,16 @@
 # Large project videos - served via GitHub raw CDN
 assets/projects/
 
+# Large assets - served via GitHub raw CDN
+assets/web-showcase.mp4
+assets/web-showcase-2.mp4
+assets/hero-space.mp4
+assets/meteorit1.glb
+assets/meteorit2.glb
+assets/meteorit3.glb
+assets/binary-system.glb
+assets/cute_bot.glb
+
 # Unused files
 3 d animation/
 1 webseite für mein portfolio .mp4
