@@ -213,20 +213,18 @@
     if (typeof emailjs === 'undefined') return;
     emailSent = true;
 
-    var htmlTranscript = messages.map(function (m) {
-      var isUser = m.role === 'user';
-      var bg    = isUser ? '#3a52d4' : '#f0f4ff';
-      var color = isUser ? '#ffffff' : '#111111';
-      var align = isUser ? 'right' : 'left';
-      var label = isUser ? '👤 Kunde' : '🤖 KI-Assistent';
-      var text  = m.content.replace(/<[^>]*>/g, '');
-      return '<div style="margin:12px 0;">' +
-        '<div style="font-size:11px;font-weight:bold;color:#888;margin-bottom:4px;">' + label + '</div>' +
-        '<div style="background:' + bg + ';color:' + color + ';' +
-        'border-radius:10px;padding:10px 14px;font-family:Arial,sans-serif;font-size:13px;line-height:1.6;width:100%;box-sizing:border-box;">' +
-        text +
-        '</div></div>';
-    }).join('<br>');
+    var htmlTranscript = '<div style="font-family:Arial,sans-serif;font-size:14px;max-width:600px;">' +
+      messages.map(function (m) {
+        var isUser = m.role === 'user';
+        var bg    = isUser ? '#3a52d4' : '#eef0ff';
+        var color = isUser ? '#ffffff' : '#111111';
+        var label = isUser ? '👤 Kunde' : '🤖 KI-Assistent';
+        var text  = m.content.replace(/<[^>]*>/g, '');
+        return '<div style="margin:16px 0;">' +
+          '<div style="font-size:11px;font-weight:bold;color:#999;margin-bottom:6px;letter-spacing:0.5px;">' + label + '</div>' +
+          '<div style="background:' + bg + ';color:' + color + ';border-radius:12px;padding:14px 18px;line-height:1.7;">' +
+          text + '</div></div>';
+      }).join('') + '</div>';
 
     emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
       name: 'Portfolio Besucher',
