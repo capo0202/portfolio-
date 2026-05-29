@@ -1875,37 +1875,43 @@ section {
 
 /* ── Chatbot Mobile (≤ 768px) ── */
 @media (max-width: 768px) {
+  /* Wrap: KEIN scale() — das bricht JS-Animationen und Touch-Bereiche */
   .cb-float-wrap {
-    bottom: 1.2rem;
-    right: 1.2rem;
-    transform-origin: bottom right;
-    transform: scale(0.55);
+    bottom: 1.25rem;
+    right: 1.25rem;
   }
-  .cb-float-wrap.cb-attention {
-    transform-origin: bottom right;
+  /* Button direkt verkleinern — korrekte Touch-Area */
+  .cb-float-btn {
+    width: 72px !important;
+    height: 72px !important;
+  }
+  .cb-float-btn canvas {
+    width: 72px !important;
+    height: 72px !important;
   }
   .cb-speech-bubble {
     font-size: 0.72rem;
-    max-width: 160px;
+    max-width: 155px;
     padding: 0.4rem 0.75rem;
   }
+  /* Chat-Fenster: fast volle Breite, über dem kleineren Button */
   .cb-window {
-    width: calc(100vw - 1rem);
-    right: 0.5rem;
-    left: 0.5rem;
+    width: calc(100vw - 1.5rem);
+    right: 0.75rem;
+    left: 0.75rem;
     bottom: 5.5rem;
-    height: 70vh;
-    max-height: 520px;
+    height: 68vh;
+    max-height: 500px;
     border-radius: 16px;
-  }
-  .cb-window.cb-open {
-    transform: translateY(0) scale(1);
   }
   .cb-messages {
     padding: 1rem;
   }
   .cb-footer {
     padding: 0.75rem 1rem;
+  }
+  .cb-input {
+    font-size: 1rem; /* verhindert iOS auto-zoom beim Tippen */
   }
   .cb-bubble {
     font-size: 0.84rem;
@@ -1915,10 +1921,13 @@ section {
 
 /* ── Chatbot Small Mobile (≤ 480px) ── */
 @media (max-width: 480px) {
-  .cb-float-wrap {
-    transform: scale(0.5);
-    bottom: 1rem;
-    right: 1rem;
+  .cb-float-btn {
+    width: 64px !important;
+    height: 64px !important;
+  }
+  .cb-float-btn canvas {
+    width: 64px !important;
+    height: 64px !important;
   }
   .cb-window {
     bottom: 5rem;

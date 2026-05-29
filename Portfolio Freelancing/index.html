@@ -864,6 +864,9 @@
   <script src="js/chatbot.js"></script>
   <script>
     (function () {
+      /* Fly-Animation nur auf Desktop — auf Mobile würde sie touch/position brechen */
+      if (window.innerWidth <= 768) return;
+
       var wrap = document.querySelector('.cb-float-wrap');
       var contact = document.getElementById('contact');
       if (!wrap || !contact) return;
