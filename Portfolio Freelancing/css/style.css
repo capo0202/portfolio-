@@ -1882,17 +1882,33 @@ section {
   }
   /* Button direkt verkleinern — korrekte Touch-Area */
   .cb-float-btn {
-    width: 72px !important;
-    height: 72px !important;
+    width: 80px !important;
+    height: 80px !important;
   }
   .cb-float-btn canvas {
-    width: 72px !important;
-    height: 72px !important;
+    width: 80px !important;
+    height: 80px !important;
   }
+  /* Glow-Ring sichtbar auf Mobile */
+  .cb-float-btn::after {
+    content: '';
+    position: absolute;
+    inset: -6px;
+    border-radius: 50%;
+    border: 2px solid rgba(58,82,212,0.5);
+    animation: cb-ring-pulse 2.5s ease-in-out infinite;
+    pointer-events: none;
+  }
+  @keyframes cb-ring-pulse {
+    0%, 100% { transform: scale(1);   opacity: 0.6; }
+    50%       { transform: scale(1.12); opacity: 0; }
+  }
+  /* Sprechblase — größer */
   .cb-speech-bubble {
-    font-size: 0.72rem;
-    max-width: 155px;
-    padding: 0.4rem 0.75rem;
+    font-size: 0.82rem;
+    max-width: 185px;
+    padding: 0.55rem 0.9rem;
+    line-height: 1.5;
   }
   /* Chat-Fenster: fast volle Breite, über dem kleineren Button */
   .cb-window {
@@ -1922,12 +1938,12 @@ section {
 /* ── Chatbot Small Mobile (≤ 480px) ── */
 @media (max-width: 480px) {
   .cb-float-btn {
-    width: 64px !important;
-    height: 64px !important;
+    width: 70px !important;
+    height: 70px !important;
   }
   .cb-float-btn canvas {
-    width: 64px !important;
-    height: 64px !important;
+    width: 70px !important;
+    height: 70px !important;
   }
   .cb-window {
     bottom: 5rem;

@@ -28,9 +28,24 @@
     floatBtn.addEventListener('click', toggleChat);
     closeBtn.addEventListener('click', closeChat);
     sendBtn.addEventListener('click', handleSend);
+    /* touchend als Fallback für mobile Browser die click verzögern */
+    sendBtn.addEventListener('touchend', function (e) { e.preventDefault(); handleSend(); });
     inputEl.addEventListener('keydown', function (e) {
       if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend(); }
     });
+
+    /* iOS-Keyboard-Fix: wenn Tastatur aufgeht, Fenster nach oben schieben */
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', function () {
+        if (!isOpen) return;
+        var kbHeight = window.innerHeight - window.visualViewport.height;
+        if (kbHeight > 100) {
+          chatWindow.style.bottom = (kbHeight + 8) + 'px';
+        } else {
+          chatWindow.style.bottom = '';
+        }
+      });
+    }
 
     /* Also init the embedded section chat if present */
     var embedSend  = document.getElementById('chatEmbedSend');
