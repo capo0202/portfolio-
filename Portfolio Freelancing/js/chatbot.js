@@ -133,7 +133,10 @@
     floatBtn.classList.add('cb-active');
     var bubble = document.querySelector('.cb-speech-bubble');
     if (bubble) bubble.style.display = 'none';
-    setTimeout(function () { inputEl && inputEl.focus(); }, 300);
+    /* Auf Mobile: Float-Wrap verstecken damit er nicht den Send-Button blockiert */
+    var wrap = document.querySelector('.cb-float-wrap');
+    if (wrap && window.innerWidth <= 768) wrap.style.display = 'none';
+    setTimeout(function () { inputEl && inputEl.focus(); }, 400);
   }
   function closeChat() {
     isOpen = false;
@@ -141,6 +144,9 @@
     floatBtn.classList.remove('cb-active');
     var bubble = document.querySelector('.cb-speech-bubble');
     if (bubble) bubble.style.display = '';
+    /* Float-Wrap wieder zeigen */
+    var wrap = document.querySelector('.cb-float-wrap');
+    if (wrap) wrap.style.display = '';
     if (messages.length >= 2 && !emailSent) sendEmail();
   }
 

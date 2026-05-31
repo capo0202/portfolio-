@@ -1890,30 +1890,30 @@ section {
     height: 80px !important;
   }
 
-  /* ── Glow-Ring auf Mobile (wie Desktop) ── */
-  .cb-float-btn::after {
+  /* ── Glow-Ring auf Mobile — sichtbarer Pulsring ── */
+  .cb-float-btn::before {
     content: '';
     position: absolute;
-    inset: -8px;
+    inset: -10px;
     border-radius: 50%;
-    border: 2.5px solid rgba(58,82,212,0.55);
-    box-shadow: 0 0 14px rgba(58,82,212,0.4);
-    animation: cb-ring-pulse-m 2.2s ease-in-out infinite;
+    background: rgba(58,82,212,0.18);
+    box-shadow: 0 0 0 2px rgba(58,82,212,0.5), 0 0 20px rgba(58,82,212,0.35);
+    animation: cb-ring-pulse-m 2.4s ease-in-out infinite;
     pointer-events: none;
+    z-index: -1;
   }
   @keyframes cb-ring-pulse-m {
-    0%   { transform: scale(1);    opacity: 0.8; }
-    50%  { transform: scale(1.18); opacity: 0;   }
-    100% { transform: scale(1);    opacity: 0.8; }
+    0%   { transform: scale(1);    opacity: 1; }
+    60%  { transform: scale(1.22); opacity: 0; }
+    100% { transform: scale(1);    opacity: 1; }
   }
 
-  /* ── Sprechblase — deutlich größer ── */
+  /* ── Sprechblase — deutlich größer & auffälliger ── */
   .cb-speech-bubble {
-    font-size: 0.88rem !important;
-    max-width: 200px !important;
-    padding: 0.6rem 1rem !important;
+    font-size: 0.9rem !important;
+    max-width: 210px !important;
+    padding: 0.65rem 1.1rem !important;
     line-height: 1.55 !important;
-    white-space: normal !important;
   }
 
   /* ── Chat-Fenster als Bottom Sheet ──
