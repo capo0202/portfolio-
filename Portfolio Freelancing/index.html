@@ -918,49 +918,44 @@
       justify-content: space-between;
       gap: 2rem; flex-wrap: wrap;
     ">
+      <!-- Text + aufklappbare Details -->
       <div style="flex: 1; min-width: 260px;">
-        <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
-          <p style="
-            font-family: 'DM Sans', sans-serif;
-            font-size: 0.88rem; color: #aaa;
-            line-height: 1.65; margin: 0;
-          ">
-            Diese Seite verwendet einen <strong style="color:#e8e6f0;">KI-Assistenten</strong>.
-          </p>
-          <button onclick="toggleCookieDetails()" id="cookieMoreBtn" style="
-            font-family: 'DM Sans', sans-serif;
-            font-size: 0.82rem; color: #6a7fff;
-            background: none; border: none; cursor: pointer;
-            padding: 0; display: flex; align-items: center; gap: 0.25rem;
-            text-decoration: underline; text-underline-offset: 3px;
-          ">Mehr <span id="cookieArrow">▾</span></button>
-        </div>
-        <!-- Aufklappbarer Detail-Text -->
+        <p style="font-family:'DM Sans',sans-serif; font-size:0.88rem; color:#aaa; line-height:1.65; margin:0 0 0.5rem;">
+          Diese Seite verwendet einen <strong style="color:#e8e6f0;">KI-Assistenten</strong>, um dir bei Fragen zu helfen.
+        </p>
+        <button onclick="toggleCookieDetails()" id="cookieMoreBtn" style="
+          font-family:'DM Sans',sans-serif; font-size:0.8rem; color:#6a7fff;
+          background:none; border:none; cursor:pointer; padding:0;
+          text-decoration:underline; text-underline-offset:3px;
+        ">Mehr erfahren <span id="cookieArrow">▾</span></button>
         <div id="cookieDetails" style="
-          display: none; margin-top: 0.75rem;
-          font-family: 'DM Sans', sans-serif;
-          font-size: 0.8rem; color: #666;
-          line-height: 1.65;
-          border-top: 1px solid rgba(255,255,255,0.06);
-          padding-top: 0.75rem;
+          display:none; margin-top:0.65rem;
+          font-family:'DM Sans',sans-serif; font-size:0.78rem; color:#666;
+          line-height:1.65; border-top:1px solid rgba(255,255,255,0.06); padding-top:0.65rem;
         ">
           Ein smarter Chatbot beantwortet deine Fragen zu meinen Services und Projekten.
           Gespräche werden nur zur Kontaktaufnahme weitergeleitet — kein Tracking, keine Werbung.
           &nbsp;<a href="datenschutz.html" style="color:#6a7fff; text-decoration:underline; text-underline-offset:3px;">Datenschutzerklärung</a>
         </div>
       </div>
-      <div style="display: flex; gap: 0.75rem; flex-shrink: 0; align-items: center;">
+      <!-- Buttons: Ablehnen · Akzeptieren -->
+      <div style="display:flex; gap:0.6rem; flex-shrink:0; align-items:center; flex-wrap:wrap;">
         <button onclick="acceptCookies()" style="
-          font-family: 'DM Sans', sans-serif;
-          font-size: 0.88rem; font-weight: 600;
-          color: #fff; background: #3a52d4;
-          border: none; border-radius: 8px;
-          padding: 0.6rem 1.4rem;
-          cursor: pointer;
-          transition: background 0.2s, box-shadow 0.2s;
-          box-shadow: 0 2px 16px rgba(58,82,212,0.35);
+          font-family:'DM Sans',sans-serif; font-size:0.82rem; color:#888;
+          background:none; border:1px solid rgba(255,255,255,0.12); border-radius:8px;
+          padding:0.55rem 1.1rem; cursor:pointer; transition:color 0.2s, border-color 0.2s;
+        " onmouseover="this.style.color='#ccc';this.style.borderColor='rgba(255,255,255,0.25)'"
+           onmouseout="this.style.color='#888';this.style.borderColor='rgba(255,255,255,0.12)'">
+          Ablehnen
+        </button>
+        <button onclick="acceptCookies()" style="
+          font-family:'DM Sans',sans-serif; font-size:0.88rem; font-weight:600;
+          color:#fff; background:#3a52d4; border:none; border-radius:8px;
+          padding:0.6rem 1.4rem; cursor:pointer;
+          box-shadow:0 2px 16px rgba(58,82,212,0.4);
+          transition:background 0.2s;
         " onmouseover="this.style.background='#2d43c0'" onmouseout="this.style.background='#3a52d4'">
-          OK
+          Akzeptieren
         </button>
       </div>
     </div>
