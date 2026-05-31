@@ -898,5 +898,87 @@
       observer.observe(contact);
     })();
   </script>
+
+  <!-- ═══ COOKIE BANNER ═══ -->
+  <div id="cookieBanner" style="
+    display: none;
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    z-index: 99999;
+    background: rgba(14,13,11,0.97);
+    border-top: 1px solid rgba(58,82,212,0.25);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    padding: 1.25rem 2rem;
+    box-shadow: 0 -4px 40px rgba(0,0,0,0.5);
+  ">
+    <div style="
+      max-width: 1200px; margin: 0 auto;
+      display: flex; align-items: center;
+      justify-content: space-between;
+      gap: 2rem; flex-wrap: wrap;
+    ">
+      <div style="flex: 1; min-width: 260px;">
+        <p style="
+          font-family: 'DM Sans', sans-serif;
+          font-size: 0.88rem; color: #aaa;
+          line-height: 1.65; margin: 0;
+        ">
+          Diese Website verwendet einen <strong style="color:#e8e6f0;">KI-gestützten Chatbot</strong>.
+          Gesprächsinhalte können zur Kontaktaufnahme gespeichert werden.
+          Mit der Nutzung dieser Website stimmen Sie unserer
+          <a href="datenschutz.html" style="color:#6a7fff; text-decoration:underline; text-underline-offset:3px;">Datenschutzerklärung</a> zu.
+        </p>
+      </div>
+      <div style="display: flex; gap: 0.75rem; flex-shrink: 0; align-items: center;">
+        <a href="datenschutz.html" style="
+          font-family: 'DM Sans', sans-serif;
+          font-size: 0.82rem; color: #666;
+          text-decoration: none; padding: 0.55rem 1rem;
+          border: 1px solid rgba(255,255,255,0.1);
+          border-radius: 8px;
+          transition: color 0.2s;
+        " onmouseover="this.style.color='#aaa'" onmouseout="this.style.color='#666'">
+          Mehr erfahren
+        </a>
+        <button onclick="acceptCookies()" style="
+          font-family: 'DM Sans', sans-serif;
+          font-size: 0.88rem; font-weight: 600;
+          color: #fff; background: #3a52d4;
+          border: none; border-radius: 8px;
+          padding: 0.6rem 1.4rem;
+          cursor: pointer;
+          transition: background 0.2s, box-shadow 0.2s;
+          box-shadow: 0 2px 16px rgba(58,82,212,0.35);
+        " onmouseover="this.style.background='#2d43c0'" onmouseout="this.style.background='#3a52d4'">
+          Akzeptieren
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function acceptCookies() {
+      localStorage.setItem('cookiesAccepted', '1');
+      var b = document.getElementById('cookieBanner');
+      b.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+      b.style.opacity = '0';
+      b.style.transform = 'translateY(20px)';
+      setTimeout(function() { b.style.display = 'none'; }, 300);
+    }
+    (function() {
+      if (!localStorage.getItem('cookiesAccepted')) {
+        var b = document.getElementById('cookieBanner');
+        b.style.display = 'block';
+        b.style.opacity = '0';
+        b.style.transform = 'translateY(20px)';
+        setTimeout(function() {
+          b.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+          b.style.opacity = '1';
+          b.style.transform = 'translateY(0)';
+        }, 1200);
+      }
+    })();
+  </script>
 </body>
 </html>
