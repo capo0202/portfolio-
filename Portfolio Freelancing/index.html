@@ -839,8 +839,7 @@
       </button>
     </div>
     <div class="cb-messages" id="chatMessages"></div>
-    <!-- Form statt div: zuverlässigstes Senden auf Mobile (Enter-Taste + Send-Button) -->
-    <form class="cb-footer" id="chatForm" onsubmit="return false;">
+    <form class="cb-footer" id="chatForm">
       <input id="chatInput" class="cb-input" type="text" placeholder="Deine Frage…"
              autocomplete="off" inputmode="text" enterkeyhint="send" />
       <button type="submit" id="chatSend" class="cb-send-btn" aria-label="Senden">
@@ -861,11 +860,11 @@
   <script src="js/GLTFLoader.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-  <script src="js/meteors.js"></script>
-  <script src="js/main.js"></script>
+  <script src="js/meteors.js?v=3"></script>
+  <script src="js/main.js?v=3"></script>
   <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-  <script src="js/bot3d.js"></script>
-  <script src="js/chatbot.js"></script>
+  <script src="js/bot3d.js?v=3"></script>
+  <script src="js/chatbot.js?v=6"></script>
   <script>
     (function () {
       /* Fly-Animation nur auf Desktop — auf Mobile würde sie touch/position brechen */

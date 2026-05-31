@@ -27,30 +27,39 @@
 
     floatBtn.addEventListener('click', toggleChat);
     closeBtn.addEventListener('click', closeChat);
-    sendBtn.addEventListener('click', handleSend);
 
-    /* Form-Submit: zuverlässigster Weg auf Mobile (Enter-Taste & Send-Button) */
+    /* Form Submit — primärer Handler (Enter + Button auf Mobile) */
     var form = document.getElementById('chatForm');
-    if (form) form.addEventListener('submit', function (e) { e.preventDefault(); handleSend(); });
+    if (form) {
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        handleSend();
+      });
+    }
+
+    /* Click-Fallback auf Send-Button */
+    if (sendBtn) {
+      sendBtn.addEventListener('click', function (e) {
+        e.preventDefault();
+        handleSend();
+      });
+    }
 
     inputEl.addEventListener('keydown', function (e) {
       if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend(); }
     });
 
-    /* iOS-Tastatur-Fix: Bottom Sheet nach oben schieben wenn Tastatur offen */
-    var isMobile = window.innerWidth <= 768;
-    if (isMobile && window.visualViewport) {
+    /* iOS-Tastatur: Chat-Fenster über Tastatur verschieben */
+    if (window.visualViewport) {
       window.visualViewport.addEventListener('resize', function () {
-        if (!isOpen) return;
-        var vvHeight = window.visualViewport.height;
-        var kbHeight = window.innerHeight - vvHeight;
-        if (kbHeight > 100) {
-          /* Tastatur offen: Sheet über Tastatur */
-          chatWindow.style.bottom = kbHeight + 'px';
-          chatWindow.style.height = (vvHeight * 0.88) + 'px';
-          chatWindow.style.maxHeight = (vvHeight * 0.88) + 'px';
+        if (!isOpen || window.innerWidth > 768) return;
+        var vvH = window.visualViewport.height;
+        var kbH = window.innerHeight - vvH;
+        if (kbH > 80) {
+          chatWindow.style.bottom = kbH + 'px';
+          chatWindow.style.height = Math.floor(vvH * 0.85) + 'px';
+          chatWindow.style.maxHeight = Math.floor(vvH * 0.85) + 'px';
         } else {
-          /* Tastatur geschlossen: zurück zur Normalposition */
           chatWindow.style.bottom = '';
           chatWindow.style.height = '';
           chatWindow.style.maxHeight = '';
