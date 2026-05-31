@@ -28,6 +28,13 @@
     floatBtn.addEventListener('click', toggleChat);
     closeBtn.addEventListener('click', closeChat);
     sendBtn.addEventListener('click', handleSend);
+    /* touchstart auf Send-Button: verhindert dass iOS-Tastatur schliesst
+       bevor der Click registriert wird (Layout-Shift-Bug auf Safari) */
+    sendBtn.addEventListener('touchstart', function (e) {
+      e.preventDefault();
+      handleSend();
+    }, { passive: false });
+
     inputEl.addEventListener('keydown', function (e) {
       if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend(); }
     });

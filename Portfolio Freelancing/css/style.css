@@ -1718,28 +1718,6 @@ section {
 /* ── Glow Ring (nur Mobile) ── */
 .cb-glow-ring { display: none; }
 
-@media (max-width: 768px) {
-  .cb-glow-ring {
-    display: block;
-    position: absolute;
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 100px;
-    height: 100px;
-    border-radius: 50%;
-    border: 3px solid rgba(58,82,212,0.8);
-    box-shadow: 0 0 20px rgba(58,82,212,0.6), 0 0 40px rgba(58,82,212,0.3);
-    animation: glowRingPulse 2s ease-in-out infinite;
-    pointer-events: none;
-    z-index: 1;
-  }
-  @keyframes glowRingPulse {
-    0%, 100% { transform: translateX(-50%) scale(1);    opacity: 1;   }
-    50%       { transform: translateX(-50%) scale(1.35); opacity: 0;   }
-  }
-}
-
 /* ── Chat Window ── */
 .cb-window {
   position: fixed;
@@ -1903,26 +1881,32 @@ section {
 ══════════════════════════════════════ */
 @media (max-width: 768px) {
 
-  /* Float Button */
+  /* Float Wrap: rechts ausrichten, nicht zentrieren */
   .cb-float-wrap {
     bottom: calc(1.25rem + env(safe-area-inset-bottom, 0px));
     right: 1.25rem;
+    align-items: flex-end; /* verhindert dass Bubble den Button verschiebt */
   }
+
+  /* Button Größe */
   .cb-float-btn {
     width: 80px !important;
     height: 80px !important;
+    /* Pulse-Animation bleibt — das ist der eine sichtbare Ring */
+    animation: cb-pulse 2.5s ease-in-out infinite !important;
   }
   .cb-float-btn canvas {
     width: 80px !important;
     height: 80px !important;
   }
 
-  /* Sprechblase */
+  /* Sprechblase: größer aber rechts ausgerichtet */
   .cb-speech-bubble {
     font-size: 0.92rem !important;
-    max-width: 220px !important;
+    max-width: 210px !important;
     padding: 0.7rem 1.1rem !important;
     line-height: 1.55 !important;
+    text-align: right;
   }
 
   /* Chat-Fenster: Bottom Sheet, ÜBER dem Home-Indicator */
