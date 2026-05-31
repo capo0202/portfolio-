@@ -1715,30 +1715,28 @@ section {
   color: #fff;
 }
 
-/* ── Glow Ring ── */
-.cb-glow-ring {
-  display: none;
-}
+/* ── Glow Ring (nur Mobile) ── */
+.cb-glow-ring { display: none; }
+
 @media (max-width: 768px) {
   .cb-glow-ring {
     display: block;
     position: absolute;
-    bottom: -10px;
+    bottom: 0;
     left: 50%;
     transform: translateX(-50%);
-    width: 96px;
-    height: 96px;
+    width: 100px;
+    height: 100px;
     border-radius: 50%;
-    border: 2.5px solid rgba(58,82,212,0.7);
-    box-shadow: 0 0 16px rgba(58,82,212,0.5), 0 0 32px rgba(58,82,212,0.2);
+    border: 3px solid rgba(58,82,212,0.8);
+    box-shadow: 0 0 20px rgba(58,82,212,0.6), 0 0 40px rgba(58,82,212,0.3);
     animation: glowRingPulse 2s ease-in-out infinite;
     pointer-events: none;
-    z-index: 0;
+    z-index: 1;
   }
   @keyframes glowRingPulse {
-    0%   { transform: translateX(-50%) scale(1);    opacity: 1; }
-    55%  { transform: translateX(-50%) scale(1.3);  opacity: 0; }
-    100% { transform: translateX(-50%) scale(1);    opacity: 1; }
+    0%, 100% { transform: translateX(-50%) scale(1);    opacity: 1;   }
+    50%       { transform: translateX(-50%) scale(1.35); opacity: 0;   }
   }
 }
 
@@ -1900,12 +1898,14 @@ section {
 .cb-send-btn:hover { transform: scale(1.06); }
 .cb-send-btn:active { transform: scale(0.95); }
 
-/* ── Chatbot Mobile (≤ 768px) ── */
+/* ══════════════════════════════════════
+   CHATBOT MOBILE (≤ 768px)
+══════════════════════════════════════ */
 @media (max-width: 768px) {
 
-  /* Float Button — direkt in Größe, kein scale */
+  /* Float Button */
   .cb-float-wrap {
-    bottom: 1.25rem;
+    bottom: calc(1.25rem + env(safe-area-inset-bottom, 0px));
     right: 1.25rem;
   }
   .cb-float-btn {
@@ -1917,58 +1917,63 @@ section {
     height: 80px !important;
   }
 
-  /* ── Sprechblase — deutlich größer ── */
+  /* Sprechblase */
   .cb-speech-bubble {
-    font-size: 0.9rem !important;
+    font-size: 0.92rem !important;
     max-width: 220px !important;
     padding: 0.7rem 1.1rem !important;
     line-height: 1.55 !important;
   }
 
-  /* ── Chat-Fenster als Bottom Sheet ──
-     Vollbreite, hängt am unteren Bildschirmrand.
-     Tastatur schiebt es hoch via JS (visualViewport).      */
+  /* Chat-Fenster: Bottom Sheet, ÜBER dem Home-Indicator */
   .cb-window {
+    position: fixed !important;
     left: 0 !important;
     right: 0 !important;
-    bottom: 0 !important;
+    bottom: env(safe-area-inset-bottom, 0px) !important;
     width: 100% !important;
-    height: 75vh !important;
-    max-height: 75vh !important;
+    height: 72vh !important;
+    max-height: 72vh !important;
     border-radius: 20px 20px 0 0 !important;
-    /* Startanimation: von unten reinfahren */
-    transform: translateY(100%) !important;
-    transition: transform 0.35s cubic-bezier(0.16,1,0.3,1), opacity 0.3s ease !important;
+    transform: translateY(110%) !important;
+    transition: transform 0.3s ease !important;
     opacity: 1 !important;
     pointer-events: none;
+    z-index: 9010 !important; /* über allem */
   }
   .cb-window.cb-open {
     transform: translateY(0) !important;
-    pointer-events: all;
+    pointer-events: all !important;
   }
 
+  /* Nachrichten-Bereich */
   .cb-messages {
     padding: 1rem;
+    flex: 1;
+    overflow-y: auto;
   }
+
+  /* Eingabe-Bereich — gut erreichbar */
   .cb-footer {
     padding: 0.85rem 1rem;
-    /* immer sichtbar am unteren Rand des Sheets */
     flex-shrink: 0;
+    background: rgba(13,12,10,0.95);
   }
   .cb-input {
-    font-size: 16px; /* verhindert iOS auto-zoom */
-  }
-  .cb-bubble {
-    font-size: 0.84rem;
-    padding: 0.65rem 0.9rem;
+    font-size: 16px !important; /* kein iOS-Zoom */
+    padding: 0.7rem 1rem !important;
   }
   .cb-send-btn {
-    width: 44px;
-    height: 44px; /* mind. 44px Tap-Target (Apple HIG) */
+    width: 48px !important;
+    height: 48px !important;
+    flex-shrink: 0;
+  }
+  .cb-bubble {
+    font-size: 0.85rem;
+    padding: 0.65rem 0.95rem;
   }
 }
 
-/* ── Chatbot Small Mobile (≤ 480px) ── */
 @media (max-width: 480px) {
   .cb-float-btn {
     width: 72px !important;
@@ -1979,8 +1984,8 @@ section {
     height: 72px !important;
   }
   .cb-window {
-    height: 80vh !important;
-    max-height: 80vh !important;
+    height: 78vh !important;
+    max-height: 78vh !important;
   }
 }
 
