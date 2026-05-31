@@ -28,6 +28,11 @@
     floatBtn.addEventListener('click', toggleChat);
     closeBtn.addEventListener('click', closeChat);
     sendBtn.addEventListener('click', handleSend);
+
+    /* Form-Submit: zuverlässigster Weg auf Mobile (Enter-Taste & Send-Button) */
+    var form = document.getElementById('chatForm');
+    if (form) form.addEventListener('submit', function (e) { e.preventDefault(); handleSend(); });
+
     inputEl.addEventListener('keydown', function (e) {
       if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend(); }
     });
@@ -136,7 +141,10 @@
     /* Auf Mobile: Float-Wrap verstecken damit er nicht den Send-Button blockiert */
     var wrap = document.querySelector('.cb-float-wrap');
     if (wrap && window.innerWidth <= 768) wrap.style.display = 'none';
-    setTimeout(function () { inputEl && inputEl.focus(); }, 400);
+    /* Kein Auto-Focus auf Mobile — verhindert ungewollten iOS-Zoom */
+    if (window.innerWidth > 768) {
+      setTimeout(function () { inputEl && inputEl.focus(); }, 300);
+    }
   }
   function closeChat() {
     isOpen = false;
