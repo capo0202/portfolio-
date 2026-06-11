@@ -12,6 +12,7 @@ SKILL.md
 # Root video (not part of site)
 *.mp4
 !assets/**/*.mp4
+!Portfolio Freelancing/assets/**/*.mp4
 
 # OS
 .DS_Store
