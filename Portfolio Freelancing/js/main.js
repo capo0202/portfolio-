@@ -664,6 +664,67 @@ if (window.innerWidth > 768) {
   }
 }
 
+// ── AUTOMATIONS HORIZONTAL SLIDE ──────────────────────────────────────────────
+if (window.innerWidth > 768) {
+  const autoTrack = document.querySelector('#automations .auto-slides-track');
+  const autoDots  = document.querySelectorAll('#automations .wbs-ind');
+  if (autoTrack) {
+    // Timeline: first 10% (30vh) = slide 1 fully visible, then 90% = animate
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: '#automations',
+        start: 'top top',
+        end: 'bottom bottom',
+        scrub: 1.2,
+        onUpdate(self) {
+          const p = Math.max(0, (self.progress - 0.10) / 0.90);
+          const active = p < 0.33 ? 0 : p < 0.66 ? 1 : 2;
+          autoDots.forEach((d, i) => d.classList.toggle('active', i === active));
+        }
+      }
+    });
+    tl.to(autoTrack, { x: 0, ease: 'none', duration: 1 })        // hold 10%
+      .to(autoTrack, { x: '-66.666%', ease: 'none', duration: 9 }); // animate 90%
+
+    // Force-play all automations videos (autoplay blocked when off-screen in overflow:hidden)
+    document.querySelectorAll('#automations video').forEach(v => {
+      v.load();
+      v.play().catch(() => {});
+    });
+  }
+}
+
+// ── LAUTSPRECHER-BUTTON AI VIDEO STUDIO (Slide 02) ────────────────────────────
+(function () {
+  const studioSlide = document.querySelectorAll('#automations .wbs-slide')[1];
+  if (!studioSlide) return;
+  const video = studioSlide.querySelector('video.wbs-video');
+  if (!video) return;
+
+  const btn = document.createElement('button');
+  btn.innerHTML = '<i class="fa-solid fa-volume-xmark"></i>';
+  btn.style.cssText = [
+    'position:absolute', 'bottom:10px', 'right:10px',
+    'width:34px', 'height:34px', 'border-radius:50%',
+    'background:rgba(0,0,0,0.55)', 'border:1px solid rgba(255,255,255,0.2)',
+    'color:#fff', 'font-size:0.85rem', 'cursor:pointer',
+    'display:flex', 'align-items:center', 'justify-content:center',
+    'z-index:10', 'transition:background 0.2s',
+    'backdrop-filter:blur(4px)'
+  ].join(';');
+
+  btn.addEventListener('click', function (e) {
+    e.stopPropagation();
+    video.muted = !video.muted;
+    btn.innerHTML = video.muted
+      ? '<i class="fa-solid fa-volume-xmark"></i>'
+      : '<i class="fa-solid fa-volume-high"></i>';
+  });
+
+  const screen = studioSlide.querySelector('.wbs-screen');
+  if (screen) { screen.style.position = 'relative'; screen.appendChild(btn); }
+}());
+
 // ── SCROLL REVEALS ────────────────────────────────────────────────────────────
 gsap.utils.toArray('.gs-r').forEach(el => {
   gsap.from(el, {

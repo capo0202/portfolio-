@@ -181,10 +181,11 @@ section {
 
 #hero         { z-index: 1; min-height: 100dvh; }
 #about        { z-index: 2; }
-#work         { z-index: 3; }
-#web-showcase { z-index: 4; }
-#workflow     { z-index: 5; }
-#contact      { z-index: 6; min-height: unset; }
+#workflow     { z-index: 3; }
+#automations  { z-index: 4; }
+#web-showcase { z-index: 5; }
+#work         { z-index: 6; }
+#contact      { z-index: 7; min-height: unset; }
 
 .sz {
   width: 100%;
@@ -417,6 +418,15 @@ section {
 /* Spacer extends section height for scroll distance */
 .wbs-spacer { height: 100vh; }
 
+/* Automations — 3-slide horizontal scroll */
+.auto-slides-track {
+  display: flex;
+  width: 300%;
+  will-change: transform;
+}
+#automations .wbs-slide { width: 33.333%; }
+#automations { height: 300vh; }
+
 /* Slide indicators */
 .wbs-indicators {
   position: absolute;
@@ -612,6 +622,8 @@ section {
 #workflow {
   border-top: 1px solid var(--border);
   background: var(--bg);
+  min-height: 160vh;
+  padding-bottom: 6rem;
 }
 
 #workflow .section-container {

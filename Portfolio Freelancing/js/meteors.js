@@ -141,8 +141,24 @@
     return t < 0.5 ? 2*t*t : 1 - Math.pow(-2*t+2,2)/2;
   }
 
+  var animActive = true;
+
+  /* Renderer pausieren wenn Hero nicht sichtbar — spart massiv CPU/GPU */
+  var hero = document.getElementById('hero');
+  if (hero && window.IntersectionObserver) {
+    new IntersectionObserver(function(entries) {
+      animActive = entries[0].isIntersecting;
+    }, { threshold: 0 }).observe(hero);
+  }
+
+  /* Tab nicht aktiv → auch pausieren */
+  document.addEventListener('visibilitychange', function() {
+    animActive = !document.hidden;
+  });
+
   function animate() {
     requestAnimationFrame(animate);
+    if (!animActive) return;
     clock += 1;
     smoothP += (rawP() - smoothP) * 0.15;
 
