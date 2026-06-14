@@ -850,13 +850,13 @@ gsap.utils.toArray('.gs-tool').forEach((el, i) => {
       scrub: 1.2,
       onUpdate(self) {
         const p      = Math.max(0, (self.progress - 0.10) / 0.90);
-        const active = p < 0.33 ? 0 : p < 0.66 ? 1 : 2;
+        const active = p < 0.25 ? 0 : p < 0.50 ? 1 : p < 0.75 ? 2 : 3;
         autoDots.forEach((d, i) => d.classList.toggle('active', i === active));
       }
     }
   });
   tl.to(autoTrack, { x: 0, ease: 'none', duration: 1 })
-    .to(autoTrack, { x: '-66.666%', ease: 'none', duration: 9 });
+    .to(autoTrack, { x: '-75%', ease: 'none', duration: 9 });
 
   document.querySelectorAll('#automations video').forEach(v => {
     v.load();

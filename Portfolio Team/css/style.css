@@ -418,10 +418,10 @@ section {
 /* Spacer extends section height for scroll distance */
 .wbs-spacer { height: 100vh; }
 
-/* Automations — 3-slide horizontal scroll */
-.auto-slides-track { display: flex; width: 300%; will-change: transform; }
-#automations .wbs-slide { width: 33.333%; grid-template-columns: 1fr 70px 2.8fr; gap: 3.5rem 0.5rem; }
-#automations { height: 300vh; }
+/* Automations — 4-slide horizontal scroll */
+.auto-slides-track { display: flex; width: 400%; will-change: transform; }
+#automations .wbs-slide { width: 25%; grid-template-columns: 1fr 70px 2.8fr; gap: 3.5rem 0.5rem; }
+#automations { height: 400vh; }
 
 /* Animated connector arrow */
 .wbs-connector { display: flex; flex-direction: row; align-items: center; justify-content: center; gap: 5px; }

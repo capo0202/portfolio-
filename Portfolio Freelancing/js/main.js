@@ -678,13 +678,13 @@ if (window.innerWidth > 768) {
         scrub: 1.2,
         onUpdate(self) {
           const p = Math.max(0, (self.progress - 0.10) / 0.90);
-          const active = p < 0.33 ? 0 : p < 0.66 ? 1 : 2;
+          const active = p < 0.25 ? 0 : p < 0.50 ? 1 : p < 0.75 ? 2 : 3;
           autoDots.forEach((d, i) => d.classList.toggle('active', i === active));
         }
       }
     });
-    tl.to(autoTrack, { x: 0, ease: 'none', duration: 1 })        // hold 10%
-      .to(autoTrack, { x: '-66.666%', ease: 'none', duration: 9 }); // animate 90%
+    tl.to(autoTrack, { x: 0, ease: 'none', duration: 1 })      // hold 10%
+      .to(autoTrack, { x: '-75%', ease: 'none', duration: 9 }); // animate 90% (4 slides)
 
     // Force-play all automations videos (autoplay blocked when off-screen in overflow:hidden)
     document.querySelectorAll('#automations video').forEach(v => {

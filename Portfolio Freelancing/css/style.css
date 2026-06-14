@@ -418,14 +418,38 @@ section {
 /* Spacer extends section height for scroll distance */
 .wbs-spacer { height: 100vh; }
 
-/* Automations — 3-slide horizontal scroll */
+/* Automations — 4-slide horizontal scroll */
 .auto-slides-track {
   display: flex;
-  width: 300%;
+  width: 400%;
   will-change: transform;
 }
-#automations .wbs-slide { width: 33.333%; }
-#automations { height: 300vh; }
+#automations .wbs-slide { width: 25%; grid-template-columns: 1fr 70px 2.8fr; gap: 3.5rem 0.5rem; }
+#automations { height: 400vh; }
+
+/* Animated connector arrow */
+.wbs-connector {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
+.wbs-connector i {
+  font-size: 1.3rem;
+  color: #3a52d4;
+  opacity: 0.15;
+  filter: drop-shadow(0 0 5px #3a52d4);
+  animation: connPulse 1.2s ease-in-out infinite;
+}
+.wbs-connector i:nth-child(1) { animation-delay: 0s; }
+.wbs-connector i:nth-child(2) { animation-delay: 0.3s; }
+.wbs-connector i:nth-child(3) { animation-delay: 0.6s; }
+@keyframes connPulse {
+  0%, 100% { opacity: 0.15; }
+  40%       { opacity: 1; filter: drop-shadow(0 0 8px #5b7fff); }
+  60%       { opacity: 1; filter: drop-shadow(0 0 8px #5b7fff); }
+}
 
 /* Slide indicators */
 .wbs-indicators {
@@ -990,6 +1014,9 @@ section {
   object-fit: cover; object-position: center top;
   display: block;
   filter: none;
+  pointer-events: none;
+  -webkit-user-drag: none;
+  user-select: none;
 }
 
 .about-title {
@@ -1461,6 +1488,8 @@ section {
   .wbs-slides-track { transform: none !important; width: 100%; flex-direction: column; }
   .wbs-slide { width: 100%; height: auto; grid-template-columns: 1fr 1.4fr; padding: 5rem var(--pad); }
   .wbs-slide--reverse { grid-template-columns: 1.4fr 1fr; }
+  .wbs-connector { display: none; }
+  #automations .wbs-slide { grid-template-columns: 1fr 1.4fr; }
   .wbs-spacer { display: none; }
   .wbs-indicators { display: none; }
 
