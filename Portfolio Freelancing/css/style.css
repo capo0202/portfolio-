@@ -1592,6 +1592,10 @@ section {
   .wbs-slide--reverse .wbs-screen-wrap {
     order: -1;
   }
+  #automations .wbs-screen-wrap {
+    order: -1;
+    margin-bottom: 1.6rem;
+  }
   .wbs-slide + .wbs-slide {
     border-top: 1px solid var(--border);
   }
