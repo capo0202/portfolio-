@@ -1592,6 +1592,10 @@ section {
   .wbs-slide--reverse .wbs-screen-wrap {
     order: -1;
   }
+  #automations .wbs-slide {
+    grid-template-columns: 1fr !important;
+    gap: 1.8rem !important;
+  }
   #automations .wbs-screen-wrap {
     order: -1;
     margin-bottom: 1.6rem;
