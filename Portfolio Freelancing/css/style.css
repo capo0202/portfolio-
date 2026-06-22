@@ -1486,10 +1486,12 @@ section {
   /* Web-showcase: disable horizontal scroll on tablet */
   .wbs-clip { height: auto; overflow: visible; }
   .wbs-slides-track { transform: none !important; width: 100%; flex-direction: column; }
+  .auto-slides-track { transform: none !important; width: 100% !important; flex-direction: column; }
+  #automations { height: auto !important; }
   .wbs-slide { width: 100%; height: auto; grid-template-columns: 1fr 1.4fr; padding: 5rem var(--pad); }
   .wbs-slide--reverse { grid-template-columns: 1.4fr 1fr; }
   .wbs-connector { display: none; }
-  #automations .wbs-slide { grid-template-columns: 1fr 1.4fr; }
+  #automations .wbs-slide { width: 100% !important; grid-template-columns: 1fr 1.4fr; }
   .wbs-spacer { display: none; }
   .wbs-indicators { display: none; }
 
