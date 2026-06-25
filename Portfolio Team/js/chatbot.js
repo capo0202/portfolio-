@@ -104,10 +104,10 @@
       /* Bubble aufleuchten */
       if (bubble) {
         bubble.style.transition = 'all 0.3s ease';
-        bubble.style.background = 'rgba(99,102,241,0.9)';
+        bubble.style.background = 'rgba(168,132,44,0.9)';
         bubble.style.color = '#fff';
-        bubble.style.borderColor = 'rgba(165,166,250,0.8)';
-        bubble.style.boxShadow = '0 0 20px rgba(99,102,241,0.5)';
+        bubble.style.borderColor = 'rgba(212,175,106,0.8)';
+        bubble.style.boxShadow = '0 0 20px rgba(168,132,44,0.5)';
         setTimeout(function () {
           bubble.style.background = '';
           bubble.style.color = '';
@@ -241,7 +241,7 @@
     var htmlTranscript = '<div style="font-family:Arial,sans-serif;font-size:14px;max-width:600px;">' +
       messages.map(function (m) {
         var isUser = m.role === 'user';
-        var bg    = isUser ? '#6366f1' : '#eef0ff';
+        var bg    = isUser ? '#a8842c' : '#eef0ff';
         var color = isUser ? '#ffffff' : '#111111';
         var label = isUser ? '👤 Kunde' : '🤖 KI-Assistent';
         var text  = m.content.replace(/<[^>]*>/g, '');
