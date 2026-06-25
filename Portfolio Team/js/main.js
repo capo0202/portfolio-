@@ -10,7 +10,7 @@ function createSparkle(x, y) {
     const el = document.createElement('span');
     el.textContent = '✦';
     const size  = Math.random() * 11 + 5;
-    const color = Math.random() > 0.45 ? '#f5f2ee' : '#3a52d4';
+    const color = Math.random() > 0.45 ? '#f5f2ee' : '#c9a14a';
     const ox = (Math.random() - 0.5) * 18;
     const oy = (Math.random() - 0.5) * 18;
     el.style.cssText = [
@@ -36,7 +36,7 @@ glowOrb.style.cssText = [
   'position:fixed', 'pointer-events:none', 'z-index:9990',
   'width:520px', 'height:380px',
   'border-radius:60% 40% 55% 45% / 45% 55% 40% 60%',
-  'background:radial-gradient(ellipse at 40% 50%, rgba(58,82,212,0.22) 0%, rgba(58,82,212,0.10) 40%, transparent 70%)',
+  'background:radial-gradient(ellipse at 40% 50%, rgba(201,161,74,0.22) 0%, rgba(201,161,74,0.10) 40%, transparent 70%)',
   'filter:blur(28px)',
   'transform:translate(-50%,-50%)',
   'will-change:transform', 'top:0', 'left:0',
@@ -432,9 +432,9 @@ if (isDesktop) {
       const t = i / (total - 1);
       tl.to(step, { opacity: 1, y: 0, ease: 'none', duration: 0.2 }, t * 0.78);
       tl.to(step.querySelector('.wf-node'), {
-        borderColor: 'rgba(58,82,212,.85)',
-        background:  'rgba(58,82,212,.2)',
-        boxShadow:   '0 0 16px rgba(58,82,212,.6), 0 0 32px rgba(58,82,212,.25)',
+        borderColor: 'rgba(201,161,74,.85)',
+        background:  'rgba(201,161,74,.2)',
+        boxShadow:   '0 0 16px rgba(201,161,74,.6), 0 0 32px rgba(201,161,74,.25)',
         ease: 'none', duration: 0.14,
       }, t * 0.78);
     });
@@ -709,8 +709,8 @@ gsap.utils.toArray('.gs-tool').forEach((el, i) => {
     currentRY = lerp(currentRY, targetRY, 0.1);
     card.style.transform = `rotateX(${currentRX}deg) rotateY(${currentRY}deg) scale3d(1.04,1.04,1.04)`;
     card.style.boxShadow = `
-      ${-currentRY * 1.2}px ${currentRX * 1.2}px 40px rgba(58,82,212,.55),
-      0 0 80px rgba(58,82,212,.2)
+      ${-currentRY * 1.2}px ${currentRX * 1.2}px 40px rgba(201,161,74,.55),
+      0 0 80px rgba(201,161,74,.2)
     `;
     raf = requestAnimationFrame(tick);
   }
