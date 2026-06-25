@@ -480,7 +480,7 @@ if (workVideo) {
 
   // Defer loading until section is visible
   const reelVideos = Array.from(track.querySelectorAll('.proj-video'));
-  reelVideos.forEach(v => { v.removeAttribute('autoplay'); v.preload = 'none'; });
+  reelVideos.forEach(v => { v.removeAttribute('autoplay'); v.preload = 'auto'; });
 
   // DOM-reorder infinite loop: move off-screen tiles to the opposite end
   function reorder() {
@@ -492,7 +492,7 @@ if (workVideo) {
   let reelActive = false;
   ScrollTrigger.create({
     trigger: '#work', start: 'top 85%',
-    onEnter()     { reelActive = true;  reelVideos.forEach((v, i) => setTimeout(() => v.play().catch(() => {}), i * 120)); },
+    onEnter()     { reelActive = true;  reelVideos.forEach((v, i) => setTimeout(() => { v.load(); v.play().catch(() => {}); }, i * 120)); },
     onLeave()     { reelActive = false; reelVideos.forEach(v => v.pause()); },
     onEnterBack() { reelActive = true;  reelVideos.forEach(v => v.play().catch(() => {})); },
     onLeaveBack() { reelActive = false; reelVideos.forEach(v => v.pause()); },
