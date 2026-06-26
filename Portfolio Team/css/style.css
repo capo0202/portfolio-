@@ -232,7 +232,7 @@ section {
   text-align: left;
   padding-top: var(--nav);
   padding-bottom: 5rem;
-  background: var(--bg-gold);
+  background: #0d0c0a;
 }
 
 #hero .sz {
