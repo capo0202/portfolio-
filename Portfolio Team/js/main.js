@@ -607,7 +607,7 @@ if (workVideo) {
 }());
 
 // ── SECTION REVEAL ────────────────────────────────────────────────────────────
-gsap.utils.toArray('section:not(#hero), .marquee-wrap').forEach(section => {
+gsap.utils.toArray('section:not(#hero)').forEach(section => {
   gsap.from(section, {
     y: 40, opacity: 0, duration: 1.1, ease: 'expo.out',
     scrollTrigger: { trigger: section, start: 'top 92%', once: true }
