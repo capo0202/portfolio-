@@ -10,7 +10,7 @@
 
   --accent:  #a8842c;
   --accent2: #8c6f22;
-  --bg-gold: #2e2410;
+  --bg-gold: #5a4019;
 
   --t1: #161616;
   --t2: #5c5c5c;
@@ -231,7 +231,7 @@ section {
   display: flex;
   text-align: left;
   padding-top: var(--nav);
-  padding-bottom: 5rem;
+  padding-bottom: 0;
   background: var(--bg-gold);
 }
 
