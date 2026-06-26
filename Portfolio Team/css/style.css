@@ -10,7 +10,7 @@
 
   --accent:  #a8842c;
   --accent2: #8c6f22;
-  --bg-gold: #efdfac;
+  --bg-gold: #2e2410;
 
   --t1: #161616;
   --t2: #5c5c5c;
@@ -232,7 +232,7 @@ section {
   text-align: left;
   padding-top: var(--nav);
   padding-bottom: 5rem;
-  background: #0d0c0a;
+  background: var(--bg-gold);
 }
 
 #hero .sz {
@@ -267,11 +267,6 @@ section {
     linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px);
   background-size: 80px 80px;
   mask-image: radial-gradient(ellipse 90% 85% at 25% 55%, #000, transparent);
-}
-.hero-fade-bottom {
-  position: absolute; left: 0; right: 0; bottom: 0; height: 18%;
-  background: linear-gradient(to bottom, transparent, var(--bg-gold));
-  z-index: 1; pointer-events: none;
 }
 
 /* --- content --- */
@@ -358,7 +353,7 @@ section {
 .marquee-track span {
   font-family: var(--mono); font-size: .75rem;
   font-weight: 500; letter-spacing: .14em;
-  text-transform: uppercase; color: #6b5a28;
+  text-transform: uppercase; color: #c9aa5e;
 }
 .mdot { color: var(--accent) !important; font-size: .65rem !important; }
 @keyframes marquee {
