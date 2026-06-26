@@ -56,7 +56,6 @@
           <source src="assets/hero-space.mp4" type="video/mp4">
         </video>
         <canvas id="meteorCanvas" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:2;"></canvas>
-        <div class="hero-fade-bottom"></div>
       </div>
       <div class="hero-content">
         <h1 class="hero-title">
@@ -132,17 +131,17 @@
         <svg class="wf-robot" id="wfRobot" viewBox="0 0 400 600" fill="none" xmlns="http://www.w3.org/2000/svg">
           <defs>
             <radialGradient id="bodyGrad" cx="50%" cy="35%" r="60%">
-              <stop offset="0%" stop-color="#2a2a3a"/>
-              <stop offset="100%" stop-color="#0d0c0e"/>
+              <stop offset="0%" stop-color="#b8a888"/>
+              <stop offset="100%" stop-color="#7a6a4a"/>
             </radialGradient>
             <radialGradient id="headGrad" cx="50%" cy="30%" r="65%">
-              <stop offset="0%" stop-color="#282838"/>
-              <stop offset="100%" stop-color="#0a0a12"/>
+              <stop offset="0%" stop-color="#c2b496"/>
+              <stop offset="100%" stop-color="#8a7a58"/>
             </radialGradient>
             <radialGradient id="eyeGlow" cx="50%" cy="50%" r="50%">
-              <stop offset="0%" stop-color="#7b8fff"/>
+              <stop offset="0%" stop-color="#f0d28a"/>
               <stop offset="60%" stop-color="#a8842c"/>
-              <stop offset="100%" stop-color="#1a2a8a"/>
+              <stop offset="100%" stop-color="#5a4019"/>
             </radialGradient>
             <filter id="glow" x="-40%" y="-40%" width="180%" height="180%">
               <feGaussianBlur stdDeviation="4" result="blur"/>
@@ -226,7 +225,7 @@
           <path d="M150 296 Q200 290 250 296 L246 340 Q200 346 154 340 Z" fill="#1c1c2e" stroke="#a8842c" stroke-width="0.5" stroke-opacity="0.25"/>
           <!-- Chest core glow -->
           <ellipse cx="200" cy="330" rx="22" ry="22" fill="#0a0a1a" stroke="#a8842c" stroke-width="1" stroke-opacity="0.5"/>
-          <ellipse cx="200" cy="330" rx="14" ry="14" fill="#1a2a8a" filter="url(#glow)">
+          <ellipse cx="200" cy="330" rx="14" ry="14" fill="#a8842c" filter="url(#glow)">
             <animate attributeName="opacity" values="0.6;1;0.6" dur="2.8s" repeatCount="indefinite"/>
           </ellipse>
           <ellipse cx="200" cy="330" rx="7" ry="7" fill="#d4af6a" filter="url(#softGlow)">
