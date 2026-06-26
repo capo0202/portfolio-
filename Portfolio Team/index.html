@@ -163,6 +163,8 @@
           <g id="robotHead">
             <!-- Head outer shell -->
             <ellipse cx="200" cy="145" rx="88" ry="95" fill="url(#headGrad)" stroke="#a8842c" stroke-width="1" stroke-opacity="0.4"/>
+            <!-- Specular highlight -->
+            <ellipse cx="165" cy="95" rx="26" ry="14" fill="#fffaf0" opacity="0.55" filter="url(#softGlow)" transform="rotate(-25 165 95)"/>
             <ellipse cx="200" cy="145" rx="88" ry="95" fill="none" stroke="url(#eyeGlow)" stroke-width="0.5" stroke-opacity="0.15"/>
             <!-- Forehead panel -->
             <path d="M148 72 Q200 58 252 72 L258 105 Q200 96 142 105 Z" fill="#1a1a28" stroke="#a8842c" stroke-width="0.6" stroke-opacity="0.3"/>
@@ -222,6 +224,8 @@
           <!-- ── TORSO ── -->
           <!-- Shoulder span -->
           <path d="M60 280 Q80 262 140 260 L260 260 Q320 262 340 280 L336 310 Q300 295 200 294 Q100 295 64 310 Z" fill="url(#bodyGrad)" stroke="#a8842c" stroke-width="0.8" stroke-opacity="0.35"/>
+          <!-- Shoulder specular highlight -->
+          <ellipse cx="100" cy="275" rx="20" ry="9" fill="#fffaf0" opacity="0.4" filter="url(#softGlow)" transform="rotate(-15 100 275)"/>
 
           <!-- Chest plate -->
           <path d="M118 294 Q200 286 282 294 L278 390 Q200 400 122 390 Z" fill="url(#bodyGrad)" stroke="#a8842c" stroke-width="0.8" stroke-opacity="0.3"/>
