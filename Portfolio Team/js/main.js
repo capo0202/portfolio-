@@ -615,7 +615,7 @@ gsap.utils.toArray('section:not(#hero), .marquee-wrap').forEach(section => {
 });
 
 // ── ZOOM PARALLAX (Desktop only) ──────────────────────────────────────────────
-if (window.innerWidth > 768) gsap.utils.toArray('section:not(#contact)').forEach(section => {
+if (window.innerWidth > 768) gsap.utils.toArray('section:not(#contact):not(#hero)').forEach(section => {
   const sz = section.querySelector('.sz');
   if (!sz) return;
 
