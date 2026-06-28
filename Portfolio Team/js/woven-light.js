@@ -82,6 +82,45 @@
     geometry.attributes.position.needsUpdate = true;
   }
 
+  // Dim particles only directly over text (headline, labels) — not the whole area
+  function updateTextMask() {
+    const rect = container.getBoundingClientRect();
+    const w = Math.max(rect.width, 1);
+    const h = Math.max(rect.height, 1);
+    const canvas = document.createElement('canvas');
+    canvas.width = w;
+    canvas.height = h;
+    const ctx = canvas.getContext('2d');
+    ctx.fillStyle = '#fff';
+    ctx.fillRect(0, 0, w, h);
+
+    const textEls = document.querySelectorAll(
+      '#workflow .eyebrow, #workflow .section-title, #workflow .wf-category, #workflow .wf-step-label'
+    );
+    ctx.globalCompositeOperation = 'destination-out';
+    ctx.filter = 'blur(14px)';
+    textEls.forEach(el => {
+      const r = el.getBoundingClientRect();
+      if (!r.width || !r.height) return;
+      const cx = r.left - rect.left + r.width / 2;
+      const cy = r.top - rect.top + r.height / 2;
+      const rx = r.width / 2 + 14;
+      const ry = r.height / 2 + 10;
+      ctx.fillStyle = 'rgba(0,0,0,0.55)';
+      ctx.beginPath();
+      ctx.ellipse(cx, cy, rx, ry, 0, 0, Math.PI * 2);
+      ctx.fill();
+    });
+    ctx.globalCompositeOperation = 'source-over';
+    ctx.filter = 'none';
+
+    const dataUrl = canvas.toDataURL();
+    container.style.maskImage = `url(${dataUrl})`;
+    container.style.webkitMaskImage = `url(${dataUrl})`;
+    container.style.maskSize = '100% 100%';
+    container.style.webkitMaskSize = '100% 100%';
+  }
+
   function resize() {
     const rect = container.getBoundingClientRect();
     const w = Math.max(rect.width, 1);
@@ -90,6 +129,7 @@
     camera.updateProjectionMatrix();
     renderer.setSize(w, h);
     scatter();
+    setTimeout(updateTextMask, 50);
   }
   resize();
 

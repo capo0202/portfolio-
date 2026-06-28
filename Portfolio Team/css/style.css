@@ -655,16 +655,6 @@ section {
   inset: 0;
   z-index: 0;
   pointer-events: none;
-  mask-image: linear-gradient(to right,
-    black 0, black calc(50% - (var(--max) / 2) - 70px),
-    transparent calc(50% - (var(--max) / 2)),
-    transparent calc(50% + (var(--max) / 2)),
-    black calc(50% + (var(--max) / 2) + 70px), black 100%);
-  -webkit-mask-image: linear-gradient(to right,
-    black 0, black calc(50% - (var(--max) / 2) - 70px),
-    transparent calc(50% - (var(--max) / 2)),
-    transparent calc(50% + (var(--max) / 2)),
-    black calc(50% + (var(--max) / 2) + 70px), black 100%);
 }
 .wf-weave-bg canvas {
   display: block;
