@@ -232,7 +232,7 @@ section {
   text-align: left;
   padding-top: var(--nav);
   padding-bottom: 0;
-  background: var(--bg-gold);
+  background: linear-gradient(to bottom, #0d0c0a 0, #0d0c0a var(--nav), var(--bg-gold) var(--nav));
 }
 
 #hero .sz {
