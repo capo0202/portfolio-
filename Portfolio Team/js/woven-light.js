@@ -16,29 +16,14 @@
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   container.appendChild(renderer.domElement);
 
-  const torusKnot = new THREE.TorusKnotGeometry(3.2, 1.1, 220, 32);
-  const knotPositions = torusKnot.attributes.position;
-
   const positions = new Float32Array(PARTICLE_COUNT * 3);
   const originalPositions = new Float32Array(PARTICLE_COUNT * 3);
   const colors = new Float32Array(PARTICLE_COUNT * 3);
   const velocities = new Float32Array(PARTICLE_COUNT * 3);
 
+  // Warm gold hue range (~35–50°), varied lightness for a shimmering sparkle look
   const color = new THREE.Color();
   for (let i = 0; i < PARTICLE_COUNT; i++) {
-    const vi = i % knotPositions.count;
-    const x = knotPositions.getX(vi);
-    const y = knotPositions.getY(vi);
-    const z = knotPositions.getZ(vi);
-
-    positions[i * 3] = x;
-    positions[i * 3 + 1] = y;
-    positions[i * 3 + 2] = z;
-    originalPositions[i * 3] = x;
-    originalPositions[i * 3 + 1] = y;
-    originalPositions[i * 3 + 2] = z;
-
-    // Warm gold hue range (~35–50°), varied lightness for a shimmering thread look
     const hue = (0.085 + Math.random() * 0.045);
     color.setHSL(hue, 0.75, 0.45 + Math.random() * 0.3);
     colors[i * 3] = color.r;
@@ -73,6 +58,26 @@
   }
   window.addEventListener('mousemove', onMouseMove, { passive: true });
 
+  let halfW = 6, halfH = 4;
+
+  function scatter() {
+    // Spread particles evenly across the full visible frustum (incl. edges/sides)
+    const vFov = camera.fov * Math.PI / 180;
+    halfH = Math.tan(vFov / 2) * camera.position.z * 1.1;
+    halfW = halfH * camera.aspect * 1.05;
+
+    for (let i = 0; i < PARTICLE_COUNT; i++) {
+      const ix = i * 3, iy = i * 3 + 1, iz = i * 3 + 2;
+      const x = (Math.random() * 2 - 1) * halfW;
+      const y = (Math.random() * 2 - 1) * halfH;
+      const z = (Math.random() * 2 - 1) * 1.5;
+      positions[ix] = x; positions[iy] = y; positions[iz] = z;
+      originalPositions[ix] = x; originalPositions[iy] = y; originalPositions[iz] = z;
+      velocities[ix] = 0; velocities[iy] = 0; velocities[iz] = 0;
+    }
+    geometry.attributes.position.needsUpdate = true;
+  }
+
   function resize() {
     const rect = container.getBoundingClientRect();
     const w = Math.max(rect.width, 1);
@@ -80,6 +85,7 @@
     camera.aspect = w / h;
     camera.updateProjectionMatrix();
     renderer.setSize(w, h);
+    scatter();
   }
   resize();
 
@@ -105,7 +111,8 @@
     rafId = requestAnimationFrame(animate);
 
     const elapsed = clock.getElapsedTime();
-    mouseWorld.set(mouse.x * 5.5, mouse.y * 5.5, 0);
+    mouseWorld.set(mouse.x * halfW, mouse.y * halfH, 0);
+    const interactRadius = halfH * 0.55;
 
     for (let i = 0; i < PARTICLE_COUNT; i++) {
       const ix = i * 3, iy = i * 3 + 1, iz = i * 3 + 2;
@@ -115,8 +122,8 @@
       tmpVelocity.set(velocities[ix], velocities[iy], velocities[iz]);
 
       const dist = tmpCurrent.distanceTo(mouseWorld);
-      if (dist < 2.6) {
-        const force = (2.6 - dist) * 0.012;
+      if (dist < interactRadius) {
+        const force = (interactRadius - dist) * 0.012;
         tmpDir.subVectors(tmpCurrent, mouseWorld).normalize();
         tmpVelocity.addScaledVector(tmpDir, force);
       }
@@ -135,8 +142,8 @@
     }
     geometry.attributes.position.needsUpdate = true;
 
-    points.rotation.y = elapsed * 0.04;
-    points.rotation.x = Math.sin(elapsed * 0.02) * 0.1;
+    points.rotation.y = Math.sin(elapsed * 0.015) * 0.04;
+    points.rotation.x = Math.sin(elapsed * 0.02) * 0.03;
 
     renderer.render(scene, camera);
   }
