@@ -650,30 +650,16 @@ section {
   position: relative;
 }
 
-.wf-robot-wrap {
+.wf-weave-bg {
   position: absolute;
-  left: 0.5rem;
-  bottom: 1rem;
-  top: auto;
-  transform: none;
-  width: clamp(260px, 26vw, 380px);
+  inset: 0;
+  z-index: 0;
   pointer-events: none;
-  z-index: 2;
-  opacity: 0.96;
 }
-.wf-robot {
-  width: 100%;
-  height: auto;
-  filter: drop-shadow(0 0 36px rgba(168,132,44,.5));
-  perspective: 600px;
-}
-#robotHead {
-  transform-box: fill-box;
-  transform-origin: 50% 85%; /* pivot near neck */
-  transition: none;
-}
-.wf-robot-wrap.hovered .wf-robot {
-  filter: drop-shadow(0 0 48px rgba(168,132,44,.7));
+.wf-weave-bg canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
 }
 
 #workflow .section-title em {
@@ -1473,8 +1459,8 @@ section {
   .wbs-spacer { display: none; }
   .wbs-indicators { display: none; }
 
-  /* Workflow: narrower robot */
-  .wf-robot-wrap { width: clamp(180px, 22vw, 260px); opacity: 0.35; }
+  /* Workflow: dimmer weave background */
+  .wf-weave-bg { opacity: 0.5; }
 }
 
 /* ── Mobile (≤ 768px) ─────────────────────── */
@@ -1589,7 +1575,7 @@ section {
   .wbs-desc      { font-size: .88rem; max-width: 100%; }
 
   /* ── Workflow ── */
-  .wf-robot-wrap { display: none; }
+  .wf-weave-bg   { display: none; }
   .wf-steps      { gap: 0.5rem; }
   .wf-step-label { font-size: .6rem; max-width: 70px; }
   .wf-node       { width: 36px; height: 36px; }
