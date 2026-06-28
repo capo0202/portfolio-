@@ -9,14 +9,14 @@
   const PARTICLE_COUNT = 8000;
 
   const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(60, 1, 0.1, 100);
-  camera.position.z = 5;
+  const camera = new THREE.PerspectiveCamera(68, 1, 0.1, 100);
+  camera.position.z = 8;
 
   const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   container.appendChild(renderer.domElement);
 
-  const torusKnot = new THREE.TorusKnotGeometry(1.6, 0.55, 220, 32);
+  const torusKnot = new THREE.TorusKnotGeometry(3.2, 1.1, 220, 32);
   const knotPositions = torusKnot.attributes.position;
 
   const positions = new Float32Array(PARTICLE_COUNT * 3);
@@ -51,7 +51,7 @@
   geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
 
   const material = new THREE.PointsMaterial({
-    size: 0.022,
+    size: 0.032,
     vertexColors: true,
     blending: THREE.AdditiveBlending,
     transparent: true,
@@ -105,7 +105,7 @@
     rafId = requestAnimationFrame(animate);
 
     const elapsed = clock.getElapsedTime();
-    mouseWorld.set(mouse.x * 3, mouse.y * 3, 0);
+    mouseWorld.set(mouse.x * 5.5, mouse.y * 5.5, 0);
 
     for (let i = 0; i < PARTICLE_COUNT; i++) {
       const ix = i * 3, iy = i * 3 + 1, iz = i * 3 + 2;
@@ -115,8 +115,8 @@
       tmpVelocity.set(velocities[ix], velocities[iy], velocities[iz]);
 
       const dist = tmpCurrent.distanceTo(mouseWorld);
-      if (dist < 1.4) {
-        const force = (1.4 - dist) * 0.012;
+      if (dist < 2.6) {
+        const force = (2.6 - dist) * 0.012;
         tmpDir.subVectors(tmpCurrent, mouseWorld).normalize();
         tmpVelocity.addScaledVector(tmpDir, force);
       }
