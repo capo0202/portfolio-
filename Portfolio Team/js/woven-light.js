@@ -59,6 +59,8 @@
   window.addEventListener('mousemove', onMouseMove, { passive: true });
 
   let halfW = 6, halfH = 4;
+  const phasesX = new Float32Array(PARTICLE_COUNT);
+  const phasesY = new Float32Array(PARTICLE_COUNT);
 
   function scatter() {
     // Spread particles evenly across the full visible frustum (incl. edges/sides)
@@ -74,6 +76,8 @@
       positions[ix] = x; positions[iy] = y; positions[iz] = z;
       originalPositions[ix] = x; originalPositions[iy] = y; originalPositions[iz] = z;
       velocities[ix] = 0; velocities[iy] = 0; velocities[iz] = 0;
+      phasesX[i] = Math.random() * Math.PI * 2;
+      phasesY[i] = Math.random() * Math.PI * 2;
     }
     geometry.attributes.position.needsUpdate = true;
   }
@@ -118,7 +122,13 @@
       const ix = i * 3, iy = i * 3 + 1, iz = i * 3 + 2;
 
       tmpCurrent.set(positions[ix], positions[iy], positions[iz]);
-      tmpOriginal.set(originalPositions[ix], originalPositions[iy], originalPositions[iz]);
+      const driftX = Math.sin(elapsed * 0.4 + phasesX[i]) * 0.18;
+      const driftY = Math.cos(elapsed * 0.33 + phasesY[i]) * 0.18;
+      tmpOriginal.set(
+        originalPositions[ix] + driftX,
+        originalPositions[iy] + driftY,
+        originalPositions[iz]
+      );
       tmpVelocity.set(velocities[ix], velocities[iy], velocities[iz]);
 
       const dist = tmpCurrent.distanceTo(mouseWorld);
@@ -128,7 +138,7 @@
         tmpVelocity.addScaledVector(tmpDir, force);
       }
 
-      tmpReturn.subVectors(tmpOriginal, tmpCurrent).multiplyScalar(0.0012);
+      tmpReturn.subVectors(tmpOriginal, tmpCurrent).multiplyScalar(0.02);
       tmpVelocity.add(tmpReturn);
       tmpVelocity.multiplyScalar(0.95);
 
