@@ -702,7 +702,7 @@ function addAutomationsSoundButton(slideIndex) {
   if (!video) return;
 
   const btn = document.createElement('button');
-  btn.innerHTML = '<i class="fa-solid fa-volume-xmark"></i>';
+  btn.innerHTML = '<i class="fa-solid fa-play"></i>';
   btn.style.cssText = [
     'position:absolute', 'bottom:10px', 'left:10px',
     'width:46px', 'height:46px', 'border-radius:50%',
@@ -716,8 +716,9 @@ function addAutomationsSoundButton(slideIndex) {
   btn.addEventListener('click', function (e) {
     e.stopPropagation();
     video.muted = !video.muted;
+    if (!video.muted) video.play().catch(() => {});
     btn.innerHTML = video.muted
-      ? '<i class="fa-solid fa-volume-xmark"></i>'
+      ? '<i class="fa-solid fa-play"></i>'
       : '<i class="fa-solid fa-volume-high"></i>';
   });
 
