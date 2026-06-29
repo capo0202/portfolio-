@@ -719,6 +719,7 @@ function addAutomationsSoundButton(slideIndex) {
     e.stopPropagation();
     if (!isPlaying) {
       video.muted = false;
+      video.currentTime = 0;
       const p = video.play();
       if (p && typeof p.then === 'function') {
         p.then(() => {
@@ -743,7 +744,9 @@ function addAutomationsSoundButton(slideIndex) {
   if (screen) { screen.style.position = 'relative'; screen.appendChild(btn); }
 }
 addAutomationsSoundButton(0); // AI Job Finder Pipeline
-addAutomationsSoundButton(2); // AI Video Studio
+addAutomationsSoundButton(1); // AI Sales Automation System
+addAutomationsSoundButton(2); // Morning Briefing Bot
+addAutomationsSoundButton(3); // AI Video Studio
 
 // ── SCROLL REVEALS ────────────────────────────────────────────────────────────
 gsap.utils.toArray('.gs-r').forEach(el => {

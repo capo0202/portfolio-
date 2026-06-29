@@ -749,6 +749,7 @@ gsap.utils.toArray('.gs-tool').forEach((el, i) => {
       e.stopPropagation();
       if (!isPlaying) {
         video.muted = false;
+        video.currentTime = 0;
         const p = video.play();
         if (p && typeof p.then === 'function') {
           p.then(() => {
@@ -771,6 +772,8 @@ gsap.utils.toArray('.gs-tool').forEach((el, i) => {
     const screen = slide.querySelector('.wbs-screen');
     if (screen) { screen.style.position = 'relative'; screen.appendChild(btn); }
   }
-  addSoundButton(0);
-  addSoundButton(2);
+  addSoundButton(0); // AI Job Finder Pipeline
+  addSoundButton(1); // AI Sales Automation System
+  addSoundButton(2); // Morning Briefing Bot
+  addSoundButton(3); // AI Video Studio
 }());
