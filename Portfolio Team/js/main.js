@@ -733,7 +733,7 @@ gsap.utils.toArray('.gs-tool').forEach((el, i) => {
     const btn = document.createElement('button');
     btn.innerHTML = '<i class="fa-solid fa-volume-xmark"></i>';
     btn.style.cssText = [
-      'position:absolute', 'bottom:10px', 'right:10px',
+      'position:absolute', 'top:50%', 'left:10px', 'transform:translateY(-50%)',
       'width:34px', 'height:34px', 'border-radius:50%',
       'background:rgba(0,0,0,0.55)', 'border:1px solid rgba(255,255,255,0.2)',
       'color:#fff', 'font-size:0.85rem', 'cursor:pointer',
