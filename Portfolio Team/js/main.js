@@ -740,37 +740,70 @@ gsap.utils.toArray('.gs-tool').forEach((el, i) => {
       'background:rgba(0,0,0,0.55)', 'border:1px solid rgba(255,255,255,0.25)',
       'color:#fff', 'font-size:1.5rem', 'cursor:pointer',
       'display:flex', 'align-items:center', 'justify-content:center',
-      'z-index:10', 'transition:background 0.2s',
+      'z-index:10', 'transition:opacity 0.25s, background 0.2s',
       'backdrop-filter:blur(4px)'
     ].join(';');
     let isPlaying = false;
+    let hideTimer = null;
+
+    function showBtn() { btn.style.opacity = '1'; btn.style.pointerEvents = 'auto'; }
+    function hideBtn() { btn.style.opacity = '0'; btn.style.pointerEvents = 'none'; }
+    function scheduleHide() {
+      clearTimeout(hideTimer);
+      hideTimer = setTimeout(() => { if (isPlaying) hideBtn(); }, 3000);
+    }
 
     btn.addEventListener('click', function (e) {
       e.stopPropagation();
       if (!isPlaying) {
+        video.loop = false;
         video.muted = false;
         video.currentTime = 0;
         const p = video.play();
-        if (p && typeof p.then === 'function') {
-          p.then(() => {
-            isPlaying = true;
-            btn.innerHTML = '<i class="fa-solid fa-pause"></i>';
-          }).catch(() => {
-            // Playback blocked — keep play icon so the user can retry
-            video.muted = true;
-          });
-        } else {
+        const onStarted = () => {
           isPlaying = true;
           btn.innerHTML = '<i class="fa-solid fa-pause"></i>';
+          scheduleHide();
+        };
+        if (p && typeof p.then === 'function') {
+          p.then(onStarted).catch(() => {
+            // Playback blocked — keep play icon so the user can retry
+            video.muted = true;
+            video.loop = true;
+          });
+        } else {
+          onStarted();
         }
       } else {
         video.pause();
         isPlaying = false;
+        clearTimeout(hideTimer);
         btn.innerHTML = '<i class="fa-solid fa-play"></i>';
+        showBtn();
       }
     });
+
+    // Video ends -> reset to idle silent loop, show play button again
+    video.addEventListener('ended', function () {
+      isPlaying = false;
+      clearTimeout(hideTimer);
+      video.loop = true;
+      video.muted = true;
+      video.currentTime = 0;
+      video.play().catch(() => {});
+      btn.innerHTML = '<i class="fa-solid fa-play"></i>';
+      showBtn();
+    });
+
     const screen = slide.querySelector('.wbs-screen');
-    if (screen) { screen.style.position = 'relative'; screen.appendChild(btn); }
+    if (screen) {
+      screen.style.position = 'relative';
+      screen.appendChild(btn);
+      // Tap the video while playing -> reveal the button again (YouTube-style)
+      screen.addEventListener('click', function () {
+        if (isPlaying) { showBtn(); scheduleHide(); }
+      });
+    }
   }
   addSoundButton(0); // AI Job Finder Pipeline
   addSoundButton(1); // AI Sales Automation System
