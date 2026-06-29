@@ -713,11 +713,30 @@ function addAutomationsSoundButton(slideIndex) {
     'backdrop-filter:blur(4px)'
   ].join(';');
 
+  let isPlaying = false;
+
   btn.addEventListener('click', function (e) {
     e.stopPropagation();
-    video.muted = false;
-    video.play().catch(() => {});
-    btn.remove();
+    if (!isPlaying) {
+      video.muted = false;
+      const p = video.play();
+      if (p && typeof p.then === 'function') {
+        p.then(() => {
+          isPlaying = true;
+          btn.innerHTML = '<i class="fa-solid fa-pause"></i>';
+        }).catch(() => {
+          // Playback blocked — keep play icon so the user can retry
+          video.muted = true;
+        });
+      } else {
+        isPlaying = true;
+        btn.innerHTML = '<i class="fa-solid fa-pause"></i>';
+      }
+    } else {
+      video.pause();
+      isPlaying = false;
+      btn.innerHTML = '<i class="fa-solid fa-play"></i>';
+    }
   });
 
   const screen = slide.querySelector('.wbs-screen');
