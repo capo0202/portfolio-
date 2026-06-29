@@ -704,10 +704,10 @@ function addAutomationsSoundButton(slideIndex) {
   const btn = document.createElement('button');
   btn.innerHTML = '<i class="fa-solid fa-volume-xmark"></i>';
   btn.style.cssText = [
-    'position:absolute', 'top:50%', 'left:10px', 'transform:translateY(-50%)',
-    'width:34px', 'height:34px', 'border-radius:50%',
+    'position:absolute', 'bottom:10px', 'left:10px',
+    'width:46px', 'height:46px', 'border-radius:50%',
     'background:rgba(0,0,0,0.55)', 'border:1px solid rgba(255,255,255,0.2)',
-    'color:#fff', 'font-size:0.85rem', 'cursor:pointer',
+    'color:#fff', 'font-size:1.15rem', 'cursor:pointer',
     'display:flex', 'align-items:center', 'justify-content:center',
     'z-index:10', 'transition:background 0.2s',
     'backdrop-filter:blur(4px)'
