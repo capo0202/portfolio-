@@ -678,13 +678,13 @@ if (window.innerWidth > 768) {
         scrub: 1.2,
         onUpdate(self) {
           const p = Math.max(0, (self.progress - 0.10) / 0.90);
-          const active = p < 0.25 ? 0 : p < 0.50 ? 1 : p < 0.75 ? 2 : 3;
+          const active = p < 0.20 ? 0 : p < 0.40 ? 1 : p < 0.60 ? 2 : p < 0.80 ? 3 : 4;
           autoDots.forEach((d, i) => d.classList.toggle('active', i === active));
         }
       }
     });
     tl.to(autoTrack, { x: 0, ease: 'none', duration: 1 })      // hold 10%
-      .to(autoTrack, { x: '-75%', ease: 'none', duration: 9 }); // animate 90% (4 slides)
+      .to(autoTrack, { x: '-80%', ease: 'none', duration: 9 }); // animate 90% (5 slides)
 
     // Force-play all automations videos (autoplay blocked when off-screen in overflow:hidden)
     document.querySelectorAll('#automations video').forEach(v => {
@@ -694,11 +694,11 @@ if (window.innerWidth > 768) {
   }
 }
 
-// ── LAUTSPRECHER-BUTTON AI VIDEO STUDIO (Slide 02) ────────────────────────────
-(function () {
-  const studioSlide = document.querySelectorAll('#automations .wbs-slide')[1];
-  if (!studioSlide) return;
-  const video = studioSlide.querySelector('video.wbs-video');
+// ── LAUTSPRECHER-BUTTONS (AI Job Finder Pipeline + AI Video Studio) ──────────
+function addAutomationsSoundButton(slideIndex) {
+  const slide = document.querySelectorAll('#automations .wbs-slide')[slideIndex];
+  if (!slide) return;
+  const video = slide.querySelector('video.wbs-video');
   if (!video) return;
 
   const btn = document.createElement('button');
@@ -721,9 +721,11 @@ if (window.innerWidth > 768) {
       : '<i class="fa-solid fa-volume-high"></i>';
   });
 
-  const screen = studioSlide.querySelector('.wbs-screen');
+  const screen = slide.querySelector('.wbs-screen');
   if (screen) { screen.style.position = 'relative'; screen.appendChild(btn); }
-}());
+}
+addAutomationsSoundButton(0); // AI Job Finder Pipeline
+addAutomationsSoundButton(2); // AI Video Studio
 
 // ── SCROLL REVEALS ────────────────────────────────────────────────────────────
 gsap.utils.toArray('.gs-r').forEach(el => {

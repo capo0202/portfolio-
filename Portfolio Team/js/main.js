@@ -711,24 +711,24 @@ gsap.utils.toArray('.gs-tool').forEach((el, i) => {
       scrub: 1.2,
       onUpdate(self) {
         const p      = Math.max(0, (self.progress - 0.10) / 0.90);
-        const active = p < 0.25 ? 0 : p < 0.50 ? 1 : p < 0.75 ? 2 : 3;
+        const active = p < 0.20 ? 0 : p < 0.40 ? 1 : p < 0.60 ? 2 : p < 0.80 ? 3 : 4;
         autoDots.forEach((d, i) => d.classList.toggle('active', i === active));
       }
     }
   });
   tl.to(autoTrack, { x: 0, ease: 'none', duration: 1 })
-    .to(autoTrack, { x: '-75%', ease: 'none', duration: 9 });
+    .to(autoTrack, { x: '-80%', ease: 'none', duration: 9 });
 
   document.querySelectorAll('#automations video').forEach(v => {
     v.load();
     v.play().catch(() => {});
   });
 
-  // Sound button on Slide 2 (AI Video Studio)
-  (function () {
-    const studioSlide = document.querySelectorAll('#automations .wbs-slide')[1];
-    if (!studioSlide) return;
-    const video = studioSlide.querySelector('video.wbs-video');
+  // Sound buttons (Slide 0: AI Job Finder Pipeline, Slide 2: AI Video Studio)
+  function addSoundButton(slideIndex) {
+    const slide = document.querySelectorAll('#automations .wbs-slide')[slideIndex];
+    if (!slide) return;
+    const video = slide.querySelector('video.wbs-video');
     if (!video) return;
     const btn = document.createElement('button');
     btn.innerHTML = '<i class="fa-solid fa-volume-xmark"></i>';
@@ -748,7 +748,9 @@ gsap.utils.toArray('.gs-tool').forEach((el, i) => {
         ? '<i class="fa-solid fa-volume-xmark"></i>'
         : '<i class="fa-solid fa-volume-high"></i>';
     });
-    const screen = studioSlide.querySelector('.wbs-screen');
+    const screen = slide.querySelector('.wbs-screen');
     if (screen) { screen.style.position = 'relative'; screen.appendChild(btn); }
-  }());
+  }
+  addSoundButton(0);
+  addSoundButton(2);
 }());
