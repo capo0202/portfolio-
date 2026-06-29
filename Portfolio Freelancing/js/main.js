@@ -715,11 +715,9 @@ function addAutomationsSoundButton(slideIndex) {
 
   btn.addEventListener('click', function (e) {
     e.stopPropagation();
-    video.muted = !video.muted;
-    if (!video.muted) video.play().catch(() => {});
-    btn.innerHTML = video.muted
-      ? '<i class="fa-solid fa-play"></i>'
-      : '<i class="fa-solid fa-volume-high"></i>';
+    video.muted = false;
+    video.play().catch(() => {});
+    btn.remove();
   });
 
   const screen = slide.querySelector('.wbs-screen');
