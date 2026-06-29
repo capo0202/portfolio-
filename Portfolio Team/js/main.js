@@ -735,10 +735,10 @@ gsap.utils.toArray('.gs-tool').forEach((el, i) => {
     const btn = document.createElement('button');
     btn.innerHTML = '<i class="fa-solid fa-play"></i>';
     btn.style.cssText = [
-      'position:absolute', 'bottom:10px', 'left:10px',
-      'width:46px', 'height:46px', 'border-radius:50%',
-      'background:rgba(0,0,0,0.55)', 'border:1px solid rgba(255,255,255,0.2)',
-      'color:#fff', 'font-size:1.15rem', 'cursor:pointer',
+      'position:absolute', 'top:50%', 'left:50%', 'transform:translate(-50%,-50%)',
+      'width:64px', 'height:64px', 'border-radius:50%',
+      'background:rgba(0,0,0,0.55)', 'border:1px solid rgba(255,255,255,0.25)',
+      'color:#fff', 'font-size:1.5rem', 'cursor:pointer',
       'display:flex', 'align-items:center', 'justify-content:center',
       'z-index:10', 'transition:background 0.2s',
       'backdrop-filter:blur(4px)'
